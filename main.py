@@ -1,14 +1,16 @@
 import array
 import pygame
 import time
+import random
 from pygame.math import Vector2
 from SpriteInfo import *
 from WireMesh import *
+from WireMeshExplosion import *
 from GameDefs import *
 from PlayerShip import *
+from Asteroid import *
 
 gSprites = dict()
-global player
 
 def load_data():
     # Player sprites
@@ -25,26 +27,58 @@ def load_data():
 def init_objects():
 
     global player
+    global asteroids
+    global fx
 
     player = PlayerShip("PlayerShip")
+    asteroids = []
+    for i in range(0,10):
+        asteroid = Asteroid("Asteroid" + str(i))
+        asteroid.position = Vector2(random.uniform(0, 1280), random.uniform(0, 720))
+        asteroids.append(asteroid)
+
+    fx = []
         
-
-#angle = 0
-
 def update(delta_time):
 
-    player.Update(delta_time)
-    #global angle
-    #angle = angle + delta_time
+    global player
+    global asteroids
+    global fx
+
+    if (player != None):
+        player.Update(delta_time)
+    
+    for asteroid in asteroids:
+        asteroid.Update(delta_time)
+        
+        # Check collision with ship
+        if (player != None):
+            if (asteroid.Intersects(player)):
+                fx.append(WireMeshExplosion(player.gfx, player.position, player.rotation, player.scale))
+                player = None
+
+    for e in fx:
+        e.Update(delta_time)
+
+    fx = [e for e in fx if e.IsAlive()]
 
 def render(screen):
+
+    global player
+    global asteroids
+    global fx
+
     screen.fill((10, 10, 30))
 
-    player.Render(screen)
+    if (player != None):
+        player.Render(screen)
 
-    #global angle
-    #pygame.draw.rect(screen, (255,0,0), (640 + 200 * math.sin(angle), 500, 40, 40), 2)
-    
+    for asteroid in asteroids:
+        asteroid.Render(screen)
+
+    for e in fx:
+        e.Render(screen)
+
     pygame.display.flip()
 
 def main():

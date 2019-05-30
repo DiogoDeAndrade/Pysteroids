@@ -9,6 +9,7 @@ class Ship(GameObject):
         self.velocity = Vector2(0,0)
         self.maxVelocity = 200.0
         self.drag = 0.75
+        self.radius = 20
 
     def Update(self, delta_time):
         GameObject.Update(self, delta_time)
@@ -23,3 +24,11 @@ class Ship(GameObject):
 
         if (self.velocity.magnitude() > self.maxVelocity):
             self.velocity = self.velocity.normalize() * self.maxVelocity
+
+    def Intersects(self, other_ship):
+        delta = self.position - other_ship.position
+        if (delta.magnitude() < (self.radius + other_ship.radius)):
+            return True
+        
+        return False
+

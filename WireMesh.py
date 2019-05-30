@@ -1,17 +1,33 @@
 import pygame
 import math
+import random
+import enum
 from pygame.math import Vector2
 
+class RenderMode(enum.Enum): 
+    AntiAlias = 0
+    Normal = 1
+
+class PrimitiveType(enum.Enum):
+    LineStrip = 0,
+    LineList = 1
+  
 class WireMesh:
     def __init__(self):
         self.vertex = []
         self.poly = []
         self.polyColor = []
-        self.position = (0,0)
+        self.position = Vector2(0,0)
         self.rotation = 0
-        self.scale = (1,1)
+        self.scale = Vector2(1,1)
         self.dirty = True
         self.currentPoly = []
+        self.closed = True
+        self.primitiveType = PrimitiveType.LineStrip
+        self.renderMode = RenderMode.AntiAlias
+        self.width = 1
+        self.overrideColorEnable = False
+        self.overrideColor = (255, 255, 255)
 
     def AddVertex(self, vertex):
         self.vertex.append(vertex)
@@ -33,20 +49,38 @@ class WireMesh:
     def SetPolyColor(self, color):
         self.currentPolyColor = color
 
+    def GetColor(self, polyIndex):
+        if (self.overrideColorEnable):
+            return self.overrideColor
+                   
+        return self.polyColor[polyIndex]
+
     def Draw(self, screen):
         if (self.dirty):
             self.Rebuild()   
 
-        for idx, poly in enumerate(self.poly):
-            pointlist = [self.cacheVertex[i] for i in poly]
-            pygame.draw.aalines(screen, self.polyColor[idx], True, pointlist)
-
-    def DrawPRS(self, screen, position, rotation, scale, color):
+        self.DrawProcessedVertex(screen, self.cacheVertex)
+        
+    def DrawPRS(self, screen, position, rotation, scale):
         cacheVertex = [self.VertexTransformPRS(v, position,rotation, scale) for v in self.vertex]
 
+        self.DrawProcessedVertex(screen, cacheVertex)
+
+    def DrawProcessedVertex(self, screen, cacheVertex):
         for idx, poly in enumerate(self.poly):
             pointlist = [cacheVertex[i] for i in poly]
-            pygame.draw.aalines(screen, self.polyColor[idx], True, pointlist)
+            if (self.primitiveType == PrimitiveType.LineStrip):
+                if (self.renderMode == RenderMode.AntiAlias):
+                    pygame.draw.aalines(screen, self.GetColor(idx), self.closed, pointlist)
+                else:
+                    pygame.draw.lines(screen, self.GetColor(idx), self.closed, pointlist, self.width)
+            elif (self.primitiveType == PrimitiveType.LineList):
+                if (self.renderMode == RenderMode.AntiAlias):
+                    for idx in range(0, len(pointlist), 2):
+                        pygame.draw.aaline(screen, self.GetColor(idx), pointlist[idx], pointlist[idx + 1], False)
+                else:
+                    for idx in range(0, len(pointlist), 2):
+                        pygame.draw.line(screen, self.GetColor(idx), pointlist[idx], pointlist[idx + 1], self.width)
 
     def Rebuild(self):
         self.cacheVertex = [self.VertexTransform(v) for v in self.vertex]
@@ -84,6 +118,39 @@ class WireMesh:
         self.scale = scale
         self.dirty = True
     
+    def GetRadius(self):
+        maxDist = 0
+        for v in self.vertex:
+            maxDist = max(v.magnitude_squared(), maxDist)
+
+        return math.sqrt(maxDist)
+
+    def ApplyTransform(self):
+        self.vertex = [self.VertexTransform(v) for v in self.vertex]
+        self.dirty = True
+        self.position = (0,0)
+        self.rotation = 0
+        self.scale = (1,1)
+
+    def ConvertToLineList(self):
+        if (self.primitiveType != PrimitiveType.LineStrip):
+            print("Can't convert to line list: not a line strip!")
+            return
+
+        newVertex = []
+        for polyId, p in enumerate(self.poly):
+            newPoly = []
+            for src in range(0, len(p)):
+                oldId = p[src]
+                newVertex.append(self.vertex[oldId])
+                newPoly.append(len(newVertex) - 1)
+                oldId = p[(src + 1) % len(p)]
+                newVertex.append(self.vertex[oldId])
+                newPoly.append(len(newVertex) - 1)
+            self.poly[polyId] = newPoly
+        self.vertex = newVertex
+        self.primitiveType = PrimitiveType.LineList
+
     #-- Model Management --#
     models = dict()
 
@@ -156,3 +223,40 @@ class WireMesh:
             return WireMesh.models[model_name]
 
         return None
+    
+    @staticmethod
+    def Copy(src):
+        mesh = WireMesh()
+        mesh.vertex = src.vertex.copy()
+        mesh.poly = src.poly.copy()
+        mesh.polyColor = src.polyColor.copy()
+        mesh.position = src.position
+        mesh.rotation = src.rotation
+        mesh.scale = src.scale
+        mesh.dirty = True
+        mesh.closed = src.closed
+        mesh.primitiveType = src.primitiveType
+        mesh.renderMode = src.renderMode
+        mesh.width = src.width
+
+        return mesh
+
+    @staticmethod
+    def Circle(sides, radius, variance, color):
+        mesh = WireMesh()
+        
+        mesh.BeginPoly()
+        mesh.SetPolyColor(color)
+
+        angle = 0
+        angleInc = math.pi * 2 / sides
+
+        for i in range(1, sides):
+            r = random.uniform(radius - variance, radius + variance)
+            idx = mesh.AddVertex(Vector2(r * math.cos(angle), r * math.sin(angle)))
+            mesh.AddVertexToPoly(idx)
+            angle += angleInc
+
+        mesh.EndPoly()
+
+        return mesh

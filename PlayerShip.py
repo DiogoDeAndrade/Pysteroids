@@ -8,9 +8,8 @@ class PlayerShip(Ship):
         Ship.__init__(self, name)
 
         self.gfx = WireMesh.GetModel("PlayerShip")
+        self.radius = self.gfx.GetRadius()
         
-        self.color = (255, 255, 0)
-
     def Update(self, delta_time):
         keys = pygame.key.get_pressed()
 
@@ -33,4 +32,5 @@ class PlayerShip(Ship):
         Ship.Update(self, delta_time)
 
     def Render(self, screen):
-        self.gfx.DrawPRS(screen, self.position, self.rotation, self.scale, self.color)
+        self.gfx.DrawPRS(screen, self.position, self.rotation, self.scale)
+
