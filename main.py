@@ -3,9 +3,11 @@ import pygame
 import time
 import random
 from pygame.math import Vector2
+
 from SpriteInfo import *
 from WireMesh import *
 from WireMeshExplosion import *
+from Shockwave import *
 from GameDefs import *
 from PlayerShip import *
 from Asteroid import *
@@ -54,7 +56,12 @@ def update(delta_time):
         # Check collision with ship
         if (player != None):
             if (asteroid.Intersects(player)):
-                fx.append(WireMeshExplosion(player.gfx, player.position, player.rotation, player.scale))
+                explosion = WireMeshExplosion(player.gfx, player.position, player.rotation, player.scale, True, 150, 300, 0.5, 3)
+                explosion.fadeMethod = FadeMethod.Color
+                explosion.colors = [Color(1.0, 1.0, 0.0, 1.0), Color(1.0, 0.0, 0.0, 1.0), Color(0.0, 0.0, 0.0, 1.0), Color(0.0, 0.0, 0.0, 0.0)]
+                explosion.duration = 2
+                fx.append(explosion)
+                fx.append(Shockwave(player.position, 0.75, 200, [Color(1.0, 1.0, 0.0, 1.0), Color(1.0, 0.0, 0.0, 1.0), Color(0.0, 0.0, 0.0, 1.0), Color(0.0, 0.0, 0.0, 0.0)]))
                 player = None
 
     for e in fx:
@@ -83,6 +90,8 @@ def render(screen):
 
 def main():
 
+    global player
+
     pygame.init()
     logo = pygame.image.load("sprites/icon.png")
     pygame.display.set_icon(logo)
@@ -106,6 +115,8 @@ def main():
         keys = pygame.key.get_pressed()
         if ((keys[pygame.K_ESCAPE]) and (keys[pygame.K_LSHIFT])):
             running = False        
+        if (((keys[pygame.K_r]) and (keys[pygame.K_LSHIFT])) and (player == None)):
+            player = PlayerShip("PlayerShip")
 
         update(dt)
         render(screen)
