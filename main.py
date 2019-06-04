@@ -8,6 +8,7 @@ from SpriteInfo import *
 from WireMesh import *
 from WireMeshExplosion import *
 from Shockwave import *
+from ParticleSystem import *
 from GameDefs import *
 from PlayerShip import *
 from Asteroid import *
@@ -60,8 +61,20 @@ def update(delta_time):
                 explosion.fadeMethod = FadeMethod.Color
                 explosion.colors = [Color(1.0, 1.0, 0.0, 1.0), Color(1.0, 0.0, 0.0, 1.0), Color(0.0, 0.0, 0.0, 1.0), Color(0.0, 0.0, 0.0, 0.0)]
                 explosion.duration = 2
+
+                shockwave = Shockwave(player.position, 0.75, 200, [Color(1.0, 1.0, 0.0, 1.0), Color(1.0, 0.0, 0.0, 1.0), Color(0.0, 0.0, 0.0, 1.0), Color(0.0, 0.0, 0.0, 0.0)])
+
+                particle_system = ParticleSystem(player.position)
+                particle_system.colorOverTime = [Color(1.0, 1.0, 0.0, 1.0), Color(1.0, 0.0, 0.0, 1.0), Color(0.0, 0.0, 0.0, 1.0), Color(0.0, 0.0, 0.0, 0.0)]
+                particle_system.startSpeed = (50, 100)
+                particle_system.particleLife = (2, 4)
+                particle_system.drag = 0.995
+                particle_system.rate = 0
+                particle_system.Spawn(50)
+
                 fx.append(explosion)
-                fx.append(Shockwave(player.position, 0.75, 200, [Color(1.0, 1.0, 0.0, 1.0), Color(1.0, 0.0, 0.0, 1.0), Color(0.0, 0.0, 0.0, 1.0), Color(0.0, 0.0, 0.0, 0.0)]))
+                fx.append(shockwave)
+                fx.append(particle_system)
                 player = None
 
     for e in fx:
