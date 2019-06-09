@@ -8,7 +8,10 @@ class PlayerShip(Ship):
         Ship.__init__(self, name)
 
         self.gfx = WireMesh.GetModel("PlayerShip")
+        self.collider = Circle2d(Vector2(0,0), self.gfx.GetRadius())
         self.radius = self.gfx.GetRadius()
+
+        self.tags.append("PlayerShip")
         
     def Update(self, delta_time):
         keys = pygame.key.get_pressed()

@@ -3,6 +3,8 @@ import random
 import pygame
 import enum
 from Color import *
+from Scene import *
+from GameObject import *
 from pygame import Vector2
 
 class Emitter(enum.Enum): 
@@ -18,8 +20,10 @@ class Particle:
         self.color = color        
         self.size = 1
     
-class ParticleSystem:
+class ParticleSystem(GameObject):
     def __init__(self, position):
+        GameObject.__init__(self, "")
+
         self.position = position
         self.startSpeed = (10, 20)
         self.particleLife = (1, 2)
@@ -32,6 +36,8 @@ class ParticleSystem:
         self.time = 0
 
         self.particles = []
+
+        self.tags.append("ParticleSystem");
 
     def Update(self, delta_time):
         self.accumulated_time = self.accumulated_time + delta_time
@@ -56,6 +62,9 @@ class ParticleSystem:
 
         self.time = self.time + delta_time
 
+        if (not self.IsAlive()):
+            Scene.main.Remove(self)
+
     def Render(self, screen):
         for particle in self.particles:
             pygame.draw.line(screen, particle.color.tuple(), particle.old_position, particle.position, (int)(particle.size))
@@ -66,7 +75,7 @@ class ParticleSystem:
                 ang = random.uniform(0, math.pi * 2)
                 v = Vector2(math.cos(ang), math.sin(ang))
                 v = v * random.uniform(self.startSpeed[0], self.startSpeed[1])
-                particle = Particle(self.position, v, random.uniform(self.particleLife[0], self.particleLife[1]), self.colorOverTime[0].tuple())
+                particle = Particle(self.position, v, random.uniform(self.particleLife[0], self.particleLife[1]), self.colorOverTime[0])
                 self.particles.append(particle)
 
     def IsAlive(self):

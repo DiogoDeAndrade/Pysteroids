@@ -1,5 +1,7 @@
 from Color import *
 from WireMesh import *
+from Scene import *
+from GameObject import *
 
 class FadeMethod(enum.Enum): 
     Shrink = 0
@@ -21,8 +23,11 @@ class ExplosionParticle:
             self.velocity = Vector2(-self.velocity.y, self.velocity.x) * speed
         self.rotation = rotation
 
-class WireMeshExplosion:
+class WireMeshExplosion(GameObject):
     def __init__(self, original_mesh, original_pos, original_rotation, original_scale, fromCenter, minSpeed, maxSpeed, minRotation, maxRotation):
+
+        GameObject.__init__(self, "")
+
         # Create a copy of the mesh
         self.gfx = WireMesh.Copy(original_mesh)
         self.gfx.ApplyTransform()
@@ -84,6 +89,9 @@ class WireMeshExplosion:
                 self.gfx.overrideColor = Color.InterpolateWithArray(self.colors, t).tuple()
 
         self.time = self.time + delta_time
+
+        if (not self.IsAlive()):
+            Scene.main.Remove(self)
 
     def IsAlive(self):
         return ((self.duration == 0) or (self.time < self.duration))

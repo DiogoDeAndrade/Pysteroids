@@ -19,6 +19,10 @@ class Asteroid(Ship):
         self.velocity *= random.uniform(20, 50)
         self.drag = 0
 
+        self.collider = Circle2d(Vector2(0,0), self.gfx.GetRadius())
+
+        self.tags.append("Asteroid")
+
     def Update(self, delta_time):
         Ship.Update(self, delta_time)
 

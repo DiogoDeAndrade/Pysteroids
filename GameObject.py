@@ -1,5 +1,7 @@
 import math
 from pygame.math import Vector2
+from Scene import * 
+from Collider2d import *
 
 class GameObject:
     def __init__(self, name):
@@ -7,6 +9,8 @@ class GameObject:
         self.position = Vector2(640, 360)
         self.rotation = 0
         self.scale = Vector2(1,1)
+        self.tags = [ "GameObject" ]
+        self.collider = Circle2d(Vector2(0,0), 1)
 
     def Update(self, delta_time):
         pass
@@ -19,3 +23,23 @@ class GameObject:
         angle = math.radians(self.rotation)
         return Vector2(math.sin(angle), -math.cos(angle))
 
+    def Destroy(self):
+        Scene.main.Remove(self)
+
+    def GetTags(self):
+        return self.tags
+
+    def Intersects(self, otherObject):
+        if (self.collider == None):
+            return False
+
+        if (otherObject.collider == None):
+            return False
+
+        self.collider.position = self.position
+        otherObject.collider.position = otherObject.position
+
+        if (self.collider.Intersects(otherObject.collider)):
+            return True
+
+        return False
