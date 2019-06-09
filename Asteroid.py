@@ -45,11 +45,19 @@ class Asteroid(Ship):
     def Explode(self):
         Ship.Explode(self)
 
-        if (self.radius > 5):
-            asteroid1 = Asteroid(self.name + "_0", self.radius / 2, self.variance / 2, self.rotation_speed * 1.25, self.velocity.magnitude() * 1.25)
+        if (self.radius >= 20):
+            asteroid1 = Asteroid(self.name + "_0", 
+                                 self.radius / 2, 
+                                 self.variance / 2, 
+                                 self.rotation_speed * 1.25, 
+                                 self.velocity.magnitude() * 1.1)
             asteroid1.position = Vector2(self.position)
             Scene.main.Add(asteroid1)
 
-            asteroid2 = Asteroid(self.name + "_1", self.radius / 2, self.variance / 2, self.rotation_speed * 1.25, self.velocity.magnitude() * 1.25)
+            asteroid2 = Asteroid(self.name + "_1", 
+                                 self.radius / 2, 
+                                 self.variance / 2, 
+                                 self.rotation_speed * 1.25, 
+                                 self.velocity.magnitude() * 1.1)
             asteroid2.position = Vector2(self.position)
             Scene.main.Add(asteroid2)

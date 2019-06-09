@@ -11,7 +11,7 @@ class PlayerShip(Ship):
         self.gfx = WireMesh.GetModel("PlayerShip")
         self.collider = Circle2d(Vector2(0,0), self.gfx.GetRadius())
         self.radius = self.gfx.GetRadius()
-        self.shot_cooldown = 1
+        self.shot_cooldown = 0.5
         self.current_shot_cooldown = 0
 
         self.tags.append("PlayerShip")
@@ -41,7 +41,7 @@ class PlayerShip(Ship):
         # Fire
         if (keys[pygame.K_SPACE]):
             if (self.current_shot_cooldown <= 0):
-                Scene.main.Add(Laser("FriendlyLaser", (64, 255, 64), 4, 20, self.GetMountpoint("LaserPos0"), self.GetDirectionVector() * 400, 2))
+                Scene.main.Add(Laser("PlayerLaser", (64, 255, 64), 4, 20, self.GetMountpoint("LaserPos0"), self.GetDirectionVector() * 400, 2))
                 self.current_shot_cooldown = self.shot_cooldown
 
         Ship.Update(self, delta_time)

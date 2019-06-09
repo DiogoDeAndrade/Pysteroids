@@ -42,6 +42,12 @@ def update(delta_time):
         for collision in collisions:
             collision.obj2.Explode()
 
+    collisions = Scene.main.CheckCollisionsBetweenTags("PlayerLaser", "Asteroid")
+    if (len(collisions) > 0):
+        for collision in collisions:
+            collision.obj1.Destroy()
+            collision.obj2.Explode()
+
 def render(screen):
 
     screen.fill((10, 10, 30))
