@@ -17,7 +17,6 @@ class Ship(GameObject):
         self.tags.append("Ship")
 
     def Update(self, delta_time):
-        GameObject.Update(self, delta_time)
 
         if (self.drag > 0):
             self.AddVelocity(-self.velocity * self.drag * delta_time)

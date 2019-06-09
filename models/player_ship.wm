@@ -6,3 +6,8 @@ polygon:
         (-15, 15)
         (0, 0)
         (15, 15)
+mountpoint:
+    name:
+        LaserPos0
+    position: 
+        (0, -30)

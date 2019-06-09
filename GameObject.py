@@ -12,16 +12,16 @@ class GameObject:
         self.tags = [ "GameObject" ]
         self.collider = Circle2d(Vector2(0,0), 1)
 
-    def Update(self, delta_time):
-        pass
-
-    def Render(self, screen):
-        pass
-
     def GetDirectionVector(self):
         # Rotation of 0 means pointing up
         angle = math.radians(self.rotation)
         return Vector2(math.sin(angle), -math.cos(angle))
+
+    def GetMountpoint(self, name):
+        if (self.gfx == None):
+            return Vector2(self.position)
+
+        return self.gfx.GetMountpointPRS(name, self.position, self.rotation, self.scale)
 
     def Destroy(self):
         Scene.main.Remove(self)

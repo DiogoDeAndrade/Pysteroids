@@ -28,6 +28,7 @@ class WireMesh:
         self.width = 1
         self.overrideColorEnable = False
         self.overrideColor = (255, 255, 255)
+        self.mountpoints = dict()
 
     def AddVertex(self, vertex):
         self.vertex.append(vertex)
@@ -55,6 +56,21 @@ class WireMesh:
                    
         return self.polyColor[polyIndex]
 
+    def AddMountpoint(self, name, pos):
+        self.mountpoints[name] = pos   
+
+    def GetMountpoint(self, name):
+        if (name in self.mountpoints):
+            return VertexTransform(self.mountpoints[name])
+
+        return VertexTransform(Vector2(0,0))
+
+    def GetMountpointPRS(self, name, position, rotation, scale):
+        if (name in self.mountpoints):
+            return WireMesh.VertexTransformPRS(self.mountpoints[name], position, rotation, scale)
+
+        return WireMesh.VertexTransformPRS(Vector2(0,0))
+
     def Draw(self, screen):
         if (self.dirty):
             self.Rebuild()   
@@ -62,7 +78,7 @@ class WireMesh:
         self.DrawProcessedVertex(screen, self.cacheVertex)
         
     def DrawPRS(self, screen, position, rotation, scale):
-        cacheVertex = [self.VertexTransformPRS(v, position,rotation, scale) for v in self.vertex]
+        cacheVertex = [WireMesh.VertexTransformPRS(v, position,rotation, scale) for v in self.vertex]
 
         self.DrawProcessedVertex(screen, cacheVertex)
 
@@ -96,7 +112,8 @@ class WireMesh:
 
         return v
 
-    def VertexTransformPRS(self, vertex, position, rotation, scale):
+    @staticmethod
+    def VertexTransformPRS(vertex, position, rotation, scale):
         a = math.radians(rotation)
         s = math.sin(a)
         c = math.cos(a)
@@ -187,6 +204,25 @@ class WireMesh:
                             exit = True
 
                     newMesh.EndPoly()
+
+                    if (not exit):
+                        # Left because I found a tag of something but polygons
+                        continue
+                elif (str == "mountpoint:"):
+                    exit = False
+                    mountpoint_name = ""
+                    while (not exit):
+                        str = file.readline().strip()
+                        if (str.find(':') != -1):
+                            if (str.find('name:') != -1):
+                                mountpoint_name = file.readline().strip()
+                            elif (str.find('position:') != -1):
+                                mountpoint_position = v = WireMesh.ParseVector2(file.readline().strip())
+                                if (mountpoint_name != ""):
+                                    newMesh.AddMountpoint(mountpoint_name, mountpoint_position)
+                                    break
+                        else:
+                            exit = True
 
                     if (not exit):
                         # Left because I found a tag of something but polygons

@@ -21,7 +21,9 @@ def init_objects():
 
     Scene.main.Add(PlayerShip("PlayerShip"))
 
-    for i in range(0,10):
+    n_asteroids = 10
+
+    for i in range(0,n_asteroids):
         asteroid = Asteroid("Asteroid" + str(i))
         asteroid.position = Vector2(random.uniform(0, 1280), random.uniform(0, 720))
         Scene.main.Add(asteroid)

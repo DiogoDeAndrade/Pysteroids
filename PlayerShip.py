@@ -1,5 +1,6 @@
 from WireMesh import *
 from Ship import *
+from Laser import *
 from GameDefs import *
 from pygame.math import Vector2
 
@@ -10,10 +11,15 @@ class PlayerShip(Ship):
         self.gfx = WireMesh.GetModel("PlayerShip")
         self.collider = Circle2d(Vector2(0,0), self.gfx.GetRadius())
         self.radius = self.gfx.GetRadius()
+        self.shot_cooldown = 1
+        self.current_shot_cooldown = 0
 
         self.tags.append("PlayerShip")
         
     def Update(self, delta_time):
+
+        self.current_shot_cooldown = self.current_shot_cooldown - delta_time
+
         keys = pygame.key.get_pressed()
 
         # Rotate ship
@@ -31,6 +37,12 @@ class PlayerShip(Ship):
         # Break ship
         if (keys[pygame.K_DOWN]):
             self.AddVelocity(-self.break_acceleration * delta_time * self.GetDirectionVector())
+
+        # Fire
+        if (keys[pygame.K_SPACE]):
+            if (self.current_shot_cooldown <= 0):
+                Scene.main.Add(Laser("FriendlyLaser", (64, 255, 64), 4, 20, self.GetMountpoint("LaserPos0"), self.GetDirectionVector() * 400, 2))
+                self.current_shot_cooldown = self.shot_cooldown
 
         Ship.Update(self, delta_time)
 
