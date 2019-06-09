@@ -2,6 +2,7 @@ from GameObject import *
 from WireMeshExplosion import *
 from Shockwave import *
 from ParticleSystem import *
+from SoundManager import *
 
 class Ship(GameObject):
     def __init__(self, name):
@@ -48,5 +49,7 @@ class Ship(GameObject):
         Scene.main.Add(explosion)
         Scene.main.Add(shockwave)
         Scene.main.Add(particle_system)
+
+        SoundManager.Play("Explosion")
 
         self.Destroy()

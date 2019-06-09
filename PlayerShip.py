@@ -15,6 +15,8 @@ class PlayerShip(Ship):
         self.current_shot_cooldown = 0
 
         self.tags.append("PlayerShip")
+
+        self.engine_sound = SoundManager.Play("Engine", 0, True)
         
     def Update(self, delta_time):
 
@@ -33,6 +35,12 @@ class PlayerShip(Ship):
         # Accelerate ship
         if (keys[pygame.K_UP]):
             self.AddVelocity(self.acceleration * delta_time * self.GetDirectionVector())
+            
+            if (self.engine_sound != None):
+                self.engine_sound.set_volume(0.1)
+        else:
+            if (self.engine_sound != None):
+                self.engine_sound.set_volume(0.0)
 
         # Break ship
         if (keys[pygame.K_DOWN]):
@@ -43,9 +51,15 @@ class PlayerShip(Ship):
             if (self.current_shot_cooldown <= 0):
                 Scene.main.Add(Laser("PlayerLaser", (64, 255, 64), 4, 20, self.GetMountpoint("LaserPos0"), self.GetDirectionVector() * 400, 2))
                 self.current_shot_cooldown = self.shot_cooldown
+                SoundManager.Play("Laser", 0.5)
 
         Ship.Update(self, delta_time)
 
     def Render(self, screen):
         self.gfx.DrawPRS(screen, self.position, self.rotation, self.scale)
 
+    def OnDestroy(self):
+        GameObject.OnDestroy(self)
+
+        if (self.engine_sound != None):
+            self.engine_sound.stop()

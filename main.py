@@ -10,12 +10,16 @@ from GameDefs import *
 from PlayerShip import *
 from Asteroid import *
 from Scene import *
+from SoundManager import *
 
 gSprites = dict()
 gScene = Scene()
 
 def load_data():
     WireMesh.LoadModel("models/player_ship.wm", "PlayerShip")
+    SoundManager.Load("audio/explosion.wav", "Explosion")
+    SoundManager.Load("audio/laser.wav", "Laser")
+    SoundManager.Load("audio/engine.wav", "Engine")
 
 def init_objects():
 
@@ -58,10 +62,13 @@ def render(screen):
 
 def main():
 
+    pygame.mixer.pre_init(44100, 16, 2, 1024)
     pygame.init()
     logo = pygame.image.load("sprites/icon.png")
     pygame.display.set_icon(logo)
     pygame.display.set_caption("Pysteroids")
+
+    SoundManager.SetGlobalVolume(0.25)
 
     load_data()
     init_objects()

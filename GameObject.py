@@ -25,6 +25,7 @@ class GameObject:
 
     def Destroy(self):
         Scene.main.Remove(self)
+        self.OnDestroy()
 
     def GetTags(self):
         return self.tags
@@ -43,3 +44,6 @@ class GameObject:
             return True
 
         return False
+
+    def OnDestroy(self):
+        pass
