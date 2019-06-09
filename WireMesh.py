@@ -296,3 +296,7 @@ class WireMesh:
         mesh.EndPoly()
 
         return mesh
+
+    @staticmethod
+    def DrawModel(screen, name, position, rotation, scale):
+        WireMesh.models[name].DrawPRS(screen, position, rotation, scale)

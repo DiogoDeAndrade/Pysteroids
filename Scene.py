@@ -93,3 +93,14 @@ class Scene:
                     collisions.append(Collision2d(obj1, obj2))
 
         return collisions
+
+    def GetObjectsInCollider(self, tag, collider):
+        objects = self.GetObjectsByTag(tag)
+
+        ret = [] 
+
+        for obj in objects:
+            if (obj.Intersects(collider)):
+                ret.append(obj)
+
+        return ret

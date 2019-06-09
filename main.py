@@ -11,19 +11,23 @@ from PlayerShip import *
 from Asteroid import *
 from Scene import *
 from SoundManager import *
+from FontManager import *
 
 gSprites = dict()
 gScene = Scene()
+gScore = 0
+gLives = 3
 
 def load_data():
     WireMesh.LoadModel("models/player_ship.wm", "PlayerShip")
+
     SoundManager.Load("audio/explosion.wav", "Explosion")
     SoundManager.Load("audio/laser.wav", "Laser")
     SoundManager.Load("audio/engine.wav", "Engine")
 
-def init_objects():
+    FontManager.Load("fonts/vector/Vectorb.ttf", 18, "Vector")
 
-    Scene.main.Add(PlayerShip("PlayerShip"))
+def init_objects():
 
     n_asteroids = 10
 
@@ -31,18 +35,21 @@ def init_objects():
         asteroid = Asteroid("Asteroid" + str(i))
         asteroid.position = Vector2(random.uniform(0, 1280), random.uniform(0, 720))
         Scene.main.Add(asteroid)
-        
+
+    SpawnPlayer()
+
 def update(delta_time):
 
-    Scene.main.Update(delta_time)
+    global gScore
+    global gLives
 
-    player =  Scene.main.GetObjectByTag("PlayerShip")
-    asteroids = Scene.main.GetObjectsByTag("Asteroid")
+    Scene.main.Update(delta_time)
 
     collisions = Scene.main.CheckCollisionsBetweenTags("PlayerShip", "Asteroid")
 
     if (len(collisions) > 0):
         collisions[0].obj1.Explode()
+        gLives = gLives - 1
         for collision in collisions:
             collision.obj2.Explode()
 
@@ -51,14 +58,38 @@ def update(delta_time):
         for collision in collisions:
             collision.obj1.Destroy()
             collision.obj2.Explode()
+            gScore = gScore + 100
+
+    player =  Scene.main.GetObjectByTag("PlayerShip")
+    if ((gLives > 0) and (player == None)):
+        SpawnPlayer()
 
 def render(screen):
+
+    global gScore
 
     screen.fill((10, 10, 30))
 
     Scene.main.Render(screen)
 
+    FontManager.Write(screen, "Vector", str(gScore).zfill(6), (5, 5), (255, 255, 255))
+    
+    for i in range(0, gLives):
+        WireMesh.DrawModel(screen, "PlayerShip", Vector2(i * 20 + 15, 45), 0, Vector2(0.5, 0.5))
+
     pygame.display.flip()
+
+def SpawnPlayer():
+    player = Scene.main.GetObjectByTag("PlayerShip")
+    if (player == None):
+        # Check if some asteroid is nearby
+        circle = Circle2d(Vector2(640,320), 100)
+
+        objects = Scene.main.GetObjectsInCollider("Asteroid", circle)
+
+        if (len(objects) == 0):
+            Scene.main.Add(PlayerShip("PlayerShip"))
+
 
 def main():
 
@@ -89,9 +120,7 @@ def main():
         if ((keys[pygame.K_ESCAPE]) and (keys[pygame.K_LSHIFT])):
             running = False        
         if (((keys[pygame.K_r]) and (keys[pygame.K_LSHIFT]))):
-            player = Scene.main.GetObjectByTag("PlayerShip")
-            if (player == None):
-                Scene.main.Add(PlayerShip("PlayerShip"))
+            SpawnPlayer()
 
         update(dt)
         render(screen)

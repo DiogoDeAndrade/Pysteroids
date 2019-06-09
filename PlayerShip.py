@@ -11,7 +11,7 @@ class PlayerShip(Ship):
         self.gfx = WireMesh.GetModel("PlayerShip")
         self.collider = Circle2d(Vector2(0,0), self.gfx.GetRadius())
         self.radius = self.gfx.GetRadius()
-        self.shot_cooldown = 0.5
+        self.shot_cooldown = 0.25
         self.current_shot_cooldown = 0
 
         self.tags.append("PlayerShip")

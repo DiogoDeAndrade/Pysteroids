@@ -34,14 +34,21 @@ class GameObject:
         if (self.collider == None):
             return False
 
-        if (otherObject.collider == None):
-            return False
-
         self.collider.position = self.position
-        otherObject.collider.position = otherObject.position
 
-        if (self.collider.Intersects(otherObject.collider)):
-            return True
+        if (isinstance(otherObject, GameObject)):
+            if (otherObject.collider == None):
+                return False
+
+            otherObject.collider.position = otherObject.position
+
+            if (self.collider.Intersects(otherObject.collider)):
+                return True
+
+        elif (isinstance(otherObject, Collider2d)):
+
+            if (self.collider.Intersects(otherObject)):
+                return True
 
         return False
 
