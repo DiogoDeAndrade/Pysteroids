@@ -18,6 +18,23 @@ gSprites = dict()
 gScene = Scene()
 gScore = 0
 gLives = 3
+gScreen = 0
+gScaling = 1
+
+def start_screen(screenId):
+    global gScreen
+    global gScaling
+
+    gScreen = screenId
+
+    Scene.main.Clear()
+
+    if (gScreen == 0):
+        gScaling = 40
+    elif (gScreen == 1):
+        pass
+
+    init_objects()
 
 def load_data():
     ship_player = WireMesh.LoadModel("models/player_ship.json", "PlayerShip")
@@ -26,7 +43,9 @@ def load_data():
     SoundManager.Load("audio/laser.wav", "Laser")
     SoundManager.Load("audio/engine.wav", "Engine")
 
-    FontManager.Load("fonts/vector/Vectorb.ttf", 18, "Vector")
+    FontManager.Load("fonts/vector/Vectorb.ttf", 18, "VectorTTF")
+    fnt = FontManager.Load("fonts/vectorfont.json", 4, "Vector")
+    fnt.lineWidth = 4
 
 def init_objects():
 
@@ -39,46 +58,61 @@ def init_objects():
         asteroid.position = Vector2(random.uniform(0, 1280), random.uniform(0, 720))
         Scene.main.Add(asteroid)
 
-    SpawnPlayer()
-
 def update(delta_time):
 
     global gScore
     global gLives
+    global gScreen
+    global gScaling
 
     Scene.main.Update(delta_time)
 
-    collisions = Scene.main.CheckCollisionsBetweenTags("PlayerShip", "Asteroid")
+    if (gScreen == 0):
+        if (gScaling > 1):
+            gScaling = gScaling - delta_time * 10
+            if (gScaling < 1):
+                gScaling = 1
+        keys = pygame.key.get_pressed()
+        if (keys[pygame.K_SPACE]):
+            start_screen(1)
+    elif (gScreen == 1):
+        collisions = Scene.main.CheckCollisionsBetweenTags("PlayerShip", "Asteroid")
 
-    if (len(collisions) > 0):
-        collisions[0].obj1.Explode()
-        gLives = gLives - 1
-        for collision in collisions:
-            collision.obj2.Explode()
+        if (len(collisions) > 0):
+            collisions[0].obj1.Explode()
+            gLives = gLives - 1
+            for collision in collisions:
+                collision.obj2.Explode()
 
-    collisions = Scene.main.CheckCollisionsBetweenTags("PlayerLaser", "Asteroid")
-    if (len(collisions) > 0):
-        for collision in collisions:
-            collision.obj1.Destroy()
-            collision.obj2.Explode()
-            gScore = gScore + 100
+        collisions = Scene.main.CheckCollisionsBetweenTags("PlayerLaser", "Asteroid")
+        if (len(collisions) > 0):
+            for collision in collisions:
+                collision.obj1.Destroy()
+                collision.obj2.Explode()
+                gScore = gScore + 100
 
-    player =  Scene.main.GetObjectByTag("PlayerShip")
-    if ((gLives > 0) and (player == None)):
-        SpawnPlayer()
+        player =  Scene.main.GetObjectByTag("PlayerShip")
+        if ((gLives > 0) and (player == None)):
+            SpawnPlayer()
 
 def render(screen):
 
     global gScore
+    global gScreen
+    global gScaling
 
     screen.fill((5, 5, 15))
 
     Scene.main.Render(screen)
 
-    FontManager.Write(screen, "Vector", str(gScore).zfill(6), (5, 5), (255, 255, 255))
-    
-    for i in range(0, gLives):
-        WireMesh.DrawModel(screen, "PlayerShip", Vector2(i * 20 + 15, 45), 0, Vector2(0.5, 0.5))
+    if (gScreen == 0):
+        FontManager.WriteCenter(screen, "Vector", "PYSTEROIDS", (640, 320), (random.uniform(32, 255), random.uniform(32, 255), random.uniform(32, 255)), spacingScale = gScaling)
+        if (gScaling <= 1):
+            FontManager.WriteCenter(screen, "Vector", "PRESS FIRE TO START", (640, 450), (random.uniform(32, 255), random.uniform(32, 255), random.uniform(32, 255)), scale = 0.2)
+    elif (gScreen == 1):    
+        FontManager.Write(screen, "VectorTTF", str(gScore).zfill(6), (5, 5), (255, 255, 255))
+        for i in range(0, gLives):
+            WireMesh.DrawModel(screen, "PlayerShip", Vector2(i * 20 + 15, 45), 0, Vector2(0.5, 0.5))
 
     pygame.display.flip()
 
@@ -86,7 +120,7 @@ def SpawnPlayer():
     player = Scene.main.GetObjectByTag("PlayerShip")
     if (player == None):
         # Check if some asteroid is nearby
-        circle = Circle2d(Vector2(640,320), 100)
+        circle = Circle2d(Vector2(640,320), 60)
 
         objects = Scene.main.GetObjectsInCollider("Asteroid", circle)
 
@@ -96,18 +130,20 @@ def SpawnPlayer():
 
 def main():
 
+    global gScreen
+
     pygame.mixer.pre_init(44100, 16, 2, 1024)
     pygame.init()
     logo = pygame.image.load("sprites/icon.png")
     pygame.display.set_icon(logo)
     pygame.display.set_caption("Pysteroids")
 
+    screen = pygame.display.set_mode((1280, 720), pygame.DOUBLEBUF)
+
     SoundManager.SetGlobalVolume(0.25)
 
     load_data()
-    init_objects()
-
-    screen = pygame.display.set_mode((1280, 720), pygame.DOUBLEBUF)
+    start_screen(0)
 
     running = True
 

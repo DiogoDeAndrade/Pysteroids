@@ -32,6 +32,12 @@ class Scene:
 
             self.objectsByTag[tag].append(gameObject)
 
+    def Clear(self):
+        self.update = []
+        self.render = []
+        self.objects = []
+        self.objectsByTag = dict()
+
     def Remove(self, gameObject):
         try:
             self.update.remove(gameObject)
@@ -54,7 +60,7 @@ class Scene:
             if (tag in self.objectsByTag):
                 try:
                     self.objectsByTag[tag].remove(gameObject)
-                except valueError:
+                except ValueError:
                     pass
 
     def GetObjectByTag(self, tag):

@@ -100,8 +100,9 @@ class WireMesh:
 
         self.mountpoints = dict()
 
-        for name in data["mountpoints"]:
-            self.mountpoints[name] = ( Vector2(data["mountpoints"][name]["pos"][0], data["mountpoints"][name]["pos"][1]), Vector2(data["mountpoints"][name]["dir"][0], data["mountpoints"][name]["dir"][1]))
+        if ("mountpoints" in data):
+            for name in data["mountpoints"]:
+                self.mountpoints[name] = ( Vector2(data["mountpoints"][name]["pos"][0], data["mountpoints"][name]["pos"][1]), Vector2(data["mountpoints"][name]["dir"][0], data["mountpoints"][name]["dir"][1]))
 
 
     def AddVertex(self, vertex):
@@ -178,11 +179,11 @@ class WireMesh:
                     pygame.draw.lines(screen, self.GetColor(idx), self.closed, pointlist, self.width)
             elif (self.primitiveType == PrimitiveType.LineList):
                 if (self.renderMode == RenderMode.AntiAlias):
-                    for idx in range(0, len(pointlist), 2):
-                        pygame.draw.aaline(screen, self.GetColor(idx), pointlist[idx], pointlist[idx + 1], False)
+                    for idx2 in range(0, len(pointlist), 2):
+                        pygame.draw.aaline(screen, self.GetColor(idx), pointlist[idx2], pointlist[idx2 + 1], False)
                 else:
-                    for idx in range(0, len(pointlist), 2):
-                        pygame.draw.line(screen, self.GetColor(idx), pointlist[idx], pointlist[idx + 1], self.width)
+                    for idx2 in range(0, len(pointlist), 2):
+                        pygame.draw.line(screen, self.GetColor(idx), pointlist[idx2], pointlist[idx2 + 1], self.width)
 
     def Rebuild(self):
         self.cacheVertex = [self.VertexTransform(v) for v in self.vertex]

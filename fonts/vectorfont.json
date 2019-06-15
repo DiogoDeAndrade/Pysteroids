@@ -1,0 +1,472 @@
+{
+    "Size" : [ 10, 20],
+    "Spacing" : [ 5, 0],
+    "A": {
+        "closed": false,
+        "primitive": "LineList",
+        "renderMode": "Normal",
+        "lineWidth": 1,
+        "vertex": [
+            [ -5, 10 ], [ 0, -10 ], [5, 10], [-3.4, 2.5 ], [3.4, 2.5]
+        ],
+        "polygons": [ {
+                "color": [ 255, 255, 0 ],
+                "index": [ 0, 1, 1, 2, 3, 4 ]
+            } ]
+    },
+    "B": {
+        "closed": true,
+        "primitive": "LineStrip",
+        "renderMode": "Normal",
+        "lineWidth": 1,
+        "vertex": [
+            [ -5, -10 ], [ 5, -5], [ -5, 0], [ 5, 5 ], [ -5, 10] 
+        ],
+        "polygons": [ {
+                "color": [ 255, 255, 0 ],
+                "index": [ 0, 1, 2, 3, 4 ]
+            } ]
+    },
+    "C": {
+        "closed": false,
+        "primitive": "LineStrip",
+        "renderMode": "Normal",
+        "lineWidth": 1,
+        "vertex": [
+            [ 5, -10 ], [ -5, 0 ], [5, 10 ]
+        ],
+        "polygons": [ {
+                "color": [ 255, 255, 0 ],
+                "index": [ 0, 1, 2 ]
+            } ]
+    },
+    "D": {
+        "closed": true,
+        "primitive": "LineStrip",
+        "renderMode": "Normal",
+        "lineWidth": 1,
+        "vertex": [
+            [ -5, -10 ], [5, 0], [ -5, 10 ]
+        ],
+        "polygons": [ {
+                "color": [ 255, 255, 0 ],
+                "index": [ 0, 1, 2 ]
+            } ]
+    },
+    "E": {
+        "closed": false,
+        "primitive": "LineList",
+        "renderMode": "Normal",
+        "lineWidth": 1,
+        "vertex": [
+            [ -5, -10 ], [ 5, -10], [-5, 10], [5, 10], [-5, 0], [0, 0]
+        ],
+        "polygons": [ {
+                "color": [ 255, 255, 0 ],
+                "index": [ 0, 1, 0, 2, 2, 3, 4, 5 ]
+            } ]
+    },
+    "F": {
+        "closed": false,
+        "primitive": "LineList",
+        "renderMode": "Normal",
+        "lineWidth": 1,
+        "vertex": [
+            [ -5, -10 ], [ 5, -10], [-5, 10], [-5, 0], [0, 0]
+        ],
+        "polygons": [ {
+                "color": [ 255, 255, 0 ],
+                "index": [ 0, 1, 0, 2, 3, 4 ]
+            } ]
+    },
+    "G": {
+        "closed": false,
+        "primitive": "LineStrip",
+        "renderMode": "Normal",
+        "lineWidth": 1,
+        "vertex": [
+            [5, -10], [-5, 0], [5, 10], [5, 0], [0,0]
+        ],
+        "polygons": [ {
+                "color": [ 255, 255, 0 ],
+                "index": [ 0, 1, 2, 3, 4 ]
+            } ]
+    },
+    "H": {
+        "closed": false,
+        "primitive": "LineList",
+        "renderMode": "Normal",
+        "lineWidth": 1,
+        "vertex": [
+            [ -5, -10 ], [-5, 10], [5, -10], [5, 10], [-5, 0], [5, 0]
+        ],
+        "polygons": [ {
+                "color": [ 255, 255, 0 ],
+                "index": [ 0, 1, 2, 3, 4, 5 ]
+            } ]
+    },
+    "I": {
+        "closed": false,
+        "primitive": "LineList",
+        "renderMode": "Normal",
+        "lineWidth": 1,
+        "vertex": [
+            [ -5, -10 ], [5, -10], [-5, 10], [5, 10], [0, -10], [0, 10]
+        ],
+        "polygons": [ {
+                "color": [ 255, 255, 0 ],
+                "index": [ 0, 1, 2, 3, 4, 5 ]
+            } ]
+    },
+    "J": {
+        "closed": false,
+        "primitive": "LineStrip",
+        "renderMode": "Normal",
+        "lineWidth": 1,
+        "vertex": [
+            [5, -10], [5, 5], [0, 10], [-5, 5]
+        ],
+        "polygons": [ {
+                "color": [ 255, 255, 0 ],
+                "index": [ 0, 1, 2, 3 ]
+            } ]
+    },
+    "K": {
+        "closed": false,
+        "primitive": "LineList",
+        "renderMode": "Normal",
+        "lineWidth": 1,
+        "vertex": [
+            [ -5, -10 ], [-5, 10], [-5, 0], [5, -10], [5, 10]
+        ],
+        "polygons": [ {
+                "color": [ 255, 255, 0 ],
+                "index": [ 0, 1, 2, 3, 2, 4 ]
+            } ]
+    },
+    "L": {
+        "closed": false,
+        "primitive": "LineStrip",
+        "renderMode": "Normal",
+        "lineWidth": 1,
+        "vertex": [
+            [ -5, -10 ], [-5, 10], [5, 10]
+        ],
+        "polygons": [ {
+                "color": [ 255, 255, 0 ],
+                "index": [ 0, 1, 2 ]
+            } ]
+    },
+    "M": {
+        "closed": false,
+        "primitive": "LineStrip",
+        "renderMode": "Normal",
+        "lineWidth": 1,
+        "vertex": [
+            [-5, 10], [-5, -10], [0,0], [5, -10], [5, 10]
+        ],
+        "polygons": [ {
+                "color": [ 255, 255, 0 ],
+                "index": [ 0, 1, 2, 3, 4 ]
+            } ]
+    },
+    "N": {
+        "closed": false,
+        "primitive": "LineStrip",
+        "renderMode": "Normal",
+        "lineWidth": 1,
+        "vertex": [
+            [ -5, 10 ], [ -5, -10 ], [5, 10], [5, -10]
+        ],
+        "polygons": [ {
+                "color": [ 255, 255, 0 ],
+                "index": [ 0, 1, 2, 3 ]
+            } ]
+    },
+    "O": {
+        "closed": true,
+        "primitive": "LineStrip",
+        "renderMode": "Normal",
+        "lineWidth": 1,
+        "vertex": [
+            [ 0, -10 ], [ 5, 0 ], [ 0, 10 ], [-5, 0]
+        ],
+        "polygons": [ {
+                "color": [ 255, 255, 0 ],
+                "index": [ 0, 1, 2, 3 ]
+            } ]
+    },
+    "P": {
+        "closed": false,
+        "primitive": "LineList",
+        "renderMode": "Normal",
+        "lineWidth": 1,
+        "vertex": [
+            [ -5, -10 ], [5, -5], [-5, 0], [-5, 10]
+        ],
+        "polygons": [ {
+                "color": [ 255, 255, 0 ],
+                "index": [ 0, 1, 1, 2, 0, 3 ]
+            } ]
+    },
+    "Q": {
+        "closed": false,
+        "primitive": "LineList",
+        "renderMode": "Normal",
+        "lineWidth": 1,
+        "vertex": [
+            [ 0, -10 ], [ 5, 0 ], [ 0, 10 ], [-5, 0], [0, 0], [5, 10]
+        ],
+        "polygons": [ {
+                "color": [ 255, 255, 0 ],
+                "index": [ 0, 1, 1, 2, 2, 3, 3, 0, 4, 5 ]
+            } ]
+    },
+    "R": {
+        "closed": false,
+        "primitive": "LineList",
+        "renderMode": "Normal",
+        "lineWidth": 1,
+        "vertex": [
+            [ -5, -10 ], [5, -5], [-5, 0], [-5, 10], [5, 10]
+        ],
+        "polygons": [ {
+                "color": [ 255, 255, 0 ],
+                "index": [ 0, 1, 1, 2, 0, 3, 2, 4 ]
+            } ]
+    },
+    "S": {
+        "closed": false,
+        "primitive": "LineStrip",
+        "renderMode": "Normal",
+        "lineWidth": 1,
+        "vertex": [
+            [ 5, -10 ], [ -5, -5 ], [5, 5], [-5, 10]
+        ],
+        "polygons": [ {
+                "color": [ 255, 255, 0 ],
+                "index": [ 0, 1, 2, 3 ]
+            } ]
+    },
+    "T": {
+        "closed": false,
+        "primitive": "LineList",
+        "renderMode": "Normal",
+        "lineWidth": 1,
+        "vertex": [
+            [ -5, -10 ], [5, -10], [0, -10], [0, 10]
+        ],
+        "polygons": [ {
+                "color": [ 255, 255, 0 ],
+                "index": [ 0, 1, 2, 3 ]
+            } ]
+    },
+    "U": {
+        "closed": false,
+        "primitive": "LineStrip",
+        "renderMode": "Normal",
+        "lineWidth": 1,
+        "vertex": [
+            [ -5, -10 ], [-5, 5], [0, 10], [5, 5], [5, -10]
+        ],
+        "polygons": [ {
+                "color": [ 255, 255, 0 ],
+                "index": [ 0, 1, 2, 3, 4 ]
+            } ]
+    },
+    "V": {
+        "closed": false,
+        "primitive": "LineStrip",
+        "renderMode": "Normal",
+        "lineWidth": 1,
+        "vertex": [
+            [ -5, -10 ], [0, 10], [5, -10]
+        ],
+        "polygons": [ {
+                "color": [ 255, 255, 0 ],
+                "index": [ 0, 1, 2 ]
+            } ]
+    },
+    "W": {
+        "closed": false,
+        "primitive": "LineStrip",
+        "renderMode": "Normal",
+        "lineWidth": 1,
+        "vertex": [
+            [ -5, -10 ], [-2.5, 10], [ 0, 0 ], [2.5, 10], [ 5, -10]
+        ],
+        "polygons": [ {
+                "color": [ 255, 255, 0 ],
+                "index": [ 0, 1, 2, 3, 4 ]
+            } ]
+    },
+    "X": {
+        "closed": false,
+        "primitive": "LineList",
+        "renderMode": "Normal",
+        "lineWidth": 1,
+        "vertex": [
+            [-5, -10], [5, 10], [5, -10], [-5, 10]
+        ],
+        "polygons": [ {
+                "color": [ 255, 255, 0 ],
+                "index": [ 0, 1, 2, 3 ]
+            } ]
+    },
+    "Y": {
+        "closed": false,
+        "primitive": "LineList",
+        "renderMode": "Normal",
+        "lineWidth": 1,
+        "vertex": [
+            [-5, -10], [0, 0], [5, -10], [-5, 10]
+        ],
+        "polygons": [ {
+                "color": [ 255, 255, 0 ],
+                "index": [ 0, 1, 2, 3 ]
+            } ]
+    },
+    "Z": {
+        "closed": false,
+        "primitive": "LineStrip",
+        "renderMode": "Normal",
+        "lineWidth": 1,
+        "vertex": [
+            [-5, -10], [5, -10], [-5, 10], [5, 10]
+        ],
+        "polygons": [ {
+                "color": [ 255, 255, 0 ],
+                "index": [ 0, 1, 2, 3 ]
+            } ]
+    },
+    "0": {
+        "closed": false,
+        "primitive": "LineList",
+        "renderMode": "Normal",
+        "lineWidth": 1,
+        "vertex": [
+            [-5, -10], [5, -10], [5, 10], [-5, 10], [2.5, -5], [-2.5, 5]
+        ],
+        "polygons": [ {
+                "color": [ 255, 255, 0 ],
+                "index": [ 0, 1, 1, 2, 2, 3, 3, 0, 4, 5 ]
+            } ]
+    },
+    "1": {
+        "closed": false,
+        "primitive": "LineList",
+        "renderMode": "Normal",
+        "lineWidth": 1,
+        "vertex": [
+            [5, -10], [5, 10]
+        ],
+        "polygons": [ {
+                "color": [ 255, 255, 0 ],
+                "index": [ 0, 1 ]
+            } ]
+    },
+    "2": {
+        "closed": false,
+        "primitive": "LineStrip",
+        "renderMode": "Normal",
+        "lineWidth": 1,
+        "vertex": [
+            [-5, -10], [5, -10], [5, 0], [-5, 0], [-5, 10], [5, 10]
+        ],
+        "polygons": [ {
+                "color": [ 255, 255, 0 ],
+                "index": [ 0, 1, 2, 3, 4, 5 ]
+            } ]
+    },
+    "3": {
+        "closed": false,
+        "primitive": "LineList",
+        "renderMode": "Normal",
+        "lineWidth": 1,
+        "vertex": [
+            [-5, -10], [5, -10], [5, 10], [-5, 10], [0, 0], [5, 0]
+        ],
+        "polygons": [ {
+                "color": [ 255, 255, 0 ],
+                "index": [ 0, 1, 1, 2, 2, 3, 4, 5 ]
+            } ]
+    },
+    "4": {
+        "closed": false,
+        "primitive": "LineList",
+        "renderMode": "Normal",
+        "lineWidth": 1,
+        "vertex": [
+            [-5, -10], [-5, 0], [5, 0], [5, -10], [5, 10]
+        ],
+        "polygons": [ {
+                "color": [ 255, 255, 0 ],
+                "index": [ 0, 1, 1, 2, 2, 3, 2, 4 ]
+            } ]
+    },
+    "5": {
+        "closed": false,
+        "primitive": "LineStrip",
+        "renderMode": "Normal",
+        "lineWidth": 1,
+        "vertex": [
+            [5, -10], [-5, -10], [-5, 0], [5, 0], [5, 10], [-5, 10]
+        ],
+        "polygons": [ {
+                "color": [ 255, 255, 0 ],
+                "index": [ 0, 1, 2, 3, 4, 5 ]
+            } ]
+    },
+    "6": {
+        "closed": false,
+        "primitive": "LineStrip",
+        "renderMode": "Normal",
+        "lineWidth": 1,
+        "vertex": [
+            [ 5, -10], [ -5, -10], [ -5, 10 ], [5, 10], [5, 0], [-5, 0]
+        ],
+        "polygons": [ {
+                "color": [ 255, 255, 0 ],
+                "index": [ 0, 1, 2, 3, 4, 5 ]
+            } ]
+    },
+    "7": {
+        "closed": false,
+        "primitive": "LineStrip",
+        "renderMode": "Normal",
+        "lineWidth": 1,
+        "vertex": [
+            [-5, -10], [5, -10], [-5, 10]
+        ],
+        "polygons": [ {
+                "color": [ 255, 255, 0 ],
+                "index": [ 0, 1, 2 ]
+            } ]
+    },
+    "8": {
+        "closed": false,
+        "primitive": "LineList",
+        "renderMode": "Normal",
+        "lineWidth": 1,
+        "vertex": [
+            [-5, -10], [5, -10], [5, 10], [-5, 10], [-5, 0], [5, 0]
+        ],
+        "polygons": [ {
+                "color": [ 255, 255, 0 ],
+                "index": [ 0, 1, 1, 2, 2, 3, 3, 0, 4, 5 ]
+            } ]
+    },
+    "9": {
+        "closed": false,
+        "primitive": "LineStrip",
+        "renderMode": "Normal",
+        "lineWidth": 1,
+        "vertex": [
+            [-5, 10], [5, 10], [5, -10], [-5, -10], [-5, 0], [5, 0]
+        ],
+        "polygons": [ {
+                "color": [ 255, 255, 0 ],
+                "index": [ 0, 1, 2, 3, 4, 5 ]
+            } ]
+    }
+}
