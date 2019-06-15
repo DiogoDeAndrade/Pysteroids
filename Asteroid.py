@@ -9,7 +9,7 @@ class Asteroid(Ship):
 
         self.radius = radius
         self.variance = variance
-        self.gfx = WireMesh.Circle(8, self.radius, self.radius * self.variance, (200, 128, 0))
+        self.gfx = WireMesh.Circle(8, self.radius, self.radius * self.variance, (130, 68, 0))
         self.gfx.renderMode = RenderMode.Normal
         self.gfx.width = 2
         self.maxRadius = self.radius * (1 + self.variance)

@@ -9,6 +9,7 @@ from WireMesh import *
 from GameDefs import *
 from PlayerShip import *
 from Asteroid import *
+from Starfield import *
 from Scene import *
 from SoundManager import *
 from FontManager import *
@@ -21,11 +22,6 @@ gLives = 3
 def load_data():
     ship_player = WireMesh.LoadModel("models/player_ship.json", "PlayerShip")
 
-#    jsonString = ship_player.ToJSON()
-#    text_file = open("models/player_ship.json", "wt")
-#    text_file.write(jsonString)
-#    text_file.close()
-
     SoundManager.Load("audio/explosion.wav", "Explosion")
     SoundManager.Load("audio/laser.wav", "Laser")
     SoundManager.Load("audio/engine.wav", "Engine")
@@ -33,6 +29,8 @@ def load_data():
     FontManager.Load("fonts/vector/Vectorb.ttf", 18, "Vector")
 
 def init_objects():
+
+    Scene.main.Add(Starfield("Starfield", 400))
 
     n_asteroids = 10
 
@@ -73,7 +71,7 @@ def render(screen):
 
     global gScore
 
-    screen.fill((10, 10, 30))
+    screen.fill((5, 5, 15))
 
     Scene.main.Render(screen)
 
