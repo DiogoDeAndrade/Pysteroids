@@ -24,23 +24,32 @@ class PlayerShip(Ship):
 
         keys = pygame.key.get_pressed()
 
-        # Rotate ship
-        rotationSpeed = delta_time * GameDefs["player_defs"]["rotation_speed"] 
-        if (keys[pygame.K_LEFT]):
-            self.rotation -= rotationSpeed
-
-        if (keys[pygame.K_RIGHT]):
-            self.rotation += rotationSpeed
+        self.thrusterM = self.thrusterR = self.thrusterL = 0
 
         # Accelerate ship
         if (keys[pygame.K_UP]):
             self.AddVelocity(self.acceleration * delta_time * self.GetDirectionVector())
+            self.thrusterM = self.thrusterR = self.thrusterL = 1
             
             if (self.engine_sound != None):
                 self.engine_sound.set_volume(0.1)
         else:
             if (self.engine_sound != None):
                 self.engine_sound.set_volume(0.0)
+
+        # Rotate ship
+        rotationSpeed = delta_time * GameDefs["player_defs"]["rotation_speed"] 
+        if (keys[pygame.K_LEFT]):
+            self.thrusterM = 0
+            self.thrusterR = 0.5
+            self.thrusterL = 0
+            self.rotation -= rotationSpeed
+
+        if (keys[pygame.K_RIGHT]):
+            self.thrusterM = 0
+            self.thrusterR = 0
+            self.thrusterL = 0.5
+            self.rotation += rotationSpeed
 
         # Break ship
         if (keys[pygame.K_DOWN]):
@@ -57,6 +66,8 @@ class PlayerShip(Ship):
         Ship.Update(self, delta_time)
 
     def Render(self, screen):
+        Ship.Render(self, screen)
+
         self.gfx.DrawPRS(screen, self.position, self.rotation, self.scale)
 
     def OnDestroy(self):

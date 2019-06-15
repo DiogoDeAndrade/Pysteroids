@@ -14,6 +14,15 @@ class Ship(GameObject):
         self.maxVelocity = 200.0
         self.drag = 0.75
         self.radius = 20
+        self.thrusterM = self.cThrusterM = 0
+        self.thrusterR = self.cThrusterR = 0
+        self.thrusterL = self.cThrusterL = 0
+        self.gfx = None
+        self.thrusterColor = (255, 0, 0)
+        self.thrusterLength = 20
+        self.thrusterWidth = 5
+        self.thrusterLineWidth = 1
+        self.thrusterSpeed = 5
 
         self.tags.append("Ship")
 
@@ -23,6 +32,10 @@ class Ship(GameObject):
             self.AddVelocity(-self.velocity * self.drag * delta_time)
 
         self.position += self.velocity * delta_time        
+
+        self.cThrusterR = self.cThrusterR + (self.thrusterR - self.cThrusterR) * (self.thrusterSpeed * delta_time)
+        self.cThrusterM = self.cThrusterM + (self.thrusterM - self.cThrusterM) * (self.thrusterSpeed * delta_time)
+        self.cThrusterL = self.cThrusterL + (self.thrusterL - self.cThrusterL) * (self.thrusterSpeed * delta_time)
 
     def AddVelocity(self, velocity):
         self.velocity += velocity
@@ -53,3 +66,23 @@ class Ship(GameObject):
         SoundManager.Play("Explosion")
 
         self.Destroy()
+
+    def Render(self, screen):
+        if (self.gfx != None):
+            if (self.cThrusterL > 0.05):
+                if (self.gfx.MountpointExists("ThrusterL")):
+                    mp_pos, mp_dir = self.gfx.GetMountpointPRS("ThrusterL", self.position, self.rotation, self.scale)
+                    self.DrawThruster(screen, mp_pos, mp_dir, self.cThrusterL)
+            if (self.cThrusterM > 0.05):
+                if (self.gfx.MountpointExists("ThrusterM")):
+                    mp_pos, mp_dir = self.gfx.GetMountpointPRS("ThrusterM", self.position, self.rotation, self.scale)
+                    self.DrawThruster(screen, mp_pos, mp_dir, self.cThrusterM)
+            if (self.cThrusterR > 0.05):
+                if (self.gfx.MountpointExists("ThrusterR")):
+                    mp_pos, mp_dir = self.gfx.GetMountpointPRS("ThrusterR", self.position, self.rotation, self.scale)
+                    self.DrawThruster(screen, mp_pos, mp_dir, self.cThrusterR)
+
+    def DrawThruster(self, screen, pos, dir, length):
+        perpDir = Vector2(dir.y, -dir.x)
+        pygame.draw.line(screen, self.thrusterColor, pos + perpDir * self.thrusterWidth, pos + dir * self.thrusterLength * length, self.thrusterLineWidth)
+        pygame.draw.line(screen, self.thrusterColor, pos - perpDir * self.thrusterWidth, pos + dir * self.thrusterLength * length, self.thrusterLineWidth)

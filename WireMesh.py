@@ -141,15 +141,21 @@ class WireMesh:
 
     def GetMountpoint(self, name):
         if (name in self.mountpoints):
-            return VertexTransform(self.mountpoints[name][0]), VertexTransformNoPos(self.mountpoints[name][1])
+            return self.VertexTransform(self.mountpoints[name][0]), VertexTransformNoPos(self.mountpoints[name][1])
 
-        return VertexTransform(Vector2(0,0)), VertexTransform(Vector2(0,1))
+        return self.VertexTransform(Vector2(0,0)), VertexTransform(Vector2(0,1))
 
     def GetMountpointPRS(self, name, position, rotation, scale):
         if (name in self.mountpoints):
             return WireMesh.VertexTransformPRS(self.mountpoints[name][0], position, rotation, scale), WireMesh.VertexTransformPRS(self.mountpoints[name][1], Vector2(0,0), rotation, scale)
 
         return WireMesh.VertexTransformPRS(Vector2(0,0), position, rotation, scale), WireMesh.VertexTransformPRS(Vector2(0,1), Vector2(0,0), rotation, scale)
+
+    def MountpointExists(self, name):
+        if (name in self.mountpoints):
+            return True
+
+        return False
 
     def Draw(self, screen):
         if (self.dirty):
