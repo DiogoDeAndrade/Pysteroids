@@ -1,0 +1,53 @@
+{
+    "PlayerShip": {
+        "closed": true,
+        "primitive": "LineStrip",
+        "renderMode": "AntiAlias",
+        "lineWidth": 1,
+        "vertex": [
+            [
+                0.0,
+                -30.0
+            ],
+            [
+                -15.0,
+                15.0
+            ],
+            [
+                0.0,
+                0.0
+            ],
+            [
+                15.0,
+                15.0
+            ]
+        ],
+        "polygons": [
+            {
+                "color": [
+                    255,
+                    255,
+                    0
+                ],
+                "index": [
+                    0,
+                    1,
+                    2,
+                    3
+                ]
+            }
+        ],
+        "mountpoints": {
+            "LaserPos0": {
+                "pos": [
+                    0.0,
+                    -30.0
+                ],
+                "dir": [
+                    0,
+                    -1
+                ]
+            }
+        }
+    }
+}

@@ -19,7 +19,12 @@ gScore = 0
 gLives = 3
 
 def load_data():
-    WireMesh.LoadModel("models/player_ship.wm", "PlayerShip")
+    ship_player = WireMesh.LoadModel("models/player_ship.json", "PlayerShip")
+
+#    jsonString = ship_player.ToJSON()
+#    text_file = open("models/player_ship.json", "wt")
+#    text_file.write(jsonString)
+#    text_file.close()
 
     SoundManager.Load("audio/explosion.wav", "Explosion")
     SoundManager.Load("audio/laser.wav", "Laser")

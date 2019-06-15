@@ -2,6 +2,8 @@ import pygame
 import math
 import random
 import enum
+import os
+import json
 from pygame.math import Vector2
 
 class RenderMode(enum.Enum): 
@@ -12,8 +14,12 @@ class PrimitiveType(enum.Enum):
     LineStrip = 0,
     LineList = 1
   
+class WireMeshJSON:
+    pass
+
 class WireMesh:
     def __init__(self):
+        self.name = ""
         self.vertex = []
         self.poly = []
         self.polyColor = []
@@ -29,6 +35,74 @@ class WireMesh:
         self.overrideColorEnable = False
         self.overrideColor = (255, 255, 255)
         self.mountpoints = dict()
+
+    def ToJSON(self):
+        out = WireMeshJSON()
+
+        out.closed = self.closed
+        if (self.primitiveType == PrimitiveType.LineStrip):
+            out.primitive = "LineStrip"
+        elif (self.primitiveType == PrimitiveType.LineList):
+            out.primitive = "LineList"
+        if (self.renderMode == RenderMode.Normal):
+            out.renderMode = "Normal"
+        elif (self.renderMode == RenderMode.AntiAlias):
+            out.renderMode = "AntiAlias"
+        out.lineWidth = self.width
+
+        out.vertex = [ ]
+        for vertex in self.vertex:
+            out.vertex.append( (vertex.x, vertex.y) )
+
+        out.polygons = [ ]
+        idx = 0
+        for polygon in self.poly:
+            poly = dict()
+            poly["color"] = self.polyColor[idx]
+            poly["index"] = polygon
+            idx = idx + 1        
+            out.polygons.append(poly)
+
+        out.mountpoints = dict()
+        for name, mountpoint in self.mountpoints.items():
+            mp = dict()
+            mp["pos"] = (mountpoint[0][0],mountpoint[0][1])
+            mp["dir"] = (mountpoint[1][0],mountpoint[1][1])
+            out.mountpoints[name] = mp
+
+        ret = dict()
+        ret[self.name] = out
+
+        return json.dumps(ret, default=lambda o: o.__dict__, indent=4)
+
+    def FromJSON(self, data):
+        self.closed = data["closed"]
+        if (data["primitive"] == "LineStrip"):
+            self.primitiveType = PrimitiveType.LineStrip
+        elif (data["primitive"] == "LineList"):
+            self.primitiveType = PrimitiveType.LineList
+        if (data["renderMode"] == "Normal"):
+            self.renderMode = RenderMode.Normal
+        elif (data["renderMode"] == "AntiAlias"):
+            self.renderMode = RenderMode.AntiAlias
+        self.width = data["lineWidth"]
+
+        self.vertex = []
+        for v in data["vertex"]:
+            self.vertex.append(Vector2(v[0], v[1]))
+
+        self.poly = []
+        self.polyColor = []
+
+        for p in data["polygons"]:
+            self.polyColor.append(p["color"])        
+            self.poly.append(p["index"])
+
+        self.mountpoints = dict()
+
+        for name in data["mountpoints"]:
+            self.mountpoints[name] = ( Vector2(data["mountpoints"][name]["pos"][0], data["mountpoints"][name]["pos"][1]), Vector2(data["mountpoints"][name]["dir"][0], data["mountpoints"][name]["dir"][1]))
+
 
     def AddVertex(self, vertex):
         self.vertex.append(vertex)
@@ -56,20 +130,26 @@ class WireMesh:
                    
         return self.polyColor[polyIndex]
 
-    def AddMountpoint(self, name, pos):
-        self.mountpoints[name] = pos   
+    def AddMountpoint(self, name, pos, dir):
+        self.mountpoints[name] = ( pos, dir )
+
+    def AddMountpointPos(self, name, pos):
+        if (name in self.mountpoints):
+            self.mountpoints[name] = (pos, self.mountpoints[name][1])
+        else:
+            self.mountpoints[name] = ( pos, (0, 1) )
 
     def GetMountpoint(self, name):
         if (name in self.mountpoints):
-            return VertexTransform(self.mountpoints[name])
+            return VertexTransform(self.mountpoints[name][0]), VertexTransformNoPos(self.mountpoints[name][1])
 
-        return VertexTransform(Vector2(0,0))
+        return VertexTransform(Vector2(0,0)), VertexTransform(Vector2(0,1))
 
     def GetMountpointPRS(self, name, position, rotation, scale):
         if (name in self.mountpoints):
-            return WireMesh.VertexTransformPRS(self.mountpoints[name], position, rotation, scale)
+            return WireMesh.VertexTransformPRS(self.mountpoints[name][0], position, rotation, scale), WireMesh.VertexTransformPRS(self.mountpoints[name][1], Vector2(0,0), rotation, scale)
 
-        return WireMesh.VertexTransformPRS(Vector2(0,0))
+        return WireMesh.VertexTransformPRS(Vector2(0,0), position, rotation, scale), WireMesh.VertexTransformPRS(Vector2(0,1), Vector2(0,0), rotation, scale)
 
     def Draw(self, screen):
         if (self.dirty):
@@ -103,12 +183,14 @@ class WireMesh:
         self.dirty = False
 
     def VertexTransform(self, vertex):
+        return self.VertexTransformNoPos(vertex) + self.position
+
+    def VertexTransformNoPos(self, vertex):
         a = math.radians(self.rotation)
         s = math.sin(a)
         c = math.cos(a)
         v = Vector2(vertex.x * self.scale.x, vertex.y * self.scale.y)
         v = Vector2(c * v.x - s * v.y, s * v.x + c * v.y)
-        v = v + self.position
 
         return v
 
@@ -173,6 +255,16 @@ class WireMesh:
 
     @staticmethod
     def LoadModel(filename, model_name = ""):
+        just_filename, file_extension = os.path.splitext(filename)
+        if (file_extension == ".wm"):
+            return WireMesh.LoadModelWM(filename, model_name)
+        elif (file_extension == ".json"):
+            return WireMesh.LoadModelJSON(filename, model_name)
+        
+        return None
+    
+    @staticmethod
+    def LoadModelWM(filename, model_name):
         newMesh = WireMesh()
         with open(filename, "rt") as file:
             str = "\n"
@@ -219,7 +311,7 @@ class WireMesh:
                             elif (str.find('position:') != -1):
                                 mountpoint_position = v = WireMesh.ParseVector2(file.readline().strip())
                                 if (mountpoint_name != ""):
-                                    newMesh.AddMountpoint(mountpoint_name, mountpoint_position)
+                                    newMesh.AddMountpointPos(mountpoint_name, mountpoint_position)
                                     break
                         else:
                             exit = True
@@ -234,7 +326,32 @@ class WireMesh:
         if (model_name == ""):
             model_name = filename
         
-        WireMesh.models[model_name] = newMesh        
+        newMesh.name = model_name
+        WireMesh.models[model_name] = newMesh    
+
+        return newMesh    
+
+    @staticmethod
+    def LoadModelJSON(filename, model_name):
+        ret = None
+
+        text_file = open(filename, "rt")
+        jsonString = text_file.read()
+        text_file.close()
+
+        meshes = json.loads(jsonString)
+
+        for name in meshes:
+            newMesh = WireMesh()
+            newMesh.FromJSON(meshes[name])
+
+            newMesh.name = name
+            WireMesh.models[name] = newMesh
+
+            if (ret == None):
+                ret = newMesh
+
+        return ret
 
     @staticmethod
     def ReadColor(file):

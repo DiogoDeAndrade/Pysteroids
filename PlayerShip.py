@@ -49,7 +49,8 @@ class PlayerShip(Ship):
         # Fire
         if (keys[pygame.K_SPACE]):
             if (self.current_shot_cooldown <= 0):
-                Scene.main.Add(Laser("PlayerLaser", (64, 255, 64), 4, 20, self.GetMountpoint("LaserPos0"), self.GetDirectionVector() * 400, 2))
+                laserPos, laserDir = self.GetMountpoint("LaserPos0")
+                Scene.main.Add(Laser("PlayerLaser", (64, 255, 64), 4, 20, laserPos, laserDir * 400, 2))
                 self.current_shot_cooldown = self.shot_cooldown
                 SoundManager.Play("Laser", 0.5)
 
