@@ -25,6 +25,26 @@ class EnemyShip(Ship):
 
         self.animatedGfxAngle = 0
 
+        r = ((int)(random.uniform(0,100))) % 4
+        if (r == 0):
+            self.startPos = Vector2(1400, -120)
+            self.targetPos = Vector2(-120, 840)
+        elif (r == 1):
+            self.startPos = Vector2(-120, -120)
+            self.targetPos = Vector2(1400, 840)
+        elif (r == 2):
+            self.startPos = Vector2(1400, 840)
+            self.targetPos = Vector2(-120, -120)
+        elif (r == 3):
+            self.startPos = Vector2(-120, 840)
+            self.targetPos = Vector2(1400, -120)
+
+        self.position = self.startPos
+            
+        self.patrolDuration = 20
+        self.patrolTime = 0
+
+
         self.tags.append("EnemyShip")
         
     def Update(self, delta_time):
@@ -34,6 +54,13 @@ class EnemyShip(Ship):
             self.FireWeapon()
 
         self.animatedGfxAngle = self.animatedGfxAngle + delta_time * 180      
+
+        self.patrolTime = self.patrolTime + delta_time
+        if (self.patrolTime > self.patrolDuration):
+            self.Destroy()
+            return
+        else:
+            self.position = Vector2.lerp(self.startPos, self.targetPos, self.patrolTime / self.patrolDuration)
 
         Ship.Update(self, delta_time)
 
