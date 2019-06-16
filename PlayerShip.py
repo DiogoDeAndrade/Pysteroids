@@ -10,7 +10,7 @@ class PlayerShip(Ship):
 
         self.gfx = WireMesh.GetModel("PlayerShip")
         self.collider = Circle2d(Vector2(0,0), self.gfx.GetRadius())
-        self.radius = self.gfx.GetRadius()
+        self.radius = self.maxRadius = self.gfx.GetRadius()
         self.shot_cooldown = 0.25
         self.current_shot_cooldown = 0
 
@@ -64,6 +64,17 @@ class PlayerShip(Ship):
                 SoundManager.Play("Laser", 0.5)
 
         Ship.Update(self, delta_time)
+
+        # Check bounds
+        if (self.position.x < -self.maxRadius):
+            self.position.x = 1280 + self.maxRadius
+        elif (self.position.x > (1280 + self.maxRadius)):
+            self.position.x = self.maxRadius
+
+        if (self.position.y < -self.maxRadius):
+            self.position.y = 720 + self.maxRadius
+        elif (self.position.y > (720 + self.maxRadius)):
+            self.position.y = -self.maxRadius
 
     def Render(self, screen):
         Ship.Render(self, screen)
