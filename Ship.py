@@ -23,6 +23,7 @@ class Ship(GameObject):
         self.thrusterWidth = 5
         self.thrusterLineWidth = 1
         self.thrusterSpeed = 5
+        self.scoreToAdd = 100
 
         self.tags.append("Ship")
 

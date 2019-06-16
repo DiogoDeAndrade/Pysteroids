@@ -18,8 +18,9 @@ class Missile(Ship):
         self.maxRotationAngle = 450
         self.life = 7.5
 
-        self.tags.append("Missile")
+        self.scoreToAdd = 150
 
+        self.tags.append("Missile")
         self.tags.append(tag)
         
     def Update(self, delta_time):

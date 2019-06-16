@@ -44,6 +44,7 @@ class EnemyShip(Ship):
         self.patrolDuration = 20
         self.patrolTime = 0
 
+        self.scoreToAdd = 200
 
         self.tags.append("EnemyShip")
         

@@ -56,7 +56,7 @@ class PlayerShip(Ship):
             self.AddVelocity(-self.break_acceleration * delta_time * self.GetDirectionVector())
 
         # Fire
-        if (keys[pygame.K_SPACE]):
+        if (keys[pygame.K_LCTRL]):
             if (self.current_shot_cooldown <= 0):
                 laserPos, laserDir = self.GetMountpoint("LaserPos0")
                 Scene.main.Add(Laser("PlayerLaser", (64, 255, 64), 4, 20, laserPos, laserDir * 400, 2))

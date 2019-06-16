@@ -19,12 +19,26 @@ gSprites = dict()
 gScene = Scene()
 gScore = 0
 gLives = 3
+gLevel = 1
 gScreen = 0
 gScaling = 1
+gTimeToSpawn = 0
+gEnemyRate = 0
+gEnemyTimer = 0
 
 def start_screen(screenId):
     global gScreen
     global gScaling
+    global gTimeToSpawn
+
+    # Wait for the fire key to be depressed
+    keys = pygame.key.get_pressed()
+    while (keys[pygame.K_LCTRL]):
+        for event in pygame.event.get():
+            if (event.type == pygame.QUIT):
+                running = False
+        keys = pygame.key.get_pressed()
+
 
     gScreen = screenId
 
@@ -33,7 +47,7 @@ def start_screen(screenId):
     if (gScreen == 0):
         gScaling = 40
     elif (gScreen == 1):
-        pass
+        gTimeToSpawn = 1.5
 
     init_objects()
 
@@ -51,21 +65,47 @@ def load_data():
 
 def init_objects():
 
+    global gLevel
+    global gEnemyRate
+    global gEnemyTimer
+
     Scene.main.Add(Starfield("Starfield", 400))
 
-    n_asteroids = 10
+    n_asteroids = 3 + gLevel
 
     for i in range(0,n_asteroids):
         asteroid = Asteroid("Asteroid" + str(i))
-        asteroid.position = Vector2(random.uniform(0, 1280), random.uniform(0, 720))
+        dir = Vector2(random.uniform(-1, 1), random.uniform(-1, 1)).normalize()
+        asteroid.position = Vector2(640, 360)
+        asteroid.position.x = asteroid.position.x + dir.x * random.uniform(200, 640)
+        asteroid.position.y = asteroid.position.y + dir.y * random.uniform(100, 360)
         Scene.main.Add(asteroid)
+
+    gEnemyRate = 16 - gLevel
+    if (gEnemyRate < 4):
+        gEnemyRate = 4
+
+    gEnemyTimer = gEnemyRate
+        
+def SpawnEnemy():
+    global gLevel
+    global gEnemyTimer
 
     enemy = EnemyShip("EnemyShip")
     enemy.position = Vector2(1000, 500)
-    enemy.weapon = 2
-    enemy.shot_cooldown = 10
+    if (gLevel > 8):
+        enemy.weapon = 2
+        enemy.current_shot_cooldown = enemy.shot_cooldown = 10
+    elif (gLevel > 4):
+        enemy.weapon = 1
+        enemy.current_shot_cooldown = enemy.shot_cooldown = 3
+    else:
+        enemy.weapon  = 0
+        enemy.current_shot_cooldown = enemy.shot_cooldown = 1
+
     Scene.main.Add(enemy)
 
+    gEnemyTimer = gEnemyRate
 
 def update(delta_time):
 
@@ -73,6 +113,10 @@ def update(delta_time):
     global gLives
     global gScreen
     global gScaling
+    global gTimeToSpawn
+    global gEnemyRate
+    global gEnemyTimer
+    global gLevel
 
     Scene.main.Update(delta_time)
 
@@ -82,7 +126,9 @@ def update(delta_time):
             if (gScaling < 1):
                 gScaling = 1
         keys = pygame.key.get_pressed()
-        if (keys[pygame.K_SPACE]):
+        if (keys[pygame.K_LCTRL]):
+            gLives = 3
+            gLevel = 1
             start_screen(1)
     elif (gScreen == 1):
         collisions = Scene.main.CheckCollisionsBetweenTags("PlayerShip", [ "Asteroid", "EnemyShip", "EnemyMissile", "EnemyLaser" ])
@@ -98,17 +144,36 @@ def update(delta_time):
             for collision in collisions:
                 collision.obj1.Destroy()
                 collision.obj2.Explode()
-                gScore = gScore + 100
+                gScore = gScore + collision.obj2.scoreToAdd
+
+        if (gTimeToSpawn > 0):
+            gTimeToSpawn = gTimeToSpawn - delta_time
 
         player =  Scene.main.GetObjectByTag("PlayerShip")
-        if ((gLives > 0) and (player == None)):
+        if ((gLives > 0) and (player == None) and (gTimeToSpawn <= 0)):
             SpawnPlayer()
+
+        if (gLives <= 0):
+            keys = pygame.key.get_pressed()
+            if (keys[pygame.K_LCTRL]):
+                start_screen(0)
+
+        if (gLevel > 1):
+            gEnemyTimer = gEnemyTimer - delta_time
+            if (gEnemyTimer < 0):
+                SpawnEnemy()
+
+        asteroid =  Scene.main.GetObjectByTag("Asteroid")
+        if (asteroid == None):
+            gLevel = gLevel + 1
+            start_screen(1)
 
 def render(screen):
 
     global gScore
     global gScreen
     global gScaling
+    global gLevel
 
     screen.fill((5, 5, 15))
 
@@ -122,6 +187,13 @@ def render(screen):
         FontManager.Write(screen, "VectorTTF", str(gScore).zfill(6), (5, 5), (255, 255, 255))
         for i in range(0, gLives):
             WireMesh.DrawModel(screen, "PlayerShip", Vector2(i * 20 + 15, 45), 0, Vector2(0.5, 0.5))
+        
+        player =  Scene.main.GetObjectByTag("PlayerShip")
+        if (player == None):
+            if (gLives > 0):
+                FontManager.WriteCenter(screen, "Vector", "STAGE " + str(gLevel), (640, 360), (random.uniform(32, 255), random.uniform(32, 255), random.uniform(32, 255)), scale = 0.5)
+            else:
+                FontManager.WriteCenter(screen, "Vector", "GAME OVER", (640, 360), (random.uniform(32, 255), random.uniform(32, 255), random.uniform(32, 255)), scale = 1)
 
     pygame.display.flip()
 
