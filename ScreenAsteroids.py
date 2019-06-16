@@ -35,11 +35,11 @@ class ScreenAsteroids(Screen):
 
         Scene.main.Update(delta_time)
 
-    def render(self, screen):
-        Screen.render(self, screen)
+    def render(self):
+        Screen.render(self)
 
-        screen.fill((5, 5, 15))
+        Screen.screen.fill((5, 5, 15))
 
-        Scene.main.Render(screen)
+        Scene.main.Render(Screen.screen)
 
     

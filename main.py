@@ -26,17 +26,7 @@ def load_data():
 
 def main():
 
-    global gScreen
-
-    pygame.mixer.pre_init(44100, 16, 2, 1024)
-    pygame.init()
-    logo = pygame.image.load("sprites/icon.png")
-    pygame.display.set_icon(logo)
-    pygame.display.set_caption("Pysteroids")
-
-    screen = pygame.display.set_mode((1280, 720), pygame.DOUBLEBUF)
-
-    SoundManager.SetGlobalVolume(0.25)
+    Screen.startup()
 
     load_data()
 
@@ -45,7 +35,7 @@ def main():
 
     ret = 0
     while (ret == 0):
-        ret = titleScreen.run(screen)
+        ret = titleScreen.run()
         if (ret == -1):
             break
         elif (ret == 1):
@@ -55,7 +45,7 @@ def main():
             
             ret = 1
             while (ret == 1):
-                ret = gameScreen.run(screen)
+                ret = gameScreen.run()
     
 if __name__ == "__main__":
     main();

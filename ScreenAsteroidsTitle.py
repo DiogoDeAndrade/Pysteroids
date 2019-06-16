@@ -21,13 +21,9 @@ class ScreenAsteroidsTitle(ScreenAsteroids):
             self.set_exit(1)
         
 
-    def render(self, screen):
-        Screen.render(self, screen)
+    def render(self):
+        ScreenAsteroids.render(self)
 
-        screen.fill((5, 5, 15))
-
-        Scene.main.Render(screen)
-
-        FontManager.WriteCenter(screen, "Vector", "PYSTEROIDS", (640, 320), (random.uniform(32, 255), random.uniform(32, 255), random.uniform(32, 255)), spacingScale = self.scaling)
+        FontManager.WriteCenter(Screen.screen, "Vector", "PYSTEROIDS", (640, 320), (random.uniform(32, 255), random.uniform(32, 255), random.uniform(32, 255)), spacingScale = self.scaling)
         if (self.scaling <= 1):
-            FontManager.WriteCenter(screen, "Vector", "PRESS FIRE TO START", (640, 450), (random.uniform(32, 255), random.uniform(32, 255), random.uniform(32, 255)), scale = 0.2)
+            FontManager.WriteCenter(Screen.screen, "Vector", "PRESS FIRE TO START", (640, 450), (random.uniform(32, 255), random.uniform(32, 255), random.uniform(32, 255)), scale = 0.2)

@@ -87,21 +87,17 @@ class ScreenAsteroidsGame(ScreenAsteroids):
             if (len(objects) == 0):
                 Scene.main.Add(PlayerShip("PlayerShip"))
 
-    def render(self, screen):
-        Screen.render(self, screen)
+    def render(self):
+        ScreenAsteroids.render(self)
 
-        screen.fill((5, 5, 15))
-
-        Scene.main.Render(screen)
-
-        FontManager.Write(screen, "VectorTTF", str(self.score).zfill(6), (5, 5), (255, 255, 255))
+        FontManager.Write(Screen.screen, "VectorTTF", str(self.score).zfill(6), (5, 5), (255, 255, 255))
         for i in range(0, self.lives):
-            WireMesh.DrawModel(screen, "PlayerShip", Vector2(i * 20 + 15, 45), 0, Vector2(0.5, 0.5))
+            WireMesh.DrawModel(Screen.screen, "PlayerShip", Vector2(i * 20 + 15, 45), 0, Vector2(0.5, 0.5))
         
         player =  Scene.main.GetObjectByTag("PlayerShip")
         if (player == None):
             if (self.lives > 0):
-                FontManager.WriteCenter(screen, "Vector", "STAGE " + str(self.level), (640, 360), (random.uniform(32, 255), random.uniform(32, 255), random.uniform(32, 255)), scale = 0.5)
+                FontManager.WriteCenter(Screen.screen, "Vector", "STAGE " + str(self.level), (640, 360), (random.uniform(32, 255), random.uniform(32, 255), random.uniform(32, 255)), scale = 0.5)
             else:
-                FontManager.WriteCenter(screen, "Vector", "GAME OVER", (640, 360), (random.uniform(32, 255), random.uniform(32, 255), random.uniform(32, 255)), scale = 1)
+                FontManager.WriteCenter(Screen.screen, "Vector", "GAME OVER", (640, 360), (random.uniform(32, 255), random.uniform(32, 255), random.uniform(32, 255)), scale = 1)
 
