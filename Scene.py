@@ -73,9 +73,16 @@ class Scene:
 
         return None
 
-    def GetObjectsByTag(self, tag):
-        if (tag in self.objectsByTag):
-            return self.objectsByTag[tag]
+    def GetObjectsByTag(self, tags):
+        if (isinstance(tags, list)):
+            objects = []
+            for tag in tags:
+                if (tag in self.objectsByTag):
+                    objects.extend(self.objectsByTag[tag])
+            return objects
+
+        if (tags in self.objectsByTag):
+            return self.objectsByTag[tags]
 
         return []
 
@@ -87,9 +94,9 @@ class Scene:
         for renderable_object in self.render:
             renderable_object.Render(screen)
 
-    def CheckCollisionsBetweenTags(self, tag1, tag2):
-        objects1 = self.GetObjectsByTag(tag1)
-        objects2 = self.GetObjectsByTag(tag2)
+    def CheckCollisionsBetweenTags(self, tags1, tags2):
+        objects1 = self.GetObjectsByTag(tags1)
+        objects2 = self.GetObjectsByTag(tags2)
 
         collisions = []
 

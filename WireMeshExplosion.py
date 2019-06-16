@@ -31,7 +31,7 @@ class WireMeshExplosion(GameObject):
         # Create a copy of the mesh
         self.gfx = WireMesh.Copy(original_mesh)
         self.gfx.ApplyTransform()
-        self.gfx.ConvertToLineList()
+        self.gfx.ConvertToUnindexedLineList()
         self.gfx.overrideColorEnable = True
         self.gfx.overrideColor = (0, 255, 0)
         self.position = original_pos

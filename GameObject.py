@@ -17,6 +17,10 @@ class GameObject:
         angle = math.radians(self.rotation)
         return Vector2(math.sin(angle), -math.cos(angle))
 
+    def GetRightVector(self):
+        angle = math.radians(self.rotation + 90)
+        return Vector2(math.sin(angle), -math.cos(angle))
+
     def GetMountpoint(self, name):
         if (self.gfx == None):
             return Vector2(self.position)

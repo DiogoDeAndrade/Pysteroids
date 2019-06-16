@@ -238,24 +238,49 @@ class WireMesh:
         self.rotation = 0
         self.scale = (1,1)
 
-    def ConvertToLineList(self):
-        if (self.primitiveType != PrimitiveType.LineStrip):
-            print("Can't convert to line list: not a line strip!")
-            return
+    def ConvertToUnindexedLineList(self):
+        if (self.primitiveType == PrimitiveType.LineStrip):
+            newVertex = []
+            for polyId, p in enumerate(self.poly):
+                newPoly = []
+                for src in range(0, len(p)):
+                    oldId = p[src]
+                    newVertex.append(self.vertex[oldId])
+                    newPoly.append(len(newVertex) - 1)
+                    oldId = p[(src + 1) % len(p)]
+                    newVertex.append(self.vertex[oldId])
+                    newPoly.append(len(newVertex) - 1)
+                self.poly[polyId] = newPoly
+            self.vertex = newVertex
+        elif (self.primitiveType == PrimitiveType.LineList):
+            newVertex = []
+            for polyId, p in enumerate(self.poly):
+                newPoly = []
+                for src in range(0, len(p)):
+                    oldId = p[src]
+                    newVertex.append(self.vertex[oldId])
+                    newPoly.append(len(newVertex) - 1)
+                self.poly[polyId] = newPoly
+            self.vertex = newVertex
 
-        newVertex = []
-        for polyId, p in enumerate(self.poly):
-            newPoly = []
-            for src in range(0, len(p)):
-                oldId = p[src]
-                newVertex.append(self.vertex[oldId])
-                newPoly.append(len(newVertex) - 1)
-                oldId = p[(src + 1) % len(p)]
-                newVertex.append(self.vertex[oldId])
-                newPoly.append(len(newVertex) - 1)
-            self.poly[polyId] = newPoly
-        self.vertex = newVertex
         self.primitiveType = PrimitiveType.LineList
+
+    def AddCircle(self, sides, radius, variance, color, angularOffset = 0, centerPos = Vector2(0,0)):
+        self.BeginPoly()
+        self.SetPolyColor(color)
+
+        angle = angularOffset
+        angleInc = math.pi * 2 / sides
+        r = radius
+
+        for i in range(0, sides):
+            if (variance > 0):
+                r = random.uniform(radius - variance, radius + variance)                
+            idx = self.AddVertex(centerPos + Vector2(r * math.cos(angle), r * math.sin(angle)))
+            self.AddVertexToPoly(idx)
+            angle += angleInc
+
+        self.EndPoly()
 
     #-- Model Management --#
     models = dict()
@@ -402,22 +427,10 @@ class WireMesh:
         return mesh
 
     @staticmethod
-    def Circle(sides, radius, variance, color):
+    def Circle(sides, radius, variance, color, angularOffset = 0, centerPos = Vector2(0,0)):
         mesh = WireMesh()
-        
-        mesh.BeginPoly()
-        mesh.SetPolyColor(color)
 
-        angle = 0
-        angleInc = math.pi * 2 / sides
-
-        for i in range(1, sides):
-            r = random.uniform(radius - variance, radius + variance)
-            idx = mesh.AddVertex(Vector2(r * math.cos(angle), r * math.sin(angle)))
-            mesh.AddVertexToPoly(idx)
-            angle += angleInc
-
-        mesh.EndPoly()
+        mesh.AddCircle(sides, radius, variance, color, angularOffset)
 
         return mesh
 

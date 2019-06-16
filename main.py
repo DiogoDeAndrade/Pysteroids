@@ -8,6 +8,7 @@ from SpriteInfo import *
 from WireMesh import *
 from GameDefs import *
 from PlayerShip import *
+from EnemyShip import *
 from Asteroid import *
 from Starfield import *
 from Scene import *
@@ -37,7 +38,8 @@ def start_screen(screenId):
     init_objects()
 
 def load_data():
-    ship_player = WireMesh.LoadModel("models/player_ship.json", "PlayerShip")
+    WireMesh.LoadModel("models/player_ship.json", "PlayerShip")
+    WireMesh.LoadModel("models/missile.json", "Missile")
 
     SoundManager.Load("audio/explosion.wav", "Explosion")
     SoundManager.Load("audio/laser.wav", "Laser")
@@ -58,6 +60,13 @@ def init_objects():
         asteroid.position = Vector2(random.uniform(0, 1280), random.uniform(0, 720))
         Scene.main.Add(asteroid)
 
+    enemy = EnemyShip("EnemyShip")
+    enemy.position = Vector2(1000, 500)
+    enemy.weapon = 2
+    enemy.shot_cooldown = 10
+    Scene.main.Add(enemy)
+
+
 def update(delta_time):
 
     global gScore
@@ -76,7 +85,7 @@ def update(delta_time):
         if (keys[pygame.K_SPACE]):
             start_screen(1)
     elif (gScreen == 1):
-        collisions = Scene.main.CheckCollisionsBetweenTags("PlayerShip", "Asteroid")
+        collisions = Scene.main.CheckCollisionsBetweenTags("PlayerShip", [ "Asteroid", "EnemyShip", "EnemyMissile", "EnemyLaser" ])
 
         if (len(collisions) > 0):
             collisions[0].obj1.Explode()
@@ -84,7 +93,7 @@ def update(delta_time):
             for collision in collisions:
                 collision.obj2.Explode()
 
-        collisions = Scene.main.CheckCollisionsBetweenTags("PlayerLaser", "Asteroid")
+        collisions = Scene.main.CheckCollisionsBetweenTags("PlayerLaser", [ "Asteroid", "EnemyShip" ])
         if (len(collisions) > 0):
             for collision in collisions:
                 collision.obj1.Destroy()

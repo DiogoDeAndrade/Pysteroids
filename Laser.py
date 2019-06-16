@@ -26,3 +26,6 @@ class Laser(GameObject):
     def Render(self, screen):
         length = min((self.position - self.start_position).magnitude(), self.length)
         pygame.draw.line(screen, self.color, self.position, self.position - self.direction * length, self.width)
+
+    def Explode(self):
+        pass

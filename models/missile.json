@@ -1,0 +1,31 @@
+{
+    "Missile": {
+        "closed": false,
+        "primitive": "LineList",
+        "renderMode": "AntiAlias",
+        "lineWidth": 1,
+        "vertex": [
+            [ -2.5, 10 ], [-2.5, -2.5 ], [2.5, -2.5], [2.5, 10],
+            [ 0, -10 ],
+            [ -5, 10 ], [ -2.5, 6 ],
+            [ 5, 10], [ 2.5, 6]
+        ],
+        "polygons": [
+            {
+                "color": [ 255, 255, 255 ],
+                "index": [
+                    0, 1, 1, 2, 2, 3, 3, 0,
+                    1, 4, 4, 2,
+                    0, 5, 5, 6,
+                    3, 7, 7, 8
+                ]
+            }
+        ],
+        "mountpoints": {
+            "TrailAnchor0": {
+                "pos": [ 0, 10 ],
+                "dir": [ 0, -1 ]
+            }
+        }
+    }
+}
