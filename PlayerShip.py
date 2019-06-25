@@ -38,7 +38,7 @@ class PlayerShip(Ship):
                 self.engine_sound.set_volume(0.0)
 
         # Rotate ship
-        rotationSpeed = delta_time * GameDefs["player_defs"]["rotation_speed"] 
+        rotationSpeed = delta_time * GameDefs.playerDefs.rotationSpeed
         if (keys[pygame.K_LEFT]):
             self.thrusterM = 0
             self.thrusterR = 0.5

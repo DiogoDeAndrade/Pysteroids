@@ -176,14 +176,14 @@ class WireMesh:
                 if (self.renderMode == RenderMode.AntiAlias):
                     pygame.draw.aalines(screen, self.GetColor(idx), self.closed, pointlist)
                 else:
-                    pygame.draw.lines(screen, self.GetColor(idx), self.closed, pointlist, self.width)
+                    pygame.draw.lines(screen, self.GetColor(idx), self.closed, pointlist, (int)(self.width))
             elif (self.primitiveType == PrimitiveType.LineList):
                 if (self.renderMode == RenderMode.AntiAlias):
                     for idx2 in range(0, len(pointlist), 2):
                         pygame.draw.aaline(screen, self.GetColor(idx), pointlist[idx2], pointlist[idx2 + 1], False)
                 else:
                     for idx2 in range(0, len(pointlist), 2):
-                        pygame.draw.line(screen, self.GetColor(idx), pointlist[idx2], pointlist[idx2 + 1], self.width)
+                        pygame.draw.line(screen, self.GetColor(idx), pointlist[idx2], pointlist[idx2 + 1], (int)(self.width))
 
     def Rebuild(self):
         self.cacheVertex = [self.VertexTransform(v) for v in self.vertex]

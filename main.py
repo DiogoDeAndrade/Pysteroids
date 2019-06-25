@@ -24,6 +24,8 @@ def load_data():
     fnt = FontManager.Load("fonts/vectorfont.json", 4, "Vector")
     fnt.lineWidth = 4
 
+    GameDefs.LoadHighscores()
+
 def main():
 
     Screen.startup()
