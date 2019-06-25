@@ -39,6 +39,7 @@ class VectorFont:
     def Load(filename, size):
         fnt = VectorFont()
         fnt.scale = size
+        fnt.lineWidth = size
 
         text_file = open(filename, "rt")
         jsonString = text_file.read()

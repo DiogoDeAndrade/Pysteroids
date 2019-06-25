@@ -19,6 +19,13 @@ class GameDefs:
         GameDefs.highScores.sort(key = lambda hs: hs[1], reverse = True)
 
     @staticmethod
+    def IsHighScore(score):
+        if (score > GameDefs.highScores[9][1]):
+            return True
+        
+        return False
+
+    @staticmethod
     def DisplayHighScores(baseY):
         for i in range(0, 10):
             hsText = str(i + 1).rjust(2," ") + "." + GameDefs.highScores[i][0] + "......" + str(GameDefs.highScores[i][1]).rjust(6, "0")

@@ -22,7 +22,6 @@ def load_data():
 
     FontManager.Load("fonts/vector/Vectorb.ttf", 18, "VectorTTF")
     fnt = FontManager.Load("fonts/vectorfont.json", 4, "Vector")
-    fnt.lineWidth = 4
 
     GameDefs.LoadHighscores()
 
@@ -41,9 +40,7 @@ def main():
         if (ret == -1):
             break
         elif (ret == 1):
-            gameScreen.lives = 3
-            gameScreen.level =1
-            gameScreen.score = 0
+            gameScreen.reset()
             
             ret = 1
             while (ret == 1):

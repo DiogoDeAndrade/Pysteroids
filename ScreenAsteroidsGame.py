@@ -5,9 +5,14 @@ from FontManager import *
 
 class ScreenAsteroidsGame(ScreenAsteroids):
     def __init__(self):
+        self.reset()
+
+    def reset(self):
         self.level = 1
         self.lives = 3
         self.score = 0
+        self.inputChar = -1
+        self.inputName = "A.."
 
     def init(self):
         ScreenAsteroids.init(self)
@@ -29,6 +34,9 @@ class ScreenAsteroidsGame(ScreenAsteroids):
             self.lives = self.lives - 1
             for collision in collisions:
                 collision.obj2.Explode()
+            if (self.lives <= 0):
+                if (GameDefs.IsHighScore(self.score)):
+                    self.inputChar = 0
 
         collisions = Scene.main.CheckCollisionsBetweenTags("PlayerLaser", [ "Asteroid", "EnemyShip", "EnemyMissile" ])
         if (len(collisions) > 0):
@@ -99,5 +107,8 @@ class ScreenAsteroidsGame(ScreenAsteroids):
             if (self.lives > 0):
                 FontManager.WriteCenter(Screen.screen, "Vector", "STAGE " + str(self.level), (640, 360), (random.uniform(32, 255), random.uniform(32, 255), random.uniform(32, 255)), scale = 0.5)
             else:
-                FontManager.WriteCenter(Screen.screen, "Vector", "GAME OVER", (640, 360), (random.uniform(32, 255), random.uniform(32, 255), random.uniform(32, 255)), scale = 1)
+                FontManager.WriteCenter(Screen.screen, "Vector", "GAME OVER", (640, 100), (random.uniform(32, 255), random.uniform(32, 255), random.uniform(32, 255)), scale = 1)
+                if (self.inputChar >= 0):
+                    FontManager.WriteCenter(Screen.screen, "Vector", "YOU HAVE A HIGHSCORE!", (640, 320), (255, 255, 180), scale = 0.25, widthScale = 0.25)
+                    FontManager.WriteCenter(Screen.screen, "Vector", self.inputName, (640, 400), (255, 255, 180), scale = 0.5, widthScale = 0.5)
 
