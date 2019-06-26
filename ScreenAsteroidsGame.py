@@ -12,7 +12,8 @@ class ScreenAsteroidsGame(ScreenAsteroids):
         self.lives = 3
         self.score = 0
         self.inputChar = -1
-        self.inputName = "A.."
+        self.inputName = [ "A", ".", "." ]
+        self.inputDelay = 0
 
     def init(self):
         ScreenAsteroids.init(self)
@@ -52,10 +53,40 @@ class ScreenAsteroidsGame(ScreenAsteroids):
         if ((self.lives > 0) and (player == None) and (self.time_to_spawn <= 0)):
             self.spawn_player()
 
-        if (self.lives <= 0):
-            keys = pygame.key.get_pressed()
-            if (keys[pygame.K_LCTRL]):
-                self.set_exit(0)
+        self.inputDelay = self.inputDelay - delta_time
+
+        keys = pygame.key.get_pressed()
+
+        if (self.inputChar != -1):
+            if ((keys[pygame.K_DOWN]) and (self.inputDelay <= 0)):
+                self.inputDelay = 0.2
+                self.inputName[self.inputChar] = chr(ord(self.inputName[self.inputChar]) + 1)
+            elif ((keys[pygame.K_UP]) and (self.inputDelay <= 0)):
+                self.inputDelay = 0.2
+                self.inputName[self.inputChar] = chr(ord(self.inputName[self.inputChar]) - 1)
+            elif ((keys[pygame.K_LCTRL]) and (self.inputDelay <= 0)):
+                self.inputDelay = 0.2
+                self.inputChar = self.inputChar + 1
+                if (self.inputChar > 2):
+                    self.inputChar = -1
+                    GameDefs.AddHighScore(self.score, "".join(self.inputName))
+                else:
+                    self.inputName[self.inputChar] = "A"
+            if (self.inputChar != -1):
+                c = ord(self.inputName[self.inputChar])
+                if (c == ord("A") - 1):
+                    self.inputName[self.inputChar] = "9"
+                elif (c == ord('0') - 1):
+                    self.inputName[self.inputChar] = "Z"
+                elif (c == ord("Z") + 1):
+                    self.inputName[self.inputChar] = "0"
+                elif (c == ord("9") + 1):
+                    self.inputName[self.inputChar] = "A"
+        else:
+            if (self.lives <= 0):
+                if (self.inputDelay <= 0):
+                    if (keys[pygame.K_LCTRL]):
+                        self.set_exit(0)
 
         if (self.level > 1):
             self.enemy_timer = self.enemy_timer - delta_time
@@ -108,7 +139,11 @@ class ScreenAsteroidsGame(ScreenAsteroids):
                 FontManager.WriteCenter(Screen.screen, "Vector", "STAGE " + str(self.level), (640, 360), (random.uniform(32, 255), random.uniform(32, 255), random.uniform(32, 255)), scale = 0.5)
             else:
                 FontManager.WriteCenter(Screen.screen, "Vector", "GAME OVER", (640, 100), (random.uniform(32, 255), random.uniform(32, 255), random.uniform(32, 255)), scale = 1)
-                if (self.inputChar >= 0):
+                if ((self.inputChar >= 0) or (self.inputName[2] != ".")):
                     FontManager.WriteCenter(Screen.screen, "Vector", "YOU HAVE A HIGHSCORE!", (640, 320), (255, 255, 180), scale = 0.25, widthScale = 0.25)
-                    FontManager.WriteCenter(Screen.screen, "Vector", self.inputName, (640, 400), (255, 255, 180), scale = 0.5, widthScale = 0.5)
+                    for i in range(0, 3):
+                        c = (255, 255, 180)
+                        if (i == self.inputChar):
+                            c = (random.uniform(30, 255),random.uniform(30, 255),random.uniform(30, 255))
+                        FontManager.Write(Screen.screen, "Vector", self.inputName[i], (640 + (i - 1) * 40, 400), c, scale = 0.5, widthScale = 0.5)
 

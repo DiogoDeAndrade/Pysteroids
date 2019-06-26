@@ -56,7 +56,7 @@ class Screen:
         while self.running:
             for event in pygame.event.get():
                 if (event.type == pygame.QUIT):
-                    set_exit(-1)
+                    self.set_exit(-1)
 
             self.update(dt)
             self.render()

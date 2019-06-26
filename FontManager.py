@@ -5,6 +5,13 @@ import pygame.freetype
 
 from WireMesh import *
 
+class TTFont:
+    def __init__(self, path, size):
+        self.fnt = pygame.freetype.Font(path, size)
+
+    def render_to(self, screen, position, str, color, scale, widthScale, spacingScale):
+        self.fnt.render_to(screen, position, str, color)
+
 class VectorFont:
     def __init__(self):
         self.characters = dict()
@@ -23,10 +30,10 @@ class VectorFont:
                 self.characters[c].DrawPRS(screen, currentPos, 0, Vector2(self.scale * scale, self.scale * scale))
             currentPos.x = currentPos.x + (self.sizeX + self.spacingX * spacingScale) * self.scale * scale
 
-    def render_to(self, screen, position, str, color):
-        currentPos = Vector2(position[0] + self.sizeX * 0.5 * self.scale, position[1] + self.sizeY * 0.5 * self.scale)
+    def render_to(self, screen, position, str, color, scale, widthScale, spacingScale):
+        currentPos = Vector2(position[0] + self.sizeX * 0.5 * self.scale * scale * widthScale, position[1] + self.sizeY * 0.5 * self.scale * scale)
 
-        self.render_at(screen, currentPos, str, color, 1, 1, 1)
+        self.render_at(screen, currentPos, str, color, scale, widthScale, spacingScale)
 
     def render_to_centered(self, screen, position, str, color, scale, widthScale, spacingScale):
         size = len(str) * self.sizeX + (len(str) - 1) * self.spacingX * spacingScale
@@ -82,16 +89,16 @@ class FontManager:
         if (file_extension == ".json"):
             fnt = VectorFont.Load(path, size)
         else:
-            fnt = pygame.freetype.Font(path, size)
+            fnt = TTFont(path, size)            
         
         if (fnt != None):
             self.fonts[name] = fnt
 
         return fnt
 
-    def _Write(self, screen, name, str, position, color):
+    def _Write(self, screen, name, str, position, color, scale = 1, widthScale = 1, spacingScale = 1):
         if (name in self.fonts):
-            self.fonts[name].render_to(screen, position, str, color)
+            self.fonts[name].render_to(screen, position, str, color, scale, widthScale, spacingScale)
 
     def _WriteCenter(self, screen, name, str, position, color, scale = 1, widthScale = 1, spacingScale = 1):
         if (name in self.fonts):
@@ -109,8 +116,8 @@ class FontManager:
         return FontManager.GetInstance()._Load(path, size, name)
 
     @staticmethod
-    def Write(screen, name, str, position, color):
-        return FontManager.GetInstance()._Write(screen, name, str, position, color)
+    def Write(screen, name, str, position, color, scale = 1, widthScale = 1, spacingScale = 1):
+        return FontManager.GetInstance()._Write(screen, name, str, position, color, scale, widthScale, spacingScale)
 
     @staticmethod
     def WriteCenter(screen, name, str, position, color, scale = 1, widthScale = 1, spacingScale = 1):
