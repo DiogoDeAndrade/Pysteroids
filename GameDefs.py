@@ -7,50 +7,50 @@ class PlayerDefs:
     rotationSpeed = 360
 
 class GameDefs:
-    playerDefs = PlayerDefs()
-    highScores = []
+    player_defs = PlayerDefs()
+    highscores = []
 
     @staticmethod
-    def LoadHighscores():
+    def load_highscores():
 
         try:    
             text_file = open("highscore.dat", "rt")
-            jsonString = text_file.read()
+            json_string = text_file.read()
             text_file.close()
 
-            GameDefs.highScores = json.loads(jsonString)
+            GameDefs.highscores = json.loads(json_string)
 
         except:
-            GameDefs.highScores = []
+            GameDefs.highscores = []
 
             for i in range(0,10):
                 hs = ("DGA", (i + 1) * 250)
-                GameDefs.highScores.append(hs)
+                GameDefs.highscores.append(hs)
 
-        GameDefs.highScores.sort(key = lambda hs: hs[1], reverse = True)
+        GameDefs.highscores.sort(key = lambda hs: hs[1], reverse = True)
 
     @staticmethod
-    def IsHighScore(score):
-        if (score > GameDefs.highScores[9][1]):
+    def is_highscore(score):
+        if (score > GameDefs.highscores[9][1]):
             return True
         
         return False
 
     @staticmethod
-    def DisplayHighScores(baseY):
+    def display_highscores(base_y):
         for i in range(0, 10):
-            hsText = str(i + 1).rjust(2," ") + "." + GameDefs.highScores[i][0] + "......" + str(GameDefs.highScores[i][1]).rjust(6, "0")
-            FontManager.WriteCenter(Screen.screen, "Vector", hsText, (640, baseY + i * 30), (255, 255, 180), scale = 0.2, widthScale = 0.25)
+            hs_text = str(i + 1).rjust(2," ") + "." + GameDefs.highscores[i][0] + "......" + str(GameDefs.highscores[i][1]).rjust(6, "0")
+            FontManager.write_center(Screen.screen, "Vector", hs_text, (640, base_y + i * 30), (255, 255, 180), scale = 0.2, width_scale = 0.25)
 
     @staticmethod
-    def AddHighScore(score, name):
+    def add_highscore(score, name):
         hs = (name, score)
-        GameDefs.highScores.append(hs)
-        GameDefs.highScores.sort(key = lambda hs: hs[1], reverse = True)
-        GameDefs.highScores.remove(GameDefs.highScores[10])
+        GameDefs.highscores.append(hs)
+        GameDefs.highscores.sort(key = lambda hs: hs[1], reverse = True)
+        GameDefs.highscores.remove(GameDefs.highscores[10])
 
-        jsonString = json.dumps(GameDefs.highScores)
+        json_string = json.dumps(GameDefs.highscores)
 
         text_file = open("highscore.dat", "wt")
-        text_file.write(jsonString)
+        text_file.write(json_string)
         text_file.close()

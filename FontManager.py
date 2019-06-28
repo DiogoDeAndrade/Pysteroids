@@ -9,65 +9,65 @@ class TTFont:
     def __init__(self, path, size):
         self.fnt = pygame.freetype.Font(path, size)
 
-    def render_to(self, screen, position, str, color, scale, widthScale, spacingScale):
+    def render_to(self, screen, position, str, color, scale, width_scale, spacing_scale):
         self.fnt.render_to(screen, position, str, color)
 
 class VectorFont:
     def __init__(self):
         self.characters = dict()
-        self.sizeX = self.sizeY = 0
-        self.spacingX = self.spacingY = 0
+        self.size_x = self.size_y = 0
+        self.spacing_x = self.spacing_y = 0
         self.scale = 1
         self.lineWidth = 1
 
-    def render_at(self, screen, position, str, color, scale, widthScale, spacingScale):
+    def render_at(self, screen, position, str, color, scale, width_scale, spacing_scale):
         currentPos = position
 
         for c in str:
             if (c in self.characters):
-                self.characters[c].overrideColor = color
-                self.characters[c].width = self.lineWidth * widthScale
-                self.characters[c].DrawPRS(screen, currentPos, 0, Vector2(self.scale * scale, self.scale * scale))
-            currentPos.x = currentPos.x + (self.sizeX + self.spacingX * spacingScale) * self.scale * scale
+                self.characters[c].override_color = color
+                self.characters[c].width = self.lineWidth * width_scale
+                self.characters[c].drawPRS(screen, currentPos, 0, Vector2(self.scale * scale, self.scale * scale))
+            currentPos.x = currentPos.x + (self.size_x + self.spacing_x * spacing_scale) * self.scale * scale
 
-    def render_to(self, screen, position, str, color, scale, widthScale, spacingScale):
-        currentPos = Vector2(position[0] + self.sizeX * 0.5 * self.scale * scale * widthScale, position[1] + self.sizeY * 0.5 * self.scale * scale)
+    def render_to(self, screen, position, str, color, scale, width_scale, spacing_scale):
+        currentPos = Vector2(position[0] + self.size_x * 0.5 * self.scale * scale * width_scale, position[1] + self.size_y * 0.5 * self.scale * scale)
 
-        self.render_at(screen, currentPos, str, color, scale, widthScale, spacingScale)
+        self.render_at(screen, currentPos, str, color, scale, width_scale, spacing_scale)
 
-    def render_to_centered(self, screen, position, str, color, scale, widthScale, spacingScale):
-        size = len(str) * self.sizeX + (len(str) - 1) * self.spacingX * spacingScale
+    def render_to_centered(self, screen, position, str, color, scale, width_scale, spacing_scale):
+        size = len(str) * self.size_x + (len(str) - 1) * self.spacing_x * spacing_scale
 
-        currentPos = Vector2(position[0] - (size ) * 0.5 * self.scale * scale, position[1] + self.sizeY * 0.5 * self.scale * scale)
+        currentPos = Vector2(position[0] - (size ) * 0.5 * self.scale * scale, position[1] + self.size_y * 0.5 * self.scale * scale)
 
-        self.render_at(screen, currentPos, str, color, scale, widthScale, spacingScale)
+        self.render_at(screen, currentPos, str, color, scale, width_scale, spacing_scale)
 
     @staticmethod
-    def Load(filename, size):
+    def load(filename, size):
         fnt = VectorFont()
         fnt.scale = size
         fnt.lineWidth = size
 
         text_file = open(filename, "rt")
-        jsonString = text_file.read()
+        json_string = text_file.read()
         text_file.close()
 
-        meshes = json.loads(jsonString)
+        meshes = json.loads(json_string)
 
         for name in meshes:
             if (name == "Size"):
-                fnt.sizeX = meshes[name][0]
-                fnt.sizeY = meshes[name][1]
+                fnt.size_x = meshes[name][0]
+                fnt.size_y = meshes[name][1]
             elif (name == "Spacing"):
-                fnt.spacingX = meshes[name][0]
-                fnt.spacingY = meshes[name][1]
+                fnt.spacing_x = meshes[name][0]
+                fnt.spacing_y = meshes[name][1]
             else:
-                newMesh = WireMesh()
-                newMesh.FromJSON(meshes[name])
-                newMesh.overrideColorEnable = True
+                new_mesh = WireMesh()
+                new_mesh.from_JSON(meshes[name])
+                new_mesh.override_color_enable = True
 
-                newMesh.name = name
-                fnt.characters[name] = newMesh
+                new_mesh.name = name
+                fnt.characters[name] = new_mesh
 
         return fnt
 
@@ -82,12 +82,12 @@ class FontManager:
 
         self.fonts = dict()
             
-    def _Load(self, path, size, name):
+    def _load(self, path, size, name):
         just_filename, file_extension = os.path.splitext(path)
 
         fnt = None
         if (file_extension == ".json"):
-            fnt = VectorFont.Load(path, size)
+            fnt = VectorFont.load(path, size)
         else:
             fnt = TTFont(path, size)            
         
@@ -96,30 +96,30 @@ class FontManager:
 
         return fnt
 
-    def _Write(self, screen, name, str, position, color, scale = 1, widthScale = 1, spacingScale = 1):
+    def _write(self, screen, name, str, position, color, scale = 1, width_scale = 1, spacing_scale = 1):
         if (name in self.fonts):
-            self.fonts[name].render_to(screen, position, str, color, scale, widthScale, spacingScale)
+            self.fonts[name].render_to(screen, position, str, color, scale, width_scale, spacing_scale)
 
-    def _WriteCenter(self, screen, name, str, position, color, scale = 1, widthScale = 1, spacingScale = 1):
+    def _write_center(self, screen, name, str, position, color, scale = 1, width_scale = 1, spacing_scale = 1):
         if (name in self.fonts):
-            self.fonts[name].render_to_centered(screen, position, str, color, scale, widthScale, spacingScale)
+            self.fonts[name].render_to_centered(screen, position, str, color, scale, width_scale, spacing_scale)
 
     @staticmethod
-    def GetInstance():
+    def get_instance():
         if (FontManager.instance == None):
             gFnt = FontManager()
         
         return FontManager.instance
 
     @staticmethod
-    def Load(path, size, name):
-        return FontManager.GetInstance()._Load(path, size, name)
+    def load(path, size, name):
+        return FontManager.get_instance()._load(path, size, name)
 
     @staticmethod
-    def Write(screen, name, str, position, color, scale = 1, widthScale = 1, spacingScale = 1):
-        return FontManager.GetInstance()._Write(screen, name, str, position, color, scale, widthScale, spacingScale)
+    def write(screen, name, str, position, color, scale = 1, width_scale = 1, spacing_scale = 1):
+        return FontManager.get_instance()._write(screen, name, str, position, color, scale, width_scale, spacing_scale)
 
     @staticmethod
-    def WriteCenter(screen, name, str, position, color, scale = 1, widthScale = 1, spacingScale = 1):
-        return FontManager.GetInstance()._WriteCenter(screen, name, str, position, color, scale, widthScale, spacingScale)
+    def write_center(screen, name, str, position, color, scale = 1, width_scale = 1, spacing_scale = 1):
+        return FontManager.get_instance()._write_center(screen, name, str, position, color, scale, width_scale, spacing_scale)
 

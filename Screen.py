@@ -21,7 +21,7 @@ class Screen:
 
         Screen.screen = pygame.display.set_mode((1280, 720), flags)
 
-        SoundManager.SetGlobalVolume(0.25)
+        SoundManager.set_global_volume(0.25)
 
     def init(self):
         Screen.current = self

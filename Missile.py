@@ -8,57 +8,57 @@ class Missile(Ship):
     def __init__(self, name, target, tag):
         Ship.__init__(self, name)
 
-        self.gfx = WireMesh.GetModel("Missile")
+        self.gfx = WireMesh.get_model("Missile")
         self.trail = Trail("MissileTrail", 2, Color(0, 1, 1, 1), Color(0, 0, 0, 0), 5, self, "TrailAnchor0", 0.1)
         
-        self.collider = Circle2d(Vector2(0,0), self.gfx.GetRadius())
-        self.radius = self.gfx.GetRadius()
+        self.collider = Circle2d(Vector2(0,0), self.gfx.get_radius())
+        self.radius = self.gfx.get_radius()
 
         self.target = target
-        self.maxRotationAngle = 450
+        self.max_rotation_angle = 450
         self.life = 7.5
 
-        self.scoreToAdd = 150
+        self.score_to_add = 150
 
         self.tags.append("Missile")
         self.tags.append(tag)
         
-    def Update(self, delta_time):
+    def update(self, delta_time):
         if (self.target == None):
-            self.Explode()
+            self.explode()
             return
 
-        self.trail.Update(delta_time)
+        self.trail.update(delta_time)
 
         # Aim at target
-        desiredDirection = (self.target.position - self.position).normalize()
-        currentDirection = self.GetDirectionVector()
+        desired_direction = (self.target.position - self.position).normalize()
+        current_direction = self.get_direction_vector()
 
         # Get desired angle of rotation
-        angle = math.degrees(math.acos(currentDirection.dot(desiredDirection))) * delta_time
+        angle = math.degrees(math.acos(current_direction.dot(desired_direction))) * delta_time
         # Get sign of rotation
-        if (self.GetRightVector().dot(desiredDirection) < 0):
+        if (self.get_right_vector().dot(desired_direction) < 0):
             angle = -angle
 
-        angle = max(min(angle, self.maxRotationAngle), -self.maxRotationAngle)
+        angle = max(min(angle, self.max_rotation_angle), -self.max_rotation_angle)
 
         self.rotation = self.rotation + angle
 
-        self.velocity = self.GetDirectionVector() * 150
+        self.velocity = self.get_direction_vector() * 150
 
-        Ship.Update(self, delta_time)
+        Ship.update(self, delta_time)
 
         self.life = self.life - delta_time
         if (self.life < 0):
-            self.Explode()
+            self.explode()
 
-    def Render(self, screen):
-        Ship.Render(self, screen)
+    def render(self, screen):
+        Ship.render(self, screen)
 
-        self.gfx.DrawPRS(screen, self.position, self.rotation, self.scale)
+        self.gfx.drawPRS(screen, self.position, self.rotation, self.scale)
 
-        self.trail.Render(screen)
+        self.trail.render(screen)
 
-    def OnDestroy(self):
-        GameObject.OnDestroy(self)
+    def on_destroy(self):
+        GameObject.on_destroy(self)
 

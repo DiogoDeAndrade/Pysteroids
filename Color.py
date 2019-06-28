@@ -10,11 +10,11 @@ class Color:
         return (self.r * 255, self.g * 255, self.b * 255, self.a * 255)
 
     @staticmethod
-    def FromTuple(t):
+    def from_tuple(t):
         return Color(t[0] / 255.0, t[1] / 255.0, t[2] / 255.0, t[3] / 255.0)
 
     @staticmethod
-    def InterpolateWithArray(colors, t):
+    def interpolate_with_array(colors, t):
         l = len(colors)
         range = 1.0 / l
         idx1 = (int)(t / range)
@@ -32,10 +32,10 @@ class Color:
 
         tt = (t - (idx1 * range)) / ((idx2 * range) - (idx1 * range))
 
-        return Color.Interpolate(c1, c2, tt)
+        return Color.interpolate(c1, c2, tt)
 
     @staticmethod
-    def Interpolate(c1, c2, t):
+    def interpolate(c1, c2, t):
         return Color((1-t) * c1.r + t * c2.r,
                      (1-t) * c1.g + t * c2.g,
                      (1-t) * c1.b + t * c2.b,

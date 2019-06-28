@@ -13,7 +13,7 @@ class Starfield(GameObject):
             r = (int)(random.uniform(64, 255))
             self.starColor.append((r, r, r))            
 
-    def Render(self, screen):
+    def render(self, screen):
         for i in range(0, self.nStars):
             screen.set_at(self.starPos[i], self.starColor[i])
 

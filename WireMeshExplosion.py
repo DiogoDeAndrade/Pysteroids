@@ -8,7 +8,7 @@ class FadeMethod(enum.Enum):
     Color = 1
 
 class ExplosionParticle:
-    def __init__(self, p1, p2, fromCenter, speed, rotation):
+    def __init__(self, p1, p2, from_center, speed, rotation):
         self.center = (p1 + p2) * 0.5
         self.p1 = p1 - self.center
         self.p2 = p2 - self.center
@@ -17,44 +17,44 @@ class ExplosionParticle:
         self.d2 = self.p2.magnitude()
         self.p2.normalize_ip()
         self.velocity = (p2 - p1).normalize()
-        if (fromCenter):
+        if (from_center):
             self.velocity = self.center.normalize() * speed
         else:
             self.velocity = Vector2(-self.velocity.y, self.velocity.x) * speed
         self.rotation = rotation
 
 class WireMeshExplosion(GameObject):
-    def __init__(self, original_mesh, original_pos, original_rotation, original_scale, fromCenter, minSpeed, maxSpeed, minRotation, maxRotation):
+    def __init__(self, original_mesh, original_pos, original_rotation, original_scale, from_center, min_speed, max_speed, min_rotation, max_rotation):
 
         GameObject.__init__(self, "")
 
         # Create a copy of the mesh
-        self.gfx = WireMesh.Copy(original_mesh)
-        self.gfx.ApplyTransform()
-        self.gfx.ConvertToUnindexedLineList()
-        self.gfx.overrideColorEnable = True
-        self.gfx.overrideColor = (0, 255, 0)
+        self.gfx = WireMesh.copy(original_mesh)
+        self.gfx.apply_transform()
+        self.gfx.convert_to_unindexed_line_list()
+        self.gfx.override_color_enable = True
+        self.gfx.override_color = (0, 255, 0)
         self.position = original_pos
         self.rotation = original_rotation
         self.scale = original_scale
         self.line_particle = []
-        for vertexIndex in range(0, len(self.gfx.vertex), 2):
-            p1 = self.gfx.vertex[vertexIndex]
-            p2 = self.gfx.vertex[vertexIndex + 1]
-            tmp = ExplosionParticle(p1, p2, fromCenter, random.uniform(minSpeed, maxSpeed), random.uniform(minRotation, maxRotation))
+        for vertex_index in range(0, len(self.gfx.vertex), 2):
+            p1 = self.gfx.vertex[vertex_index]
+            p2 = self.gfx.vertex[vertex_index + 1]
+            tmp = ExplosionParticle(p1, p2, from_center, random.uniform(min_speed, max_speed), random.uniform(min_rotation, max_rotation))
             self.line_particle.append(tmp)
 
-        self.fadeMethod = FadeMethod.Shrink
+        self.fade_method = FadeMethod.Shrink
         self.duration = 0
         self.time = 0
         self.colors = []
         self.drag = 1
 
-    def Update(self, delta_time):
-        particleIndex = 0
+    def update(self, delta_time):
+        particle_index = 0
         t = self.time / self.duration
-        for vertexIndex in range(0, len(self.gfx.vertex), 2):
-            particle_prop = self.line_particle[particleIndex]
+        for vertex_index in range(0, len(self.gfx.vertex), 2):
+            particle_prop = self.line_particle[particle_index]
             delta_pos =  particle_prop.velocity * delta_time
 
             p1 = particle_prop.p1
@@ -73,29 +73,29 @@ class WireMeshExplosion(GameObject):
             d2 = particle_prop.d2
 
             if (self.duration > 0):
-                if (self.fadeMethod == FadeMethod.Shrink):
+                if (self.fade_method == FadeMethod.Shrink):
                     d1 = (1 - t) * d1
                     d2 = (1 - t) * d2
 
             particle_prop.center = particle_prop.center + delta_pos
-            self.gfx.vertex[vertexIndex] = p1 * d1 + particle_prop.center
-            self.gfx.vertex[vertexIndex + 1] = p2 * d2 + particle_prop.center
+            self.gfx.vertex[vertex_index] = p1 * d1 + particle_prop.center
+            self.gfx.vertex[vertex_index + 1] = p2 * d2 + particle_prop.center
             particle_prop.velocity = particle_prop.velocity * self.drag
 
-            particleIndex = particleIndex + 1
+            particle_index = particle_index + 1
 
         if (self.duration > 0):
-            if (self.fadeMethod == FadeMethod.Color):
-                self.gfx.overrideColor = Color.InterpolateWithArray(self.colors, t).tuple()
+            if (self.fade_method == FadeMethod.Color):
+                self.gfx.override_color = Color.interpolate_with_array(self.colors, t).tuple()
 
         self.time = self.time + delta_time
 
-        if (not self.IsAlive()):
-            Scene.main.Remove(self)
+        if (not self.is_alive()):
+            Scene.main.remove(self)
 
-    def IsAlive(self):
+    def is_alive(self):
         return ((self.duration == 0) or (self.time < self.duration))
 
-    def Render(self, screen):
-        self.gfx.DrawPRS(screen, self.position, self.rotation, self.scale)
+    def render(self, screen):
+        self.gfx.drawPRS(screen, self.position, self.rotation, self.scale)
 

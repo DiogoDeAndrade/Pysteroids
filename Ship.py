@@ -11,79 +11,79 @@ class Ship(GameObject):
         self.acceleration = 200.0
         self.break_acceleration = 100.0
         self.velocity = Vector2(0,0)
-        self.maxVelocity = 200.0
+        self.max_velocity = 200.0
         self.drag = 0.75
         self.radius = 20
-        self.thrusterM = self.cThrusterM = 0
-        self.thrusterR = self.cThrusterR = 0
-        self.thrusterL = self.cThrusterL = 0
+        self.thruster_m = self.current_thruster_m = 0
+        self.thruster_r = self.current_thruster_r = 0
+        self.thruster_l = self.current_thruster_l = 0
         self.gfx = None
-        self.thrusterColor = (255, 0, 0)
-        self.thrusterLength = 20
-        self.thrusterWidth = 5
-        self.thrusterLineWidth = 1
-        self.thrusterSpeed = 5
-        self.scoreToAdd = 100
+        self.thruster_color = (255, 0, 0)
+        self.thruster_length = 20
+        self.thruster_width = 5
+        self.thruster_line_width = 1
+        self.thruster_speed = 5
+        self.score_to_add = 100
 
         self.tags.append("Ship")
 
-    def Update(self, delta_time):
+    def update(self, delta_time):
 
         if (self.drag > 0):
-            self.AddVelocity(-self.velocity * self.drag * delta_time)
+            self.add_velocity(-self.velocity * self.drag * delta_time)
 
         self.position += self.velocity * delta_time        
 
-        self.cThrusterR = self.cThrusterR + (self.thrusterR - self.cThrusterR) * (self.thrusterSpeed * delta_time)
-        self.cThrusterM = self.cThrusterM + (self.thrusterM - self.cThrusterM) * (self.thrusterSpeed * delta_time)
-        self.cThrusterL = self.cThrusterL + (self.thrusterL - self.cThrusterL) * (self.thrusterSpeed * delta_time)
+        self.current_thruster_r = self.current_thruster_r + (self.thruster_r - self.current_thruster_r) * (self.thruster_speed * delta_time)
+        self.current_thruster_m = self.current_thruster_m + (self.thruster_m - self.current_thruster_m) * (self.thruster_speed * delta_time)
+        self.current_thruster_l = self.current_thruster_l + (self.thruster_l - self.current_thruster_l) * (self.thruster_speed * delta_time)
 
-    def AddVelocity(self, velocity):
+    def add_velocity(self, velocity):
         self.velocity += velocity
 
-        if (self.velocity.magnitude() > self.maxVelocity):
-            self.velocity = self.velocity.normalize() * self.maxVelocity
+        if (self.velocity.magnitude() > self.max_velocity):
+            self.velocity = self.velocity.normalize() * self.max_velocity
 
-    def Explode(self):
+    def explode(self):
         explosion = WireMeshExplosion(self.gfx, self.position, self.rotation, self.scale, True, 150, 300, 0.5, 3)
-        explosion.fadeMethod = FadeMethod.Color
+        explosion.fade_method = FadeMethod.Color
         explosion.colors = [Color(1.0, 1.0, 0.0, 1.0), Color(1.0, 0.0, 0.0, 1.0), Color(0.0, 0.0, 0.0, 1.0), Color(0.0, 0.0, 0.0, 0.0)]
         explosion.duration = 2
 
         shockwave = Shockwave(self.position, 0.75, 200, [Color(1.0, 1.0, 0.0, 1.0), Color(1.0, 0.0, 0.0, 1.0), Color(0.0, 0.0, 0.0, 1.0), Color(0.0, 0.0, 0.0, 0.0)])
 
         particle_system = ParticleSystem(self.position)
-        particle_system.colorOverTime = [Color(1.0, 1.0, 0.0, 1.0), Color(1.0, 0.0, 0.0, 1.0), Color(0.0, 0.0, 0.0, 1.0), Color(0.0, 0.0, 0.0, 0.0)]
-        particle_system.startSpeed = (50, 100)
-        particle_system.particleLife = (2, 4)
+        particle_system.color_over_time = [Color(1.0, 1.0, 0.0, 1.0), Color(1.0, 0.0, 0.0, 1.0), Color(0.0, 0.0, 0.0, 1.0), Color(0.0, 0.0, 0.0, 0.0)]
+        particle_system.start_speed = (50, 100)
+        particle_system.particle_life = (2, 4)
         particle_system.drag = 0.995
         particle_system.rate = 0
-        particle_system.Spawn(50)
+        particle_system.spawn(50)
 
-        Scene.main.Add(explosion)
-        Scene.main.Add(shockwave)
-        Scene.main.Add(particle_system)
+        Scene.main.add(explosion)
+        Scene.main.add(shockwave)
+        Scene.main.add(particle_system)
 
-        SoundManager.Play("Explosion")
+        SoundManager.play("Explosion")
 
-        self.Destroy()
+        self.destroy()
 
-    def Render(self, screen):
+    def render(self, screen):
         if (self.gfx != None):
-            if (self.cThrusterL > 0.05):
-                if (self.gfx.MountpointExists("ThrusterL")):
-                    mp_pos, mp_dir = self.gfx.GetMountpointPRS("ThrusterL", self.position, self.rotation, self.scale)
-                    self.DrawThruster(screen, mp_pos, mp_dir, self.cThrusterL)
-            if (self.cThrusterM > 0.05):
-                if (self.gfx.MountpointExists("ThrusterM")):
-                    mp_pos, mp_dir = self.gfx.GetMountpointPRS("ThrusterM", self.position, self.rotation, self.scale)
-                    self.DrawThruster(screen, mp_pos, mp_dir, self.cThrusterM)
-            if (self.cThrusterR > 0.05):
-                if (self.gfx.MountpointExists("ThrusterR")):
-                    mp_pos, mp_dir = self.gfx.GetMountpointPRS("ThrusterR", self.position, self.rotation, self.scale)
-                    self.DrawThruster(screen, mp_pos, mp_dir, self.cThrusterR)
+            if (self.current_thruster_l > 0.05):
+                if (self.gfx.mountpoint_exists("ThrusterL")):
+                    mp_pos, mp_dir = self.gfx.get_mountpointPRS("ThrusterL", self.position, self.rotation, self.scale)
+                    self.draw_thruster(screen, mp_pos, mp_dir, self.current_thruster_l)
+            if (self.current_thruster_m > 0.05):
+                if (self.gfx.mountpoint_exists("ThrusterM")):
+                    mp_pos, mp_dir = self.gfx.get_mountpointPRS("ThrusterM", self.position, self.rotation, self.scale)
+                    self.draw_thruster(screen, mp_pos, mp_dir, self.current_thruster_m)
+            if (self.current_thruster_r > 0.05):
+                if (self.gfx.mountpoint_exists("ThrusterR")):
+                    mp_pos, mp_dir = self.gfx.get_mountpointPRS("ThrusterR", self.position, self.rotation, self.scale)
+                    self.draw_thruster(screen, mp_pos, mp_dir, self.current_thruster_r)
 
-    def DrawThruster(self, screen, pos, dir, length):
+    def draw_thruster(self, screen, pos, dir, length):
         perpDir = Vector2(dir.y, -dir.x)
-        pygame.draw.line(screen, self.thrusterColor, pos + perpDir * self.thrusterWidth, pos + dir * self.thrusterLength * length, self.thrusterLineWidth)
-        pygame.draw.line(screen, self.thrusterColor, pos - perpDir * self.thrusterWidth, pos + dir * self.thrusterLength * length, self.thrusterLineWidth)
+        pygame.draw.line(screen, self.thruster_color, pos + perpDir * self.thruster_width, pos + dir * self.thruster_length * length, self.thruster_line_width)
+        pygame.draw.line(screen, self.thruster_color, pos - perpDir * self.thruster_width, pos + dir * self.thruster_length * length, self.thruster_line_width)

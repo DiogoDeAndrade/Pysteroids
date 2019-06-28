@@ -27,23 +27,23 @@ class ScreenAsteroidsTitle(ScreenAsteroids):
     def render(self):
         ScreenAsteroids.render(self)
 
-        colorMin = 32
-        colorMax = 255
-        yTitle = 150
-        yPrompt = 650
+        color_min = 32
+        color_max = 255
+        y_title = 150
+        y_prompt = 650
 
         if (self.time < 4):
-            colorMin = (self.time / 4) * colorMin
-            colorMax = (self.time / 4) * colorMax
-            yTitle = 320
-            yPrompt = 450
+            color_min = (self.time / 4) * color_min
+            color_max = (self.time / 4) * color_max
+            y_title = 320
+            y_prompt = 450
         elif (self.time < 6):
             t = (self.time - 4) / 2
-            yTitle = t * 150 + (1 - t) * 320
-            yPrompt = t * 650 + (1 - t) * 450
+            y_title = t * 150 + (1 - t) * 320
+            y_prompt = t * 650 + (1 - t) * 450
         elif (self.time > 6):
-            GameDefs.DisplayHighScores(yTitle + 130)
+            GameDefs.display_highscores(y_title + 130)
 
-        FontManager.WriteCenter(Screen.screen, "Vector", "PYSTEROIDS", (640, yTitle), (random.uniform(colorMin, colorMax), random.uniform(colorMin, colorMax), random.uniform(colorMin, colorMax)), spacingScale = self.scaling)
+        FontManager.write_center(Screen.screen, "Vector", "PYSTEROIDS", (640, y_title), (random.uniform(color_min, color_max), random.uniform(color_min, color_max), random.uniform(color_min, color_max)), spacing_scale = self.scaling)
         if (self.scaling <= 1):
-            FontManager.WriteCenter(Screen.screen, "Vector", "PRESS FIRE TO START", (640, yPrompt), (random.uniform(colorMin, colorMax), random.uniform(colorMin, colorMax), random.uniform(colorMin, colorMax)), scale = 0.2, widthScale = 0.5)
+            FontManager.write_center(Screen.screen, "Vector", "PRESS FIRE TO START", (640, y_prompt), (random.uniform(color_min, color_max), random.uniform(color_min, color_max), random.uniform(color_min, color_max)), scale = 0.2, width_scale = 0.5)

@@ -14,11 +14,11 @@ class ScreenAsteroids(Screen):
 
         Screen.init(self)
 
-        Scene.main.Clear()
+        Scene.main.clear()
 
     def init_objects(self, level):
 
-        Scene.main.Add(Starfield("Starfield", 400))
+        Scene.main.add(Starfield("Starfield", 400))
 
         n_asteroids = 3 + level
 
@@ -28,18 +28,18 @@ class ScreenAsteroids(Screen):
             asteroid.position = Vector2(640, 360)
             asteroid.position.x = asteroid.position.x + dir.x * random.uniform(200, 640)
             asteroid.position.y = asteroid.position.y + dir.y * random.uniform(100, 360)
-            Scene.main.Add(asteroid)
+            Scene.main.add(asteroid)
 
     def update(self, delta_time):
         Screen.update(self, delta_time)
 
-        Scene.main.Update(delta_time)
+        Scene.main.update(delta_time)
 
     def render(self):
         Screen.render(self)
 
         Screen.screen.fill((5, 5, 15))
 
-        Scene.main.Render(Screen.screen)
+        Scene.main.render(Screen.screen)
 
     

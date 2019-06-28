@@ -9,41 +9,41 @@ class Asteroid(Ship):
 
         self.radius = radius
         self.variance = variance
-        self.gfx = WireMesh.Circle(8, self.radius, self.radius * self.variance, (130, 68, 0))
-        self.gfx.renderMode = RenderMode.Normal
+        self.gfx = WireMesh.circle(8, self.radius, self.radius * self.variance, (130, 68, 0))
+        self.gfx.render_mode = RenderMode.Normal
         self.gfx.width = 2
-        self.maxRadius = self.radius * (1 + self.variance)
+        self.max_radius = self.radius * (1 + self.variance)
         
         self.rotation_speed = random.uniform(-rotation_speed, rotation_speed)
         self.velocity = Vector2(random.uniform(-1, 1), random.uniform(-1, 1)).normalize()
         self.velocity *= random.uniform(speed, speed * 2)
         self.drag = 0
 
-        self.collider = Circle2d(Vector2(0,0), self.gfx.GetRadius())
+        self.collider = Circle2d(Vector2(0,0), self.gfx.get_radius())
 
         self.tags.append("Asteroid")
 
-    def Update(self, delta_time):
-        Ship.Update(self, delta_time)
+    def update(self, delta_time):
+        Ship.update(self, delta_time)
 
         self.rotation += self.rotation_speed * delta_time
 
         # Check bounds
-        if (self.position.x < -self.maxRadius):
-            self.position.x = 1280 + self.maxRadius
-        elif (self.position.x > (1280 + self.maxRadius)):
-            self.position.x = self.maxRadius
+        if (self.position.x < -self.max_radius):
+            self.position.x = 1280 + self.max_radius
+        elif (self.position.x > (1280 + self.max_radius)):
+            self.position.x = self.max_radius
 
-        if (self.position.y < -self.maxRadius):
-            self.position.y = 720 + self.maxRadius
-        elif (self.position.y > (720 + self.maxRadius)):
-            self.position.y = -self.maxRadius
+        if (self.position.y < -self.max_radius):
+            self.position.y = 720 + self.max_radius
+        elif (self.position.y > (720 + self.max_radius)):
+            self.position.y = -self.max_radius
 
-    def Render(self, screen):
-        self.gfx.DrawPRS(screen, self.position, self.rotation, self.scale)
+    def render(self, screen):
+        self.gfx.drawPRS(screen, self.position, self.rotation, self.scale)
 
-    def Explode(self):
-        Ship.Explode(self)
+    def explode(self):
+        Ship.explode(self)
 
         if (self.radius >= 20):
             asteroid1 = Asteroid(self.name + "_0", 
@@ -52,7 +52,7 @@ class Asteroid(Ship):
                                  self.rotation_speed * 1.25, 
                                  self.velocity.magnitude() * 1.1)
             asteroid1.position = Vector2(self.position)
-            Scene.main.Add(asteroid1)
+            Scene.main.add(asteroid1)
 
             asteroid2 = Asteroid(self.name + "_1", 
                                  self.radius / 2, 
@@ -60,4 +60,4 @@ class Asteroid(Ship):
                                  self.rotation_speed * 1.25, 
                                  self.velocity.magnitude() * 1.1)
             asteroid2.position = Vector2(self.position)
-            Scene.main.Add(asteroid2)
+            Scene.main.add(asteroid2)

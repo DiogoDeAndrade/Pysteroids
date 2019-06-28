@@ -2,7 +2,7 @@
     "Missile": {
         "closed": false,
         "primitive": "LineList",
-        "renderMode": "AntiAlias",
+        "render_mode": "AntiAlias",
         "lineWidth": 1,
         "vertex": [
             [ -2.5, 10 ], [-2.5, -2.5 ], [2.5, -2.5], [2.5, 10],

@@ -2,7 +2,7 @@
     "PlayerShip": {
         "closed": true,
         "primitive": "LineStrip",
-        "renderMode": "AntiAlias",
+        "render_mode": "AntiAlias",
         "lineWidth": 1,
         "vertex": [
             [
@@ -33,7 +33,7 @@
             }
         ],
         "mountpoints": {
-            "LaserPos0": {
+            "laser_pos0": {
                 "pos": [
                     0.0,
                     -30.0

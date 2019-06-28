@@ -4,7 +4,7 @@
     ".": {
         "closed": true,
         "primitive" : "LineStrip",
-        "renderMode": "Normal",
+        "render_mode": "Normal",
         "lineWidth": 1,
         "vertex": [
             [ -1, 9 ], [ 1, 9 ], [1, 10], [-1, 10]
@@ -17,7 +17,7 @@
     "!": {
         "closed": true,
         "primitive" : "LineStrip",
-        "renderMode": "Normal",
+        "render_mode": "Normal",
         "lineWidth": 1,
         "vertex": [
             [ -1, 9 ], [ 1, 9 ], [1, 10], [-1, 10],
@@ -35,7 +35,7 @@
     "A": {
         "closed": false,
         "primitive": "LineList",
-        "renderMode": "Normal",
+        "render_mode": "Normal",
         "lineWidth": 1,
         "vertex": [
             [ -5, 10 ], [ 0, -10 ], [5, 10], [-3.4, 2.5 ], [3.4, 2.5]
@@ -48,7 +48,7 @@
     "B": {
         "closed": true,
         "primitive": "LineStrip",
-        "renderMode": "Normal",
+        "render_mode": "Normal",
         "lineWidth": 1,
         "vertex": [
             [ -5, -10 ], [ 5, -5], [ -5, 0], [ 5, 5 ], [ -5, 10] 
@@ -61,7 +61,7 @@
     "C": {
         "closed": false,
         "primitive": "LineStrip",
-        "renderMode": "Normal",
+        "render_mode": "Normal",
         "lineWidth": 1,
         "vertex": [
             [ 5, -10 ], [ -5, 0 ], [5, 10 ]
@@ -74,7 +74,7 @@
     "D": {
         "closed": true,
         "primitive": "LineStrip",
-        "renderMode": "Normal",
+        "render_mode": "Normal",
         "lineWidth": 1,
         "vertex": [
             [ -5, -10 ], [5, 0], [ -5, 10 ]
@@ -87,7 +87,7 @@
     "E": {
         "closed": false,
         "primitive": "LineList",
-        "renderMode": "Normal",
+        "render_mode": "Normal",
         "lineWidth": 1,
         "vertex": [
             [ -5, -10 ], [ 5, -10], [-5, 10], [5, 10], [-5, 0], [0, 0]
@@ -100,7 +100,7 @@
     "F": {
         "closed": false,
         "primitive": "LineList",
-        "renderMode": "Normal",
+        "render_mode": "Normal",
         "lineWidth": 1,
         "vertex": [
             [ -5, -10 ], [ 5, -10], [-5, 10], [-5, 0], [0, 0]
@@ -113,7 +113,7 @@
     "G": {
         "closed": false,
         "primitive": "LineStrip",
-        "renderMode": "Normal",
+        "render_mode": "Normal",
         "lineWidth": 1,
         "vertex": [
             [5, -10], [-5, 0], [5, 10], [5, 0], [0,0]
@@ -126,7 +126,7 @@
     "H": {
         "closed": false,
         "primitive": "LineList",
-        "renderMode": "Normal",
+        "render_mode": "Normal",
         "lineWidth": 1,
         "vertex": [
             [ -5, -10 ], [-5, 10], [5, -10], [5, 10], [-5, 0], [5, 0]
@@ -139,7 +139,7 @@
     "I": {
         "closed": false,
         "primitive": "LineList",
-        "renderMode": "Normal",
+        "render_mode": "Normal",
         "lineWidth": 1,
         "vertex": [
             [ -5, -10 ], [5, -10], [-5, 10], [5, 10], [0, -10], [0, 10]
@@ -152,7 +152,7 @@
     "J": {
         "closed": false,
         "primitive": "LineStrip",
-        "renderMode": "Normal",
+        "render_mode": "Normal",
         "lineWidth": 1,
         "vertex": [
             [5, -10], [5, 5], [0, 10], [-5, 5]
@@ -165,7 +165,7 @@
     "K": {
         "closed": false,
         "primitive": "LineList",
-        "renderMode": "Normal",
+        "render_mode": "Normal",
         "lineWidth": 1,
         "vertex": [
             [ -5, -10 ], [-5, 10], [-5, 0], [5, -10], [5, 10]
@@ -178,7 +178,7 @@
     "L": {
         "closed": false,
         "primitive": "LineStrip",
-        "renderMode": "Normal",
+        "render_mode": "Normal",
         "lineWidth": 1,
         "vertex": [
             [ -5, -10 ], [-5, 10], [5, 10]
@@ -191,7 +191,7 @@
     "M": {
         "closed": false,
         "primitive": "LineStrip",
-        "renderMode": "Normal",
+        "render_mode": "Normal",
         "lineWidth": 1,
         "vertex": [
             [-5, 10], [-5, -10], [0,0], [5, -10], [5, 10]
@@ -204,7 +204,7 @@
     "N": {
         "closed": false,
         "primitive": "LineStrip",
-        "renderMode": "Normal",
+        "render_mode": "Normal",
         "lineWidth": 1,
         "vertex": [
             [ -5, 10 ], [ -5, -10 ], [5, 10], [5, -10]
@@ -217,7 +217,7 @@
     "O": {
         "closed": true,
         "primitive": "LineStrip",
-        "renderMode": "Normal",
+        "render_mode": "Normal",
         "lineWidth": 1,
         "vertex": [
             [ 0, -10 ], [ 5, 0 ], [ 0, 10 ], [-5, 0]
@@ -230,7 +230,7 @@
     "P": {
         "closed": false,
         "primitive": "LineList",
-        "renderMode": "Normal",
+        "render_mode": "Normal",
         "lineWidth": 1,
         "vertex": [
             [ -5, -10 ], [5, -5], [-5, 0], [-5, 10]
@@ -243,7 +243,7 @@
     "Q": {
         "closed": false,
         "primitive": "LineList",
-        "renderMode": "Normal",
+        "render_mode": "Normal",
         "lineWidth": 1,
         "vertex": [
             [ 0, -10 ], [ 5, 0 ], [ 0, 10 ], [-5, 0], [0, 0], [5, 10]
@@ -256,7 +256,7 @@
     "R": {
         "closed": false,
         "primitive": "LineList",
-        "renderMode": "Normal",
+        "render_mode": "Normal",
         "lineWidth": 1,
         "vertex": [
             [ -5, -10 ], [5, -5], [-5, 0], [-5, 10], [5, 10]
@@ -269,7 +269,7 @@
     "S": {
         "closed": false,
         "primitive": "LineStrip",
-        "renderMode": "Normal",
+        "render_mode": "Normal",
         "lineWidth": 1,
         "vertex": [
             [ 5, -10 ], [ -5, -5 ], [5, 5], [-5, 10]
@@ -282,7 +282,7 @@
     "T": {
         "closed": false,
         "primitive": "LineList",
-        "renderMode": "Normal",
+        "render_mode": "Normal",
         "lineWidth": 1,
         "vertex": [
             [ -5, -10 ], [5, -10], [0, -10], [0, 10]
@@ -295,7 +295,7 @@
     "U": {
         "closed": false,
         "primitive": "LineStrip",
-        "renderMode": "Normal",
+        "render_mode": "Normal",
         "lineWidth": 1,
         "vertex": [
             [ -5, -10 ], [-5, 5], [0, 10], [5, 5], [5, -10]
@@ -308,7 +308,7 @@
     "V": {
         "closed": false,
         "primitive": "LineStrip",
-        "renderMode": "Normal",
+        "render_mode": "Normal",
         "lineWidth": 1,
         "vertex": [
             [ -5, -10 ], [0, 10], [5, -10]
@@ -321,7 +321,7 @@
     "W": {
         "closed": false,
         "primitive": "LineStrip",
-        "renderMode": "Normal",
+        "render_mode": "Normal",
         "lineWidth": 1,
         "vertex": [
             [ -5, -10 ], [-2.5, 10], [ 0, 0 ], [2.5, 10], [ 5, -10]
@@ -334,7 +334,7 @@
     "X": {
         "closed": false,
         "primitive": "LineList",
-        "renderMode": "Normal",
+        "render_mode": "Normal",
         "lineWidth": 1,
         "vertex": [
             [-5, -10], [5, 10], [5, -10], [-5, 10]
@@ -347,7 +347,7 @@
     "Y": {
         "closed": false,
         "primitive": "LineList",
-        "renderMode": "Normal",
+        "render_mode": "Normal",
         "lineWidth": 1,
         "vertex": [
             [-5, -10], [0, 0], [5, -10], [-5, 10]
@@ -360,7 +360,7 @@
     "Z": {
         "closed": false,
         "primitive": "LineStrip",
-        "renderMode": "Normal",
+        "render_mode": "Normal",
         "lineWidth": 1,
         "vertex": [
             [-5, -10], [5, -10], [-5, 10], [5, 10]
@@ -373,7 +373,7 @@
     "0": {
         "closed": false,
         "primitive": "LineList",
-        "renderMode": "Normal",
+        "render_mode": "Normal",
         "lineWidth": 1,
         "vertex": [
             [-5, -10], [5, -10], [5, 10], [-5, 10], [2.5, -5], [-2.5, 5]
@@ -386,7 +386,7 @@
     "1": {
         "closed": false,
         "primitive": "LineList",
-        "renderMode": "Normal",
+        "render_mode": "Normal",
         "lineWidth": 1,
         "vertex": [
             [5, -10], [5, 10]
@@ -399,7 +399,7 @@
     "2": {
         "closed": false,
         "primitive": "LineStrip",
-        "renderMode": "Normal",
+        "render_mode": "Normal",
         "lineWidth": 1,
         "vertex": [
             [-5, -10], [5, -10], [5, 0], [-5, 0], [-5, 10], [5, 10]
@@ -412,7 +412,7 @@
     "3": {
         "closed": false,
         "primitive": "LineList",
-        "renderMode": "Normal",
+        "render_mode": "Normal",
         "lineWidth": 1,
         "vertex": [
             [-5, -10], [5, -10], [5, 10], [-5, 10], [0, 0], [5, 0]
@@ -425,7 +425,7 @@
     "4": {
         "closed": false,
         "primitive": "LineList",
-        "renderMode": "Normal",
+        "render_mode": "Normal",
         "lineWidth": 1,
         "vertex": [
             [-5, -10], [-5, 0], [5, 0], [5, -10], [5, 10]
@@ -438,7 +438,7 @@
     "5": {
         "closed": false,
         "primitive": "LineStrip",
-        "renderMode": "Normal",
+        "render_mode": "Normal",
         "lineWidth": 1,
         "vertex": [
             [5, -10], [-5, -10], [-5, 0], [5, 0], [5, 10], [-5, 10]
@@ -451,7 +451,7 @@
     "6": {
         "closed": false,
         "primitive": "LineStrip",
-        "renderMode": "Normal",
+        "render_mode": "Normal",
         "lineWidth": 1,
         "vertex": [
             [ 5, -10], [ -5, -10], [ -5, 10 ], [5, 10], [5, 0], [-5, 0]
@@ -464,7 +464,7 @@
     "7": {
         "closed": false,
         "primitive": "LineStrip",
-        "renderMode": "Normal",
+        "render_mode": "Normal",
         "lineWidth": 1,
         "vertex": [
             [-5, -10], [5, -10], [-5, 10]
@@ -477,7 +477,7 @@
     "8": {
         "closed": false,
         "primitive": "LineList",
-        "renderMode": "Normal",
+        "render_mode": "Normal",
         "lineWidth": 1,
         "vertex": [
             [-5, -10], [5, -10], [5, 10], [-5, 10], [-5, 0], [5, 0]
@@ -490,7 +490,7 @@
     "9": {
         "closed": false,
         "primitive": "LineStrip",
-        "renderMode": "Normal",
+        "render_mode": "Normal",
         "lineWidth": 1,
         "vertex": [
             [-5, 10], [5, 10], [5, -10], [-5, -10], [-5, 0], [5, 0]

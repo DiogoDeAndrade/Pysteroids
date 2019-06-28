@@ -6,66 +6,66 @@ class Scene:
     def __init__(self):
         if (Scene.main == None):
             Scene.main = self        
-        self.update = []
-        self.render = []
+        self.update_objects = []
+        self.render_objects = []
         self.objects = []
-        self.objectsByTag = dict()
+        self.objects_by_tag = dict()
 
-    def Add(self, gameObject):
+    def add(self, game_object):
         # Check if object has method Update
-        update_method = getattr(gameObject, "Update", None)
+        update_method = getattr(game_object, "update", None)
         if (callable(update_method)):
-            self.update.append(gameObject)
+            self.update_objects.append(game_object)
 
         # Check if object has method Render
-        render_method = getattr(gameObject, "Render", None)
+        render_method = getattr(game_object, "render", None)
         if (callable(render_method)):
-            self.render.append(gameObject)
+            self.render_objects.append(game_object)
 
-        self.objects.append(gameObject)
+        self.objects.append(game_object)
 
-        tags = gameObject.tags
+        tags = game_object.tags
 
         for tag in tags:
-            if (not tag in self.objectsByTag):
-                self.objectsByTag[tag] = []
+            if (not tag in self.objects_by_tag):
+                self.objects_by_tag[tag] = []
 
-            self.objectsByTag[tag].append(gameObject)
+            self.objects_by_tag[tag].append(game_object)
 
-    def Clear(self):
-        self.update = []
-        self.render = []
+    def clear(self):
+        self.update_objects = []
+        self.render_objects = []
         self.objects = []
-        self.objectsByTag = dict()
+        self.objects_by_tag = dict()
 
-    def Remove(self, gameObject):
+    def remove(self, game_object):
         try:
-            self.update.remove(gameObject)
+            self.update_objects.remove(game_object)
         except ValueError:
             pass
 
         try:
-            self.render.remove(gameObject)
+            self.render_objects.remove(game_object)
         except ValueError:
             pass
 
         try:
-            self.objects.remove(gameObject)
+            self.objects.remove(game_object)
         except ValueError:
             pass
 
-        tags = gameObject.tags
+        tags = game_object.tags
 
         for tag in tags:
-            if (tag in self.objectsByTag):
+            if (tag in self.objects_by_tag):
                 try:
-                    self.objectsByTag[tag].remove(gameObject)
+                    self.objects_by_tag[tag].remove(game_object)
                 except ValueError:
                     pass
 
-    def GetObjectByTag(self, tag):
-        if (tag in self.objectsByTag):
-            elements = self.objectsByTag[tag]
+    def get_object_by_tag(self, tag):
+        if (tag in self.objects_by_tag):
+            elements = self.objects_by_tag[tag]
             if (len(elements) > 0):
                 return elements[0]
             
@@ -73,47 +73,47 @@ class Scene:
 
         return None
 
-    def GetObjectsByTag(self, tags):
+    def get_objects_by_tag(self, tags):
         if (isinstance(tags, list)):
             objects = []
             for tag in tags:
-                if (tag in self.objectsByTag):
-                    objects.extend(self.objectsByTag[tag])
+                if (tag in self.objects_by_tag):
+                    objects.extend(self.objects_by_tag[tag])
             return objects
 
-        if (tags in self.objectsByTag):
-            return self.objectsByTag[tags]
+        if (tags in self.objects_by_tag):
+            return self.objects_by_tag[tags]
 
         return []
 
-    def Update(self, delta_time):
-        for updatable_object in self.update:
-            updatable_object.Update(delta_time)
+    def update(self, delta_time):
+        for updatable_object in self.update_objects:
+            updatable_object.update(delta_time)
 
-    def Render(self, screen):
-        for renderable_object in self.render:
-            renderable_object.Render(screen)
+    def render(self, screen):
+        for renderable_object in self.render_objects:
+            renderable_object.render(screen)
 
-    def CheckCollisionsBetweenTags(self, tags1, tags2):
-        objects1 = self.GetObjectsByTag(tags1)
-        objects2 = self.GetObjectsByTag(tags2)
+    def check_collisions_between_tags(self, tags1, tags2):
+        objects1 = self.get_objects_by_tag(tags1)
+        objects2 = self.get_objects_by_tag(tags2)
 
         collisions = []
 
         for obj1 in objects1:
             for obj2 in objects2:
-                if (obj1.Intersects(obj2)):
+                if (obj1.intersects(obj2)):
                     collisions.append(Collision2d(obj1, obj2))
 
         return collisions
 
-    def GetObjectsInCollider(self, tag, collider):
-        objects = self.GetObjectsByTag(tag)
+    def get_objects_in_collider(self, tag, collider):
+        objects = self.get_objects_by_tag(tag)
 
         ret = [] 
 
         for obj in objects:
-            if (obj.Intersects(collider)):
+            if (obj.intersects(collider)):
                 ret.append(obj)
 
         return ret

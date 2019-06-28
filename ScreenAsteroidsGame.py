@@ -28,28 +28,28 @@ class ScreenAsteroidsGame(ScreenAsteroids):
     def update(self, delta_time):
         ScreenAsteroids.update(self, delta_time)
 
-        collisions = Scene.main.CheckCollisionsBetweenTags("PlayerShip", [ "Asteroid", "EnemyShip", "EnemyMissile", "EnemyLaser" ])
+        collisions = Scene.main.check_collisions_between_tags("PlayerShip", [ "Asteroid", "EnemyShip", "EnemyMissile", "EnemyLaser" ])
 
         if (len(collisions) > 0):
-            collisions[0].obj1.Explode()
+            collisions[0].obj1.explode()
             self.lives = self.lives - 1
             for collision in collisions:
-                collision.obj2.Explode()
+                collision.obj2.explode()
             if (self.lives <= 0):
-                if (GameDefs.IsHighScore(self.score)):
+                if (GameDefs.is_highscore(self.score)):
                     self.inputChar = 0
 
-        collisions = Scene.main.CheckCollisionsBetweenTags("PlayerLaser", [ "Asteroid", "EnemyShip", "EnemyMissile" ])
+        collisions = Scene.main.check_collisions_between_tags("PlayerLaser", [ "Asteroid", "EnemyShip", "EnemyMissile" ])
         if (len(collisions) > 0):
             for collision in collisions:
-                collision.obj1.Destroy()
-                collision.obj2.Explode()
-                self.score = self.score + collision.obj2.scoreToAdd
+                collision.obj1.destroy()
+                collision.obj2.explode()
+                self.score = self.score + collision.obj2.score_to_add
 
         if (self.time_to_spawn > 0):
             self.time_to_spawn = self.time_to_spawn - delta_time
 
-        player =  Scene.main.GetObjectByTag("PlayerShip")
+        player =  Scene.main.get_object_by_tag("PlayerShip")
         if ((self.lives > 0) and (player == None) and (self.time_to_spawn <= 0)):
             self.spawn_player()
 
@@ -69,7 +69,7 @@ class ScreenAsteroidsGame(ScreenAsteroids):
                 self.inputChar = self.inputChar + 1
                 if (self.inputChar > 2):
                     self.inputChar = -1
-                    GameDefs.AddHighScore(self.score, "".join(self.inputName))
+                    GameDefs.add_highscore(self.score, "".join(self.inputName))
                 else:
                     self.inputName[self.inputChar] = "A"
             if (self.inputChar != -1):
@@ -93,7 +93,7 @@ class ScreenAsteroidsGame(ScreenAsteroids):
             if (self.enemy_timer < 0):
                 self.spawn_enemy()
 
-        asteroid =  Scene.main.GetObjectByTag("Asteroid")
+        asteroid =  Scene.main.get_object_by_tag("Asteroid")
         if (asteroid == None):
             self.level = self.level + 1
             self.set_exit(1)
@@ -111,39 +111,39 @@ class ScreenAsteroidsGame(ScreenAsteroids):
             enemy.weapon  = 0
             enemy.current_shot_cooldown = enemy.shot_cooldown = 1
 
-        Scene.main.Add(enemy)
+        Scene.main.add(enemy)
 
         self.enemy_timer = self.enemy_rate
 
     def spawn_player(self):
-        player = Scene.main.GetObjectByTag("PlayerShip")
+        player = Scene.main.get_object_by_tag("PlayerShip")
         if (player == None):
             # Check if some asteroid is nearby
             circle = Circle2d(Vector2(640,320), 60)
 
-            objects = Scene.main.GetObjectsInCollider("Asteroid", circle)
+            objects = Scene.main.get_objects_in_collider("Asteroid", circle)
 
             if (len(objects) == 0):
-                Scene.main.Add(PlayerShip("PlayerShip"))
+                Scene.main.add(PlayerShip("PlayerShip"))
 
     def render(self):
         ScreenAsteroids.render(self)
 
-        FontManager.Write(Screen.screen, "VectorTTF", str(self.score).zfill(6), (5, 5), (255, 255, 255))
+        FontManager.write(Screen.screen, "VectorTTF", str(self.score).zfill(6), (5, 5), (255, 255, 255))
         for i in range(0, self.lives):
-            WireMesh.DrawModel(Screen.screen, "PlayerShip", Vector2(i * 20 + 15, 45), 0, Vector2(0.5, 0.5))
+            WireMesh.draw_model(Screen.screen, "PlayerShip", Vector2(i * 20 + 15, 45), 0, Vector2(0.5, 0.5))
         
-        player =  Scene.main.GetObjectByTag("PlayerShip")
+        player =  Scene.main.get_object_by_tag("PlayerShip")
         if (player == None):
             if (self.lives > 0):
-                FontManager.WriteCenter(Screen.screen, "Vector", "STAGE " + str(self.level), (640, 360), (random.uniform(32, 255), random.uniform(32, 255), random.uniform(32, 255)), scale = 0.5)
+                FontManager.write_center(Screen.screen, "Vector", "STAGE " + str(self.level), (640, 360), (random.uniform(32, 255), random.uniform(32, 255), random.uniform(32, 255)), scale = 0.5)
             else:
-                FontManager.WriteCenter(Screen.screen, "Vector", "GAME OVER", (640, 100), (random.uniform(32, 255), random.uniform(32, 255), random.uniform(32, 255)), scale = 1)
+                FontManager.write_center(Screen.screen, "Vector", "GAME OVER", (640, 100), (random.uniform(32, 255), random.uniform(32, 255), random.uniform(32, 255)), scale = 1)
                 if ((self.inputChar >= 0) or (self.inputName[2] != ".")):
-                    FontManager.WriteCenter(Screen.screen, "Vector", "YOU HAVE A HIGHSCORE!", (640, 320), (255, 255, 180), scale = 0.25, widthScale = 0.25)
+                    FontManager.write_center(Screen.screen, "Vector", "YOU HAVE A HIGHSCORE!", (640, 320), (255, 255, 180), scale = 0.25, width_scale = 0.25)
                     for i in range(0, 3):
                         c = (255, 255, 180)
                         if (i == self.inputChar):
                             c = (random.uniform(30, 255),random.uniform(30, 255),random.uniform(30, 255))
-                        FontManager.Write(Screen.screen, "Vector", self.inputName[i], (640 + (i - 1) * 40, 400), c, scale = 0.5, widthScale = 0.5)
+                        FontManager.write(Screen.screen, "Vector", self.inputName[i], (640 + (i - 1) * 40, 400), c, scale = 0.5, width_scale = 0.5)
 

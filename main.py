@@ -13,17 +13,17 @@ from FontManager import *
 gScene = Scene()
 
 def load_data():
-    WireMesh.LoadModel("models/player_ship.json", "PlayerShip")
-    WireMesh.LoadModel("models/missile.json", "Missile")
+    WireMesh.load_model("models/player_ship.json", "PlayerShip")
+    WireMesh.load_model("models/missile.json", "Missile")
 
-    SoundManager.Load("audio/explosion.wav", "Explosion")
-    SoundManager.Load("audio/laser.wav", "Laser")
-    SoundManager.Load("audio/engine.wav", "Engine")
+    SoundManager.load("audio/explosion.wav", "Explosion")
+    SoundManager.load("audio/laser.wav", "Laser")
+    SoundManager.load("audio/engine.wav", "Engine")
 
-    FontManager.Load("fonts/vector/Vectorb.ttf", 18, "VectorTTF")
-    fnt = FontManager.Load("fonts/vectorfont.json", 4, "Vector")
+    FontManager.load("fonts/vector/Vectorb.ttf", 18, "VectorTTF")
+    fnt = FontManager.load("fonts/vectorfont.json", 4, "Vector")
 
-    GameDefs.LoadHighscores()
+    GameDefs.load_highscores()
 
 def main():
 
@@ -31,20 +31,20 @@ def main():
 
     load_data()
 
-    titleScreen = ScreenAsteroidsTitle()
-    gameScreen = ScreenAsteroidsGame()
+    title_screen = ScreenAsteroidsTitle()
+    game_screen = ScreenAsteroidsGame()
 
     ret = 0
     while (ret == 0):
-        ret = titleScreen.run()
+        ret = title_screen.run()
         if (ret == -1):
             break
         elif (ret == 1):
-            gameScreen.reset()
+            game_screen.reset()
             
             ret = 1
             while (ret == 1):
-                ret = gameScreen.run()
+                ret = game_screen.run()
     
 if __name__ == "__main__":
     main();

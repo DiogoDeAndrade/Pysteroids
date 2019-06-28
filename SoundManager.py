@@ -11,19 +11,26 @@ class SoundManager:
 
         self.sounds = dict()
         self.channels = []
-        for i in range(0, min(16, pygame.mixer.get_num_channels())):
-            self.channels.append(pygame.mixer.Channel(i))
+        if (pygame.mixer.get_init() != None):
+            for i in range(0, min(16, pygame.mixer.get_num_channels())):
+                self.channels.append(pygame.mixer.Channel(i))
 
         self.global_volume = 1.0
             
-    def _Load(self, path, name):
+    def _load(self, path, name):
+        if (pygame.mixer.get_init() == None):
+            return
+
         snd = pygame.mixer.Sound(path)
         if (snd != None):
             self.sounds[name] = snd            
 
-    def _Play(self, name, volume, loop):
+    def _play(self, name, volume, loop):
+        if (pygame.mixer.get_init() == None):
+            return None
+
         if (name in self.sounds):
-            channel = self.GetChannel()
+            channel = self.get_channel()
             
             if (channel != None):
                 channel.play(self.sounds[name], (-1) if (loop) else 0)
@@ -33,7 +40,10 @@ class SoundManager:
 
         return None
 
-    def GetChannel(self):
+    def get_channel(self):
+        if (pygame.mixer.get_init() == None):
+            return None
+
         for channel in self.channels:
             if (not channel.get_busy()):
                 return channel
@@ -41,20 +51,20 @@ class SoundManager:
         return None
 
     @staticmethod
-    def GetInstance():
+    def get_instance():
         if (SoundManager.instance == None):
             gSnd = SoundManager()
         
         return SoundManager.instance
 
     @staticmethod
-    def Load(path, name):
-        return SoundManager.GetInstance()._Load(path, name)
+    def load(path, name):
+        return SoundManager.get_instance()._load(path, name)
 
     @staticmethod
-    def Play(name, volume = 1.0, loop = False):
-        return SoundManager.GetInstance()._Play(name, volume, loop)
+    def play(name, volume = 1.0, loop = False):
+        return SoundManager.get_instance()._play(name, volume, loop)
 
     @staticmethod
-    def SetGlobalVolume(volume):
-        SoundManager.GetInstance().global_volume = volume
+    def set_global_volume(volume):
+        SoundManager.get_instance().global_volume = volume

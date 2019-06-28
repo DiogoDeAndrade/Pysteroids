@@ -15,16 +15,16 @@ class Shockwave(GameObject):
         self.width = 1
         self.tags.append("Shockwave");
 
-    def IsAlive(self):
+    def is_alive(self):
         return ((self.duration == 0) or (self.time < self.duration))
 
-    def Update(self, delta_time):
+    def update(self, delta_time):
         self.time = self.time + delta_time
 
-        if (not self.IsAlive()):
-            Scene.main.Remove(self)
+        if (not self.is_alive()):
+            Scene.main.remove(self)
  
-    def Render(self, screen):
+    def render(self, screen):
         r = (int)(self.radius)
         t = 0
         if (self.duration > 0):
@@ -33,7 +33,7 @@ class Shockwave(GameObject):
         
         pos = ((int)(self.position.x), (int)(self.position.y))
 
-        color = Color.InterpolateWithArray(self.colors, t)
+        color = Color.interpolate_with_array(self.colors, t)
 
         if (r > self.width):
             pygame.draw.circle(screen, color.tuple(), pos, r, self.width)

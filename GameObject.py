@@ -12,49 +12,49 @@ class GameObject:
         self.tags = [ "GameObject" ]
         self.collider = Circle2d(Vector2(0,0), 1)
 
-    def GetDirectionVector(self):
+    def get_direction_vector(self):
         # Rotation of 0 means pointing up
         angle = math.radians(self.rotation)
         return Vector2(math.sin(angle), -math.cos(angle))
 
-    def GetRightVector(self):
+    def get_right_vector(self):
         angle = math.radians(self.rotation + 90)
         return Vector2(math.sin(angle), -math.cos(angle))
 
-    def GetMountpoint(self, name):
+    def get_mountpoint(self, name):
         if (self.gfx == None):
             return Vector2(self.position)
 
-        return self.gfx.GetMountpointPRS(name, self.position, self.rotation, self.scale)
+        return self.gfx.get_mountpointPRS(name, self.position, self.rotation, self.scale)
 
-    def Destroy(self):
-        Scene.main.Remove(self)
-        self.OnDestroy()
+    def destroy(self):
+        Scene.main.remove(self)
+        self.on_destroy()
 
-    def GetTags(self):
+    def get_tags(self):
         return self.tags
 
-    def Intersects(self, otherObject):
+    def intersects(self, other_object):
         if (self.collider == None):
             return False
 
         self.collider.position = self.position
 
-        if (isinstance(otherObject, GameObject)):
-            if (otherObject.collider == None):
+        if (isinstance(other_object, GameObject)):
+            if (other_object.collider == None):
                 return False
 
-            otherObject.collider.position = otherObject.position
+            other_object.collider.position = other_object.position
 
-            if (self.collider.Intersects(otherObject.collider)):
+            if (self.collider.intersects(other_object.collider)):
                 return True
 
-        elif (isinstance(otherObject, Collider2d)):
+        elif (isinstance(other_object, Collider2d)):
 
-            if (self.collider.Intersects(otherObject)):
+            if (self.collider.intersects(other_object)):
                 return True
 
         return False
 
-    def OnDestroy(self):
+    def on_destroy(self):
         pass

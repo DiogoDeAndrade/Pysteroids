@@ -2,7 +2,7 @@ import enum
 from pygame import Vector2
 
 class ColliderType2d(enum.Enum): 
-    Circle = 0
+    circle = 0
 
 class Collision2d:
     def __init__(self, obj1, obj2):
@@ -10,19 +10,19 @@ class Collision2d:
         self.obj2 = obj2
 
 class Collider2d:
-    def Intersects(self, other_collider):
-        if (self.type == ColliderType2d.Circle):
-            return self.IntersectsCircle(other_collider)
+    def intersects(self, other_collider):
+        if (self.type == ColliderType2d.circle):
+            return self.intersects_circle(other_collider)
         
         return False
 
-    def IntersectsCircle(self, other_collider):
-        if (other_collider.type == ColliderType2d.Circle):
-            return self.IntersectsCircleCircle(other_collider)
+    def intersects_circle(self, other_collider):
+        if (other_collider.type == ColliderType2d.circle):
+            return self.intersects_circle_circle(other_collider)
         
         return False
 
-    def IntersectsCircleCircle(self, other_collider):
+    def intersects_circle_circle(self, other_collider):
         vector = (self.position + self.offset) - (other_collider.position + other_collider.offset)
         dist = vector.magnitude()
 
@@ -34,7 +34,7 @@ class Collider2d:
 
 class Circle2d(Collider2d):
     def __init__(self, offset, radius):
-        self.type = ColliderType2d.Circle
+        self.type = ColliderType2d.circle
         self.radius = radius
         self.offset = offset
         self.position = Vector2(0,0)

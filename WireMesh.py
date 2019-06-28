@@ -22,32 +22,32 @@ class WireMesh:
         self.name = ""
         self.vertex = []
         self.poly = []
-        self.polyColor = []
+        self.poly_color = []
         self.position = Vector2(0,0)
         self.rotation = 0
         self.scale = Vector2(1,1)
         self.dirty = True
-        self.currentPoly = []
+        self.current_poly = []
         self.closed = True
-        self.primitiveType = PrimitiveType.LineStrip
-        self.renderMode = RenderMode.AntiAlias
+        self.primitive_type = PrimitiveType.LineStrip
+        self.render_mode = RenderMode.AntiAlias
         self.width = 1
-        self.overrideColorEnable = False
-        self.overrideColor = (255, 255, 255)
+        self.override_color_enable = False
+        self.override_color = (255, 255, 255)
         self.mountpoints = dict()
 
-    def ToJSON(self):
+    def to_JSON(self):
         out = WireMeshJSON()
 
         out.closed = self.closed
-        if (self.primitiveType == PrimitiveType.LineStrip):
+        if (self.primitive_type == PrimitiveType.LineStrip):
             out.primitive = "LineStrip"
-        elif (self.primitiveType == PrimitiveType.LineList):
+        elif (self.primitive_type == PrimitiveType.LineList):
             out.primitive = "LineList"
-        if (self.renderMode == RenderMode.Normal):
-            out.renderMode = "Normal"
-        elif (self.renderMode == RenderMode.AntiAlias):
-            out.renderMode = "AntiAlias"
+        if (self.render_mode == RenderMode.Normal):
+            out.render_mode = "Normal"
+        elif (self.render_mode == RenderMode.AntiAlias):
+            out.render_mode = "AntiAlias"
         out.lineWidth = self.width
 
         out.vertex = [ ]
@@ -58,7 +58,7 @@ class WireMesh:
         idx = 0
         for polygon in self.poly:
             poly = dict()
-            poly["color"] = self.polyColor[idx]
+            poly["color"] = self.poly_color[idx]
             poly["index"] = polygon
             idx = idx + 1        
             out.polygons.append(poly)
@@ -75,16 +75,16 @@ class WireMesh:
 
         return json.dumps(ret, default=lambda o: o.__dict__, indent=4)
 
-    def FromJSON(self, data):
+    def from_JSON(self, data):
         self.closed = data["closed"]
         if (data["primitive"] == "LineStrip"):
-            self.primitiveType = PrimitiveType.LineStrip
+            self.primitive_type = PrimitiveType.LineStrip
         elif (data["primitive"] == "LineList"):
-            self.primitiveType = PrimitiveType.LineList
-        if (data["renderMode"] == "Normal"):
-            self.renderMode = RenderMode.Normal
-        elif (data["renderMode"] == "AntiAlias"):
-            self.renderMode = RenderMode.AntiAlias
+            self.primitive_type = PrimitiveType.LineList
+        if (data["render_mode"] == "Normal"):
+            self.render_mode = RenderMode.Normal
+        elif (data["render_mode"] == "AntiAlias"):
+            self.render_mode = RenderMode.AntiAlias
         self.width = data["lineWidth"]
 
         self.vertex = []
@@ -92,10 +92,10 @@ class WireMesh:
             self.vertex.append(Vector2(v[0], v[1]))
 
         self.poly = []
-        self.polyColor = []
+        self.poly_color = []
 
         for p in data["polygons"]:
-            self.polyColor.append(p["color"])        
+            self.poly_color.append(p["color"])        
             self.poly.append(p["index"])
 
         self.mountpoints = dict()
@@ -105,94 +105,94 @@ class WireMesh:
                 self.mountpoints[name] = ( Vector2(data["mountpoints"][name]["pos"][0], data["mountpoints"][name]["pos"][1]), Vector2(data["mountpoints"][name]["dir"][0], data["mountpoints"][name]["dir"][1]))
 
 
-    def AddVertex(self, vertex):
+    def add_vertex(self, vertex):
         self.vertex.append(vertex)
         return len(self.vertex) - 1
 
-    def BeginPoly(self):
-        self.currentPoly = []
+    def begin_poly(self):
+        self.current_poly = []
         self.currentPolyColor = (255, 255, 255)
 
-    def AddVertexToPoly(self, index):
-        self.currentPoly.append(index)
+    def add_vertex_to_poly(self, index):
+        self.current_poly.append(index)
 
-    def EndPoly(self):
-        self.poly.append(self.currentPoly)
-        self.polyColor.append(self.currentPolyColor)
-        self.currentPoly = []
+    def end_poly(self):
+        self.poly.append(self.current_poly)
+        self.poly_color.append(self.currentPolyColor)
+        self.current_poly = []
         self.currentPolyColor = (255, 255, 255)
 
-    def SetPolyColor(self, color):
+    def set_poly_color(self, color):
         self.currentPolyColor = color
 
-    def GetColor(self, polyIndex):
-        if (self.overrideColorEnable):
-            return self.overrideColor
+    def get_color(self, polyIndex):
+        if (self.override_color_enable):
+            return self.override_color
                    
-        return self.polyColor[polyIndex]
+        return self.poly_color[polyIndex]
 
-    def AddMountpoint(self, name, pos, dir):
+    def add_mountpoint(self, name, pos, dir):
         self.mountpoints[name] = ( pos, dir )
 
-    def AddMountpointPos(self, name, pos):
+    def add_mountpoint_pos(self, name, pos):
         if (name in self.mountpoints):
             self.mountpoints[name] = (pos, self.mountpoints[name][1])
         else:
             self.mountpoints[name] = ( pos, (0, 1) )
 
-    def GetMountpoint(self, name):
+    def get_mountpoint(self, name):
         if (name in self.mountpoints):
-            return self.VertexTransform(self.mountpoints[name][0]), VertexTransformNoPos(self.mountpoints[name][1])
+            return self.vertex_transform(self.mountpoints[name][0]), vertex_transform_no_pos(self.mountpoints[name][1])
 
-        return self.VertexTransform(Vector2(0,0)), VertexTransform(Vector2(0,1))
+        return self.vertex_transform(Vector2(0,0)), vertex_transform(Vector2(0,1))
 
-    def GetMountpointPRS(self, name, position, rotation, scale):
+    def get_mountpointPRS(self, name, position, rotation, scale):
         if (name in self.mountpoints):
-            return WireMesh.VertexTransformPRS(self.mountpoints[name][0], position, rotation, scale), WireMesh.VertexTransformPRS(self.mountpoints[name][1], Vector2(0,0), rotation, scale)
+            return WireMesh.vertex_transformPRS(self.mountpoints[name][0], position, rotation, scale), WireMesh.vertex_transformPRS(self.mountpoints[name][1], Vector2(0,0), rotation, scale)
 
-        return WireMesh.VertexTransformPRS(Vector2(0,0), position, rotation, scale), WireMesh.VertexTransformPRS(Vector2(0,1), Vector2(0,0), rotation, scale)
+        return WireMesh.vertex_transformPRS(Vector2(0,0), position, rotation, scale), WireMesh.vertex_transformPRS(Vector2(0,1), Vector2(0,0), rotation, scale)
 
-    def MountpointExists(self, name):
+    def mountpoint_exists(self, name):
         if (name in self.mountpoints):
             return True
 
         return False
 
-    def Draw(self, screen):
+    def draw(self, screen):
         if (self.dirty):
-            self.Rebuild()   
+            self.rebuild()   
 
-        self.DrawProcessedVertex(screen, self.cacheVertex)
+        self.draw_processed_vertex(screen, self.cache_vertex)
         
-    def DrawPRS(self, screen, position, rotation, scale):
-        cacheVertex = [WireMesh.VertexTransformPRS(v, position,rotation, scale) for v in self.vertex]
+    def drawPRS(self, screen, position, rotation, scale):
+        cache_vertex = [WireMesh.vertex_transformPRS(v, position,rotation, scale) for v in self.vertex]
 
-        self.DrawProcessedVertex(screen, cacheVertex)
+        self.draw_processed_vertex(screen, cache_vertex)
 
-    def DrawProcessedVertex(self, screen, cacheVertex):
+    def draw_processed_vertex(self, screen, cache_vertex):
         for idx, poly in enumerate(self.poly):
-            pointlist = [cacheVertex[i] for i in poly]
-            if (self.primitiveType == PrimitiveType.LineStrip):
-                if (self.renderMode == RenderMode.AntiAlias):
-                    pygame.draw.aalines(screen, self.GetColor(idx), self.closed, pointlist)
+            pointlist = [cache_vertex[i] for i in poly]
+            if (self.primitive_type == PrimitiveType.LineStrip):
+                if (self.render_mode == RenderMode.AntiAlias):
+                    pygame.draw.aalines(screen, self.get_color(idx), self.closed, pointlist)
                 else:
-                    pygame.draw.lines(screen, self.GetColor(idx), self.closed, pointlist, (int)(self.width))
-            elif (self.primitiveType == PrimitiveType.LineList):
-                if (self.renderMode == RenderMode.AntiAlias):
+                    pygame.draw.lines(screen, self.get_color(idx), self.closed, pointlist, (int)(self.width))
+            elif (self.primitive_type == PrimitiveType.LineList):
+                if (self.render_mode == RenderMode.AntiAlias):
                     for idx2 in range(0, len(pointlist), 2):
-                        pygame.draw.aaline(screen, self.GetColor(idx), pointlist[idx2], pointlist[idx2 + 1], False)
+                        pygame.draw.aaline(screen, self.get_color(idx), pointlist[idx2], pointlist[idx2 + 1], False)
                 else:
                     for idx2 in range(0, len(pointlist), 2):
-                        pygame.draw.line(screen, self.GetColor(idx), pointlist[idx2], pointlist[idx2 + 1], (int)(self.width))
+                        pygame.draw.line(screen, self.get_color(idx), pointlist[idx2], pointlist[idx2 + 1], (int)(self.width))
 
-    def Rebuild(self):
-        self.cacheVertex = [self.VertexTransform(v) for v in self.vertex]
+    def rebuild(self):
+        self.cache_vertex = [self.vertex_transform(v) for v in self.vertex]
         self.dirty = False
 
-    def VertexTransform(self, vertex):
-        return self.VertexTransformNoPos(vertex) + self.position
+    def vertex_transform(self, vertex):
+        return self.vertex_transform_no_pos(vertex) + self.position
 
-    def VertexTransformNoPos(self, vertex):
+    def vertex_transform_no_pos(self, vertex):
         a = math.radians(self.rotation)
         s = math.sin(a)
         c = math.cos(a)
@@ -202,7 +202,7 @@ class WireMesh:
         return v
 
     @staticmethod
-    def VertexTransformPRS(vertex, position, rotation, scale):
+    def vertex_transformPRS(vertex, position, rotation, scale):
         a = math.radians(rotation)
         s = math.sin(a)
         c = math.cos(a)
@@ -212,34 +212,34 @@ class WireMesh:
 
         return v
 
-    def SetPosition(self, position):
+    def set_position(self, position):
         self.position = position
         self.dirty = True
 
-    def SetRotation(self, rotation):
+    def set_rotation(self, rotation):
         self.rotation = rotation
         self.dirty = True
 
-    def SetScale(self, scale):
+    def set_scale(self, scale):
         self.scale = scale
         self.dirty = True
     
-    def GetRadius(self):
+    def get_radius(self):
         maxDist = 0
         for v in self.vertex:
             maxDist = max(v.magnitude_squared(), maxDist)
 
         return math.sqrt(maxDist)
 
-    def ApplyTransform(self):
-        self.vertex = [self.VertexTransform(v) for v in self.vertex]
+    def apply_transform(self):
+        self.vertex = [self.vertex_transform(v) for v in self.vertex]
         self.dirty = True
         self.position = (0,0)
         self.rotation = 0
         self.scale = (1,1)
 
-    def ConvertToUnindexedLineList(self):
-        if (self.primitiveType == PrimitiveType.LineStrip):
+    def convert_to_unindexed_line_list(self):
+        if (self.primitive_type == PrimitiveType.LineStrip):
             newVertex = []
             for polyId, p in enumerate(self.poly):
                 newPoly = []
@@ -252,7 +252,7 @@ class WireMesh:
                     newPoly.append(len(newVertex) - 1)
                 self.poly[polyId] = newPoly
             self.vertex = newVertex
-        elif (self.primitiveType == PrimitiveType.LineList):
+        elif (self.primitive_type == PrimitiveType.LineList):
             newVertex = []
             for polyId, p in enumerate(self.poly):
                 newPoly = []
@@ -263,71 +263,71 @@ class WireMesh:
                 self.poly[polyId] = newPoly
             self.vertex = newVertex
 
-        self.primitiveType = PrimitiveType.LineList
+        self.primitive_type = PrimitiveType.LineList
 
-    def AddCircle(self, sides, radius, variance, color, angularOffset = 0, centerPos = Vector2(0,0)):
-        self.BeginPoly()
-        self.SetPolyColor(color)
+    def add_circle(self, sides, radius, variance, color, angular_offset = 0, center_pos = Vector2(0,0)):
+        self.begin_poly()
+        self.set_poly_color(color)
 
-        angle = angularOffset
+        angle = angular_offset
         angleInc = math.pi * 2 / sides
         r = radius
 
         for i in range(0, sides):
             if (variance > 0):
                 r = random.uniform(radius - variance, radius + variance)                
-            idx = self.AddVertex(centerPos + Vector2(r * math.cos(angle), r * math.sin(angle)))
-            self.AddVertexToPoly(idx)
+            idx = self.add_vertex(center_pos + Vector2(r * math.cos(angle), r * math.sin(angle)))
+            self.add_vertex_to_poly(idx)
             angle += angleInc
 
-        self.EndPoly()
+        self.end_poly()
 
     #-- Model Management --#
     models = dict()
 
     @staticmethod
-    def LoadModel(filename, model_name = ""):
+    def load_model(filename, model_name = ""):
         just_filename, file_extension = os.path.splitext(filename)
         if (file_extension == ".wm"):
-            return WireMesh.LoadModelWM(filename, model_name)
+            return WireMesh.load_modelWM(filename, model_name)
         elif (file_extension == ".json"):
-            return WireMesh.LoadModelJSON(filename, model_name)
+            return WireMesh.load_modelJSON(filename, model_name)
         
         return None
     
     @staticmethod
-    def LoadModelWM(filename, model_name):
-        newMesh = WireMesh()
+    def load_modelWM(filename, model_name):
+        new_mesh = WireMesh()
         with open(filename, "rt") as file:
             str = "\n"
             while (str != ""):                
                 str = str.strip()
                 if (str == "polygon:"):
-                    newMesh.BeginPoly()
+                    new_mesh.begin_poly()
                     exit = False
                     while (not exit):
                         str = file.readline().strip()
                         if (str.find(':') != -1):
                             if (str.find('color:') != -1):
-                                newMesh.SetPolyColor(WireMesh.ReadColor(file))
+                                new_mesh.set_poly_color(WireMesh.read_color(file))
                             elif (str.find('vertex:') != -1):
-                                vertexExit = False
-                                while (not vertexExit):
+                                vertex_exit = False
+                                while (not vertex_exit):
                                     str = file.readline().strip()
                                     if (str.find(':') != -1):                                        
                                         break
                                     elif (str == ""):
-                                        vertexExit = True
+                                        vertex_exit = True
                                     else:
-                                        v = WireMesh.ParseVector2(str)
-                                        newMesh.AddVertexToPoly(newMesh.AddVertex(v))
+                                        v = WireMesh.parse_vector2(str)
+                                        new_mesh.add_vertex_to_poly(new_mesh.add_vertex(v))
                                 
-                                if (not vertexExit):
+                                if (not vertex_exit):
                                     break
                         elif (str == ""):
                             exit = True
 
-                    newMesh.EndPoly()
+                    new_mesh.end_poly()
 
                     if (not exit):
                         # Left because I found a tag of something but polygons
@@ -341,9 +341,9 @@ class WireMesh:
                             if (str.find('name:') != -1):
                                 mountpoint_name = file.readline().strip()
                             elif (str.find('position:') != -1):
-                                mountpoint_position = v = WireMesh.ParseVector2(file.readline().strip())
+                                mountpoint_position = v = WireMesh.parse_vector2(file.readline().strip())
                                 if (mountpoint_name != ""):
-                                    newMesh.AddMountpointPos(mountpoint_name, mountpoint_position)
+                                    new_mesh.add_mountpoint_pos(mountpoint_name, mountpoint_position)
                                     break
                         else:
                             exit = True
@@ -358,35 +358,35 @@ class WireMesh:
         if (model_name == ""):
             model_name = filename
         
-        newMesh.name = model_name
-        WireMesh.models[model_name] = newMesh    
+        new_mesh.name = model_name
+        WireMesh.models[model_name] = new_mesh    
 
-        return newMesh    
+        return new_mesh    
 
     @staticmethod
-    def LoadModelJSON(filename, model_name):
+    def load_modelJSON(filename, model_name):
         ret = None
 
         text_file = open(filename, "rt")
-        jsonString = text_file.read()
+        json_string = text_file.read()
         text_file.close()
 
-        meshes = json.loads(jsonString)
+        meshes = json.loads(json_string)
 
         for name in meshes:
-            newMesh = WireMesh()
-            newMesh.FromJSON(meshes[name])
+            new_mesh = WireMesh()
+            new_mesh.from_JSON(meshes[name])
 
-            newMesh.name = name
-            WireMesh.models[name] = newMesh
+            new_mesh.name = name
+            WireMesh.models[name] = new_mesh
 
             if (ret == None):
-                ret = newMesh
+                ret = new_mesh
 
         return ret
 
     @staticmethod
-    def ReadColor(file):
+    def read_color(file):
         str = file.readline()
         if (str == ""):
             return (255, 255, 255)
@@ -395,7 +395,7 @@ class WireMesh:
         return (int(values[0]), int(values[1]), int(values[2]))
 
     @staticmethod
-    def ParseVector2(str):
+    def parse_vector2(str):
         if (str == ""):
             return (0, 0, 0)
         str = str.replace('(', '').replace(')', '')
@@ -403,37 +403,37 @@ class WireMesh:
         return Vector2(float(values[0]), float(values[1]))
 
     @staticmethod
-    def GetModel(model_name):
+    def get_model(model_name):
         if (model_name in WireMesh.models):
             return WireMesh.models[model_name]
 
         return None
     
     @staticmethod
-    def Copy(src):
+    def copy(src):
         mesh = WireMesh()
         mesh.vertex = src.vertex.copy()
         mesh.poly = src.poly.copy()
-        mesh.polyColor = src.polyColor.copy()
+        mesh.poly_color = src.poly_color.copy()
         mesh.position = src.position
         mesh.rotation = src.rotation
         mesh.scale = src.scale
         mesh.dirty = True
         mesh.closed = src.closed
-        mesh.primitiveType = src.primitiveType
-        mesh.renderMode = src.renderMode
+        mesh.primitive_type = src.primitive_type
+        mesh.render_mode = src.render_mode
         mesh.width = src.width
 
         return mesh
 
     @staticmethod
-    def Circle(sides, radius, variance, color, angularOffset = 0, centerPos = Vector2(0,0)):
+    def circle(sides, radius, variance, color, angular_offset = 0, center_pos = Vector2(0,0)):
         mesh = WireMesh()
 
-        mesh.AddCircle(sides, radius, variance, color, angularOffset)
+        mesh.add_circle(sides, radius, variance, color, angular_offset)
 
         return mesh
 
     @staticmethod
-    def DrawModel(screen, name, position, rotation, scale):
-        WireMesh.models[name].DrawPRS(screen, position, rotation, scale)
+    def draw_model(screen, name, position, rotation, scale):
+        WireMesh.models[name].drawPRS(screen, position, rotation, scale)

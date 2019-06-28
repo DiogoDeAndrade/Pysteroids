@@ -9,21 +9,21 @@ class EnemyShip(Ship):
     def __init__(self, name):
         Ship.__init__(self, name)
 
-        self.gfx = WireMesh.Circle(8, 40, 0, (255,0,255), angularOffset = math.pi * 0.125)
-        self.gfx.AddCircle(8, 15, 0, (0, 255, 255), angularOffset = math.pi * 0.125)
+        self.gfx = WireMesh.circle(8, 40, 0, (255,0,255), angular_offset = math.pi * 0.125)
+        self.gfx.add_circle(8, 15, 0, (0, 255, 255), angular_offset = math.pi * 0.125)
         
-        self.animatedGfx = WireMesh()
+        self.animated_gfx = WireMesh()
         for i in range(0, 4):
             pos = 30 * Vector2(math.cos(i * math.pi * 0.5), math.sin(i * math.pi * 0.5))
-            self.animatedGfx.AddCircle(4, 5, 0, (255, 0, 255), angularOffset = math.pi * 0.25, centerPos = pos)
+            self.animated_gfx.add_circle(4, 5, 0, (255, 0, 255), angular_offset = math.pi * 0.25, center_pos = pos)
 
-        self.collider = Circle2d(Vector2(0,0), self.gfx.GetRadius())
-        self.radius = self.gfx.GetRadius()
+        self.collider = Circle2d(Vector2(0,0), self.gfx.get_radius())
+        self.radius = self.gfx.get_radius()
         self.shot_cooldown = 1
         self.current_shot_cooldown = 0
         self.weapon = 0
 
-        self.animatedGfxAngle = 0
+        self.animated_gfx_angle = 0
 
         r = ((int)(random.uniform(0,100))) % 4
         if (r == 0):
@@ -41,40 +41,40 @@ class EnemyShip(Ship):
 
         self.position = self.startPos
             
-        self.patrolDuration = 20
-        self.patrolTime = 0
+        self.patrol_duration = 20
+        self.patrol_time = 0
 
-        self.scoreToAdd = 200
+        self.score_to_add = 200
 
         self.tags.append("EnemyShip")
         
-    def Update(self, delta_time):
+    def update(self, delta_time):
 
         self.current_shot_cooldown = self.current_shot_cooldown - delta_time
         if (self.current_shot_cooldown < 0):
-            self.FireWeapon()
+            self.fire_weapon()
 
-        self.animatedGfxAngle = self.animatedGfxAngle + delta_time * 180      
+        self.animated_gfx_angle = self.animated_gfx_angle + delta_time * 180      
 
-        self.patrolTime = self.patrolTime + delta_time
-        if (self.patrolTime > self.patrolDuration):
-            self.Destroy()
+        self.patrol_time = self.patrol_time + delta_time
+        if (self.patrol_time > self.patrol_duration):
+            self.destroy()
             return
         else:
-            self.position = Vector2.lerp(self.startPos, self.targetPos, self.patrolTime / self.patrolDuration)
+            self.position = Vector2.lerp(self.startPos, self.targetPos, self.patrol_time / self.patrol_duration)
 
-        Ship.Update(self, delta_time)
+        Ship.update(self, delta_time)
 
-    def Render(self, screen):
-        Ship.Render(self, screen)
+    def render(self, screen):
+        Ship.render(self, screen)
 
-        self.gfx.DrawPRS(screen, self.position, self.rotation, self.scale)
-        self.animatedGfx.DrawPRS(screen, self.position, self.animatedGfxAngle, self.scale)
+        self.gfx.drawPRS(screen, self.position, self.rotation, self.scale)
+        self.animated_gfx.drawPRS(screen, self.position, self.animated_gfx_angle, self.scale)
 
-    def OnDestroy(self):
-        GameObject.OnDestroy(self)
+    def on_destroy(self):
+        GameObject.on_destroy(self)
 
-    def FireWeapon(self):
+    def fire_weapon(self):
         if (self.weapon == 0):
             r = random.uniform(0,100)
             if (r < 50):
@@ -82,28 +82,28 @@ class EnemyShip(Ship):
             else:
                 dir = Vector2(1,0)
 
-            Scene.main.Add(Laser("EnemyLaser", (255, 0, 0), 4, 20, self.position + dir * 40, dir * 400, 2))
-            Scene.main.Add(Laser("EnemyLaser", (255, 0, 0), 4, 20, self.position - dir * 40, -dir * 400, 2))
+            Scene.main.add(Laser("EnemyLaser", (255, 0, 0), 4, 20, self.position + dir * 40, dir * 400, 2))
+            Scene.main.add(Laser("EnemyLaser", (255, 0, 0), 4, 20, self.position - dir * 40, -dir * 400, 2))
 
             self.current_shot_cooldown = self.shot_cooldown
-            SoundManager.Play("Laser", 0.15)
+            SoundManager.play("Laser", 0.15)
         elif (self.weapon == 1):
-            player =  Scene.main.GetObjectByTag("PlayerShip")
+            player =  Scene.main.get_object_by_tag("PlayerShip")
             if (player != None):
                 dir = player.position - self.position
                 dir.normalize_ip()
 
-                Scene.main.Add(Laser("EnemyLaser", (255, 0, 0), 4, 20, self.position + dir * 40, dir * 400, 2))
+                Scene.main.add(Laser("EnemyLaser", (255, 0, 0), 4, 20, self.position + dir * 40, dir * 400, 2))
 
                 self.current_shot_cooldown = self.shot_cooldown
-                SoundManager.Play("Laser", 0.15)
+                SoundManager.play("Laser", 0.15)
         elif (self.weapon == 2):
-            player =  Scene.main.GetObjectByTag("PlayerShip")
+            player =  Scene.main.get_object_by_tag("PlayerShip")
             if (player != None):
                 missile = Missile("Missile", player, "EnemyMissile")
                 missile.position = Vector2(self.position)
 
-                Scene.main.Add(missile)
+                Scene.main.add(missile)
 
                 self.current_shot_cooldown = self.shot_cooldown
-                SoundManager.Play("Laser", 0.15)
+                SoundManager.play("Laser", 0.15)
