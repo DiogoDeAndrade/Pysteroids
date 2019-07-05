@@ -1,9 +1,9 @@
-from WireMesh import *
+from pygame.math import Vector2
+
 from Ship import *
 from Laser import *
 from GameDefs import *
 from Missile import *
-from pygame.math import Vector2
 
 class EnemyShip(Ship):
     def __init__(self, name):
@@ -72,7 +72,7 @@ class EnemyShip(Ship):
         self.animated_gfx.drawPRS(screen, self.position, self.animated_gfx_angle, self.scale)
 
     def on_destroy(self):
-        GameObject.on_destroy(self)
+        Engine.GameObject.on_destroy(self)
 
     def fire_weapon(self):
         if (self.weapon == 0):

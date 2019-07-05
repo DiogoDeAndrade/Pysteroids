@@ -1,8 +1,11 @@
-from Screen import *
+import pygame
+
+import Engine
+
 from Asteroid import *
 from Starfield import *
 
-class ScreenAsteroids(Screen):
+class ScreenAsteroids(Engine.Screen):
     def init(self):
        
         keys = pygame.key.get_pressed()
@@ -12,7 +15,7 @@ class ScreenAsteroids(Screen):
                     running = False
             keys = pygame.key.get_pressed()
 
-        Screen.init(self)
+        Engine.Screen.init(self)
 
         Scene.main.clear()
 
@@ -36,10 +39,10 @@ class ScreenAsteroids(Screen):
         Scene.main.update(delta_time)
 
     def render(self):
-        Screen.render(self)
+        Engine.Screen.render(self)
 
-        Screen.screen.fill((5, 5, 15))
+        Engine.Screen.screen.fill((5, 5, 15))
 
-        Scene.main.render(Screen.screen)
+        Scene.main.render(Engine.Screen.screen)
 
     

@@ -1,7 +1,7 @@
-from FontManager import *
-from Screen import *
 import json
 import os
+
+import Engine
 
 class PlayerDefs:
     rotationSpeed = 360
@@ -40,7 +40,7 @@ class GameDefs:
     def display_highscores(base_y):
         for i in range(0, 10):
             hs_text = str(i + 1).rjust(2," ") + "." + GameDefs.highscores[i][0] + "......" + str(GameDefs.highscores[i][1]).rjust(6, "0")
-            FontManager.write_center(Screen.screen, "Vector", hs_text, (640, base_y + i * 30), (255, 255, 180), scale = 0.2, width_scale = 0.25)
+            Engine.FontManager.write_center(Engine.Screen.screen, "Vector", hs_text, (640, base_y + i * 30), (255, 255, 180), scale = 0.2, width_scale = 0.25)
 
     @staticmethod
     def add_highscore(score, name):

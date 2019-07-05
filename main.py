@@ -2,32 +2,30 @@ import array
 import random
 from pygame.math import Vector2
 
-from WireMesh import *
+import Engine
+
 from GameDefs import *
-from Scene import *
 from ScreenAsteroidsTitle import * 
 from ScreenAsteroidsGame import * 
-from SoundManager import *
-from FontManager import *
 
-gScene = Scene()
+gScene = Engine.Scene()
 
 def load_data():
-    WireMesh.load_model("models/player_ship.json", "PlayerShip")
-    WireMesh.load_model("models/missile.json", "Missile")
+    Engine.WireMesh.load_model("models/player_ship.json", "PlayerShip")
+    Engine.WireMesh.load_model("models/missile.json", "Missile")
 
-    SoundManager.load("audio/explosion.wav", "Explosion")
-    SoundManager.load("audio/laser.wav", "Laser")
-    SoundManager.load("audio/engine.wav", "Engine")
+    Engine.SoundManager.load("audio/explosion.wav", "Explosion")
+    Engine.SoundManager.load("audio/laser.wav", "Laser")
+    Engine.SoundManager.load("audio/engine.wav", "Engine")
 
-    FontManager.load("fonts/vector/Vectorb.ttf", 18, "VectorTTF")
-    fnt = FontManager.load("fonts/vectorfont.json", 4, "Vector")
+    Engine.FontManager.load("fonts/vector/Vectorb.ttf", 18, "VectorTTF")
+    fnt = Engine.FontManager.load("fonts/vectorfont.json", 4, "Vector")
 
     GameDefs.load_highscores()
 
 def main():
 
-    Screen.startup()
+    Engine.Screen.startup()
 
     load_data()
 

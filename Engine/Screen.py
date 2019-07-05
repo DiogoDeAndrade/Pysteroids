@@ -1,6 +1,7 @@
 import time
 import pygame
-from SoundManager import *
+
+from Engine.SoundManager import *
 
 class Screen:
     current = None

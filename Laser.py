@@ -1,11 +1,13 @@
 import pygame
-from GameObject import *
+from pygame.math import Vector2
 
-class Laser(GameObject):
+import Engine
+
+class Laser(Engine.GameObject):
     def __init__(self, tag, color, width, length, position, velocity, time_to_live):
-        GameObject.__init__(self, tag)
+        Engine.GameObject.__init__(self, tag)
 
-        self.collider = Circle2d(Vector2(0,0), width)
+        self.collider = Engine.Circle2d(Vector2(0,0), width)
         self.start_position = position
         self.position = position
         self.velocity = velocity

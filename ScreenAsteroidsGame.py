@@ -1,7 +1,6 @@
 from ScreenAsteroids import *
 from PlayerShip import *
 from EnemyShip import *
-from FontManager import *
 
 class ScreenAsteroidsGame(ScreenAsteroids):
     def __init__(self):
@@ -129,21 +128,21 @@ class ScreenAsteroidsGame(ScreenAsteroids):
     def render(self):
         ScreenAsteroids.render(self)
 
-        FontManager.write(Screen.screen, "VectorTTF", str(self.score).zfill(6), (5, 5), (255, 255, 255))
+        FontManager.write(Engine.Screen.screen, "VectorTTF", str(self.score).zfill(6), (5, 5), (255, 255, 255))
         for i in range(0, self.lives):
-            WireMesh.draw_model(Screen.screen, "PlayerShip", Vector2(i * 20 + 15, 45), 0, Vector2(0.5, 0.5))
+            WireMesh.draw_model(Engine.Screen.screen, "PlayerShip", Vector2(i * 20 + 15, 45), 0, Vector2(0.5, 0.5))
         
         player =  Scene.main.get_object_by_tag("PlayerShip")
         if (player == None):
             if (self.lives > 0):
-                FontManager.write_center(Screen.screen, "Vector", "STAGE " + str(self.level), (640, 360), (random.uniform(32, 255), random.uniform(32, 255), random.uniform(32, 255)), scale = 0.5)
+                FontManager.write_center(Engine.Screen.screen, "Vector", "STAGE " + str(self.level), (640, 360), (random.uniform(32, 255), random.uniform(32, 255), random.uniform(32, 255)), scale = 0.5)
             else:
-                FontManager.write_center(Screen.screen, "Vector", "GAME OVER", (640, 100), (random.uniform(32, 255), random.uniform(32, 255), random.uniform(32, 255)), scale = 1)
+                FontManager.write_center(Engine.Screen.screen, "Vector", "GAME OVER", (640, 100), (random.uniform(32, 255), random.uniform(32, 255), random.uniform(32, 255)), scale = 1)
                 if ((self.inputChar >= 0) or (self.inputName[2] != ".")):
-                    FontManager.write_center(Screen.screen, "Vector", "YOU HAVE A HIGHSCORE!", (640, 320), (255, 255, 180), scale = 0.25, width_scale = 0.25)
+                    FontManager.write_center(Engine.Screen.screen, "Vector", "YOU HAVE A HIGHSCORE!", (640, 320), (255, 255, 180), scale = 0.25, width_scale = 0.25)
                     for i in range(0, 3):
                         c = (255, 255, 180)
                         if (i == self.inputChar):
                             c = (random.uniform(30, 255),random.uniform(30, 255),random.uniform(30, 255))
-                        FontManager.write(Screen.screen, "Vector", self.inputName[i], (640 + (i - 1) * 40, 400), c, scale = 0.5, width_scale = 0.5)
+                        FontManager.write(Engine.Screen.screen, "Vector", self.inputName[i], (640 + (i - 1) * 40, 400), c, scale = 0.5, width_scale = 0.5)
 

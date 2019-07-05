@@ -1,7 +1,8 @@
 import math
 from pygame.math import Vector2
-from Scene import * 
-from Collider2d import *
+
+from Engine.Collider2d import *
+from Engine.Scene import *
 
 class GameObject:
     def __init__(self, name):

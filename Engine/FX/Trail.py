@@ -1,6 +1,6 @@
-from GameObject import *
-from Color import *
 import pygame
+
+from Engine import *
 
 class TrailParticle:
     def __init__(self, pos, color):

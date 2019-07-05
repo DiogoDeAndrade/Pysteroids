@@ -1,7 +1,7 @@
-from Color import *
-from WireMesh import *
-from Scene import *
-from GameObject import *
+import enum
+
+from Engine import *
+from Engine.Color import Color
 
 class FadeMethod(enum.Enum): 
     Shrink = 0

@@ -1,7 +1,8 @@
-from WireMesh import *
+from pygame.math import Vector2
+
+from Engine import *
 from Ship import *
 from GameDefs import *
-from pygame.math import Vector2
 
 class Asteroid(Ship):
     def __init__(self, name, radius = 40, variance = 0.5, rotation_speed = 90.0, speed = 25):
@@ -10,7 +11,7 @@ class Asteroid(Ship):
         self.radius = radius
         self.variance = variance
         self.gfx = WireMesh.circle(8, self.radius, self.radius * self.variance, (130, 68, 0))
-        self.gfx.render_mode = RenderMode.Normal
+        self.gfx.render_mode = Engine.RenderMode.Normal
         self.gfx.width = 2
         self.max_radius = self.radius * (1 + self.variance)
         

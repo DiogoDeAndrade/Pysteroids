@@ -1,7 +1,7 @@
 import pygame
-from Color import *
-from Scene import *
-from GameObject import *
+
+from Engine import *
+from Engine.Color import Color
 
 class Shockwave(GameObject):
     def __init__(self, position, duration, radius, colors):

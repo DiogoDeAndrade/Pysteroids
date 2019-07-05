@@ -1,12 +1,14 @@
-from GameObject import *
-from WireMeshExplosion import *
-from Shockwave import *
-from ParticleSystem import *
-from SoundManager import *
+import pygame
+from pygame.math import Vector2
 
-class Ship(GameObject):
+import Engine
+import Engine.FX
+
+from Engine.Color import Color
+
+class Ship(Engine.GameObject):
     def __init__(self, name):
-        GameObject.__init__(self, name)
+        Engine.GameObject.__init__(self, name)
 
         self.acceleration = 200.0
         self.break_acceleration = 100.0
@@ -45,14 +47,14 @@ class Ship(GameObject):
             self.velocity = self.velocity.normalize() * self.max_velocity
 
     def explode(self):
-        explosion = WireMeshExplosion(self.gfx, self.position, self.rotation, self.scale, True, 150, 300, 0.5, 3)
-        explosion.fade_method = FadeMethod.Color
+        explosion = Engine.FX.WireMeshExplosion(self.gfx, self.position, self.rotation, self.scale, True, 150, 300, 0.5, 3)
+        explosion.fade_method = Engine.FX.FadeMethod.Color
         explosion.colors = [Color(1.0, 1.0, 0.0, 1.0), Color(1.0, 0.0, 0.0, 1.0), Color(0.0, 0.0, 0.0, 1.0), Color(0.0, 0.0, 0.0, 0.0)]
         explosion.duration = 2
 
-        shockwave = Shockwave(self.position, 0.75, 200, [Color(1.0, 1.0, 0.0, 1.0), Color(1.0, 0.0, 0.0, 1.0), Color(0.0, 0.0, 0.0, 1.0), Color(0.0, 0.0, 0.0, 0.0)])
+        shockwave = Engine.FX.Shockwave(self.position, 0.75, 200, [Color(1.0, 1.0, 0.0, 1.0), Color(1.0, 0.0, 0.0, 1.0), Color(0.0, 0.0, 0.0, 1.0), Color(0.0, 0.0, 0.0, 0.0)])
 
-        particle_system = ParticleSystem(self.position)
+        particle_system = Engine.FX.ParticleSystem(self.position)
         particle_system.color_over_time = [Color(1.0, 1.0, 0.0, 1.0), Color(1.0, 0.0, 0.0, 1.0), Color(0.0, 0.0, 0.0, 1.0), Color(0.0, 0.0, 0.0, 0.0)]
         particle_system.start_speed = (50, 100)
         particle_system.particle_life = (2, 4)
@@ -60,11 +62,11 @@ class Ship(GameObject):
         particle_system.rate = 0
         particle_system.spawn(50)
 
-        Scene.main.add(explosion)
-        Scene.main.add(shockwave)
-        Scene.main.add(particle_system)
+        Engine.Scene.main.add(explosion)
+        Engine.Scene.main.add(shockwave)
+        Engine.Scene.main.add(particle_system)
 
-        SoundManager.play("Explosion")
+        Engine.SoundManager.play("Explosion")
 
         self.destroy()
 

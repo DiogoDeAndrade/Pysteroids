@@ -2,10 +2,11 @@ import math
 import random
 import pygame
 import enum
-from Color import *
-from Scene import *
-from GameObject import *
+
 from pygame import Vector2
+
+from Engine import *
+from Engine.Color import Color
 
 class Emitter(enum.Enum): 
     Point = 0

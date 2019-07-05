@@ -3,7 +3,7 @@ import os
 import json
 import pygame.freetype
 
-from WireMesh import *
+from Engine.WireMesh import *
 
 class TTFont:
     def __init__(self, path, size):

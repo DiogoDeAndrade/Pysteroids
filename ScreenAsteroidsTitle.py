@@ -1,5 +1,4 @@
 from ScreenAsteroids import *
-from FontManager import *
 
 class ScreenAsteroidsTitle(ScreenAsteroids):
     def init(self):
@@ -44,6 +43,6 @@ class ScreenAsteroidsTitle(ScreenAsteroids):
         elif (self.time > 6):
             GameDefs.display_highscores(y_title + 130)
 
-        FontManager.write_center(Screen.screen, "Vector", "PYSTEROIDS", (640, y_title), (random.uniform(color_min, color_max), random.uniform(color_min, color_max), random.uniform(color_min, color_max)), spacing_scale = self.scaling)
+        FontManager.write_center(Engine.Screen.screen, "Vector", "PYSTEROIDS", (640, y_title), (random.uniform(color_min, color_max), random.uniform(color_min, color_max), random.uniform(color_min, color_max)), spacing_scale = self.scaling)
         if (self.scaling <= 1):
-            FontManager.write_center(Screen.screen, "Vector", "PRESS FIRE TO START", (640, y_prompt), (random.uniform(color_min, color_max), random.uniform(color_min, color_max), random.uniform(color_min, color_max)), scale = 0.2, width_scale = 0.5)
+            FontManager.write_center(Engine.Screen.screen, "Vector", "PRESS FIRE TO START", (640, y_prompt), (random.uniform(color_min, color_max), random.uniform(color_min, color_max), random.uniform(color_min, color_max)), scale = 0.2, width_scale = 0.5)

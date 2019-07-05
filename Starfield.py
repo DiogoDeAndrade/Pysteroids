@@ -1,9 +1,10 @@
 import random
-from GameObject import *
 
-class Starfield(GameObject):
+import Engine
+
+class Starfield(Engine.GameObject):
     def __init__(self, name, nStars):
-        GameObject.__init__(self, name)
+        Engine.GameObject.__init__(self, name)
 
         self.nStars = nStars
         self.starPos = []

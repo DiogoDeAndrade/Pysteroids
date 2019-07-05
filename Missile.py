@@ -1,8 +1,9 @@
-from WireMesh import *
+from pygame.math import Vector2
+
+import Engine.FX
+
 from Ship import *
 from GameDefs import *
-from Trail import *
-from pygame.math import Vector2
 
 class Missile(Ship):
     def __init__(self, name, target, tag):
@@ -60,5 +61,5 @@ class Missile(Ship):
         self.trail.render(screen)
 
     def on_destroy(self):
-        GameObject.on_destroy(self)
+        Engine.GameObject.on_destroy(self)
 

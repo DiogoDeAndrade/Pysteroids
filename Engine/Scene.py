@@ -1,4 +1,4 @@
-from Collider2d import *
+from Engine.Collider2d import *
 
 class Scene:
     main = None

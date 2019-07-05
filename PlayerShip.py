@@ -1,22 +1,24 @@
-from WireMesh import *
+from pygame.math import Vector2
+
+import Engine
+
 from Ship import *
 from Laser import *
 from GameDefs import *
-from pygame.math import Vector2
 
 class PlayerShip(Ship):
     def __init__(self, name):
         Ship.__init__(self, name)
 
-        self.gfx = WireMesh.get_model("PlayerShip")
-        self.collider = Circle2d(Vector2(0,0), self.gfx.get_radius())
+        self.gfx = Engine.WireMesh.get_model("PlayerShip")
+        self.collider = Engine.Circle2d(Vector2(0,0), self.gfx.get_radius())
         self.radius = self.max_radius = self.gfx.get_radius()
         self.shot_cooldown = 0.25
         self.current_shot_cooldown = 0
 
         self.tags.append("PlayerShip")
 
-        self.engine_sound = SoundManager.play("Engine", 0, True)
+        self.engine_sound = Engine.SoundManager.play("Engine", 0, True)
         
     def update(self, delta_time):
 
@@ -59,9 +61,9 @@ class PlayerShip(Ship):
         if (keys[pygame.K_LCTRL]):
             if (self.current_shot_cooldown <= 0):
                 laser_pos, laser_dir = self.get_mountpoint("laser_pos0")
-                Scene.main.add(Laser("PlayerLaser", (64, 255, 64), 4, 20, laser_pos, laser_dir * 400, 2))
+                Engine.Scene.main.add(Laser("PlayerLaser", (64, 255, 64), 4, 20, laser_pos, laser_dir * 400, 2))
                 self.current_shot_cooldown = self.shot_cooldown
-                SoundManager.play("Laser", 0.5)
+                Engine.SoundManager.play("Laser", 0.5)
 
         Ship.update(self, delta_time)
 
@@ -82,7 +84,7 @@ class PlayerShip(Ship):
         self.gfx.drawPRS(screen, self.position, self.rotation, self.scale)
 
     def on_destroy(self):
-        GameObject.on_destroy(self)
+        Engine.GameObject.on_destroy(self)
 
         if (self.engine_sound != None):
             self.engine_sound.stop()
