@@ -2,6 +2,8 @@
 
 This is basically a Asteroids clone done with Python 3.7 and Pygame, as a learning experiment.
 
+![alt text](https://github.com/DiogoDeAndrade/Pysteroids/Screenshots/title.png "Title Screen")
+
 It's not a clone in the sense that I didn't worry too much with mimicking the actual game, just the idea of it.
 
 Zero care was taken with performance, so it might struggle on weaker CPUs (there's a naive particle system implementation, and most everything is done with anti-aliased lines).
