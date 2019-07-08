@@ -2,7 +2,7 @@
 
 This is basically a Asteroids clone done with Python 3.7 and Pygame, as a learning experiment.
 
-![alt text](https://github.com/DiogoDeAndrade/Pysteroids/Screenshots/title.png "Title Screen")
+![alt text](https://github.com/DiogoDeAndrade/Pysteroids/raw/master/Screenshots/title.png "Title Screen")
 
 It's not a clone in the sense that I didn't worry too much with mimicking the actual game, just the idea of it.
 
