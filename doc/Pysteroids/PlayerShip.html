@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.6.3" />
+<title>Pysteroids.PlayerShip API documentation</title>
+<meta name="description" content="" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase;cursor:pointer}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>Pysteroids.PlayerShip</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">from pygame.math import Vector2
+
+import Engine
+
+from Ship import *
+from Laser import *
+from GameDefs import *
+
+class PlayerShip(Ship):
+    &#34;&#34;&#34;PlayerShip class
+    This class encapsulates the functionality of a ship that has player control
+    &#34;&#34;&#34;
+    def __init__(self, name):
+        &#34;&#34;&#34;
+        
+        Arguments:
+            name {string} -- Name of the ship object
+        &#34;&#34;&#34;
+        Ship.__init__(self, name)
+
+        self.gfx = Engine.WireMesh.get_model(&#34;PlayerShip&#34;)
+        self.collider = Engine.Circle2d(Vector2(0,0), self.gfx.get_radius())
+        self.radius = self.max_radius = self.gfx.get_radius()
+        self.shot_cooldown = 0.25
+        self.current_shot_cooldown = 0
+
+        self.tags.append(&#34;PlayerShip&#34;)
+
+        self.engine_sound = Engine.SoundManager.play(&#34;Engine&#34;, 0, True)
+        
+    def update(self, delta_time):
+        &#34;&#34;&#34;Updates the ship, by handling the player input.
+        
+        Arguments:
+            delta_time {float} -- Time to elapse in seconds
+        &#34;&#34;&#34;
+
+        # Update shot cooldown time
+        self.current_shot_cooldown = self.current_shot_cooldown - delta_time
+
+        keys = pygame.key.get_pressed()
+
+        # Reset thruster strength (for visual effect)
+        self.thruster_m = self.thruster_r = self.thruster_l = 0
+
+        # Accelerate ship
+        if (keys[pygame.K_UP]):
+            self.add_velocity(self.acceleration * delta_time * self.get_direction_vector())
+            self.thruster_m = self.thruster_r = self.thruster_l = 1
+            
+            if (self.engine_sound != None):
+                self.engine_sound.set_volume(0.1)
+        else:
+            if (self.engine_sound != None):
+                self.engine_sound.set_volume(0.0)
+
+        # Rotate ship
+        rotationSpeed = delta_time * GameDefs.player_defs.rotationSpeed
+        if (keys[pygame.K_LEFT]):
+            self.thruster_m = 0
+            self.thruster_r = 0.5
+            self.thruster_l = 0
+            self.rotation -= rotationSpeed
+
+        if (keys[pygame.K_RIGHT]):
+            self.thruster_m = 0
+            self.thruster_r = 0
+            self.thruster_l = 0.5
+            self.rotation += rotationSpeed
+
+        # Break ship
+        if (keys[pygame.K_DOWN]):
+            self.add_velocity(-self.break_acceleration * delta_time * self.get_direction_vector())
+
+        # Fire
+        if (keys[pygame.K_LCTRL]):
+            if (self.current_shot_cooldown &lt;= 0):
+                laser_pos, laser_dir = self.get_mountpoint(&#34;laser_pos0&#34;)
+                Engine.Scene.main.add(Laser(&#34;PlayerLaser&#34;, (64, 255, 64), 4, 20, laser_pos, laser_dir * 400, 2))
+                self.current_shot_cooldown = self.shot_cooldown
+                Engine.SoundManager.play(&#34;Laser&#34;, 0.5)
+
+        Ship.update(self, delta_time)
+
+        # Check bounds and wrap around position
+        if (self.position.x &lt; -self.max_radius):
+            self.position.x = 1280 + self.max_radius
+        elif (self.position.x &gt; (1280 + self.max_radius)):
+            self.position.x = self.max_radius
+
+        if (self.position.y &lt; -self.max_radius):
+            self.position.y = 720 + self.max_radius
+        elif (self.position.y &gt; (720 + self.max_radius)):
+            self.position.y = -self.max_radius
+
+    def render(self, screen):
+        &#34;&#34;&#34;Render the ship
+        
+        Arguments:
+            screen {int} -- Display surface handler
+        &#34;&#34;&#34;
+        Ship.render(self, screen)
+
+        self.gfx.drawPRS(screen, self.position, self.rotation, self.scale)
+
+    def on_destroy(self):
+        &#34;&#34;&#34;Destroy the player ship, shutting down any sound that might be playing.&#34;&#34;&#34;
+        Engine.GameObject.on_destroy(self)
+
+        if (self.engine_sound != None):
+            self.engine_sound.stop()</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="Pysteroids.PlayerShip.PlayerShip"><code class="flex name class">
+<span>class <span class="ident">PlayerShip</span></span>
+<span>(</span><span>name)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>PlayerShip class
+This class encapsulates the functionality of a ship that has player control</p>
+<h2 id="arguments">Arguments</h2>
+<p>name {string} &ndash; Name of the ship object</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">class PlayerShip(Ship):
+    &#34;&#34;&#34;PlayerShip class
+    This class encapsulates the functionality of a ship that has player control
+    &#34;&#34;&#34;
+    def __init__(self, name):
+        &#34;&#34;&#34;
+        
+        Arguments:
+            name {string} -- Name of the ship object
+        &#34;&#34;&#34;
+        Ship.__init__(self, name)
+
+        self.gfx = Engine.WireMesh.get_model(&#34;PlayerShip&#34;)
+        self.collider = Engine.Circle2d(Vector2(0,0), self.gfx.get_radius())
+        self.radius = self.max_radius = self.gfx.get_radius()
+        self.shot_cooldown = 0.25
+        self.current_shot_cooldown = 0
+
+        self.tags.append(&#34;PlayerShip&#34;)
+
+        self.engine_sound = Engine.SoundManager.play(&#34;Engine&#34;, 0, True)
+        
+    def update(self, delta_time):
+        &#34;&#34;&#34;Updates the ship, by handling the player input.
+        
+        Arguments:
+            delta_time {float} -- Time to elapse in seconds
+        &#34;&#34;&#34;
+
+        # Update shot cooldown time
+        self.current_shot_cooldown = self.current_shot_cooldown - delta_time
+
+        keys = pygame.key.get_pressed()
+
+        # Reset thruster strength (for visual effect)
+        self.thruster_m = self.thruster_r = self.thruster_l = 0
+
+        # Accelerate ship
+        if (keys[pygame.K_UP]):
+            self.add_velocity(self.acceleration * delta_time * self.get_direction_vector())
+            self.thruster_m = self.thruster_r = self.thruster_l = 1
+            
+            if (self.engine_sound != None):
+                self.engine_sound.set_volume(0.1)
+        else:
+            if (self.engine_sound != None):
+                self.engine_sound.set_volume(0.0)
+
+        # Rotate ship
+        rotationSpeed = delta_time * GameDefs.player_defs.rotationSpeed
+        if (keys[pygame.K_LEFT]):
+            self.thruster_m = 0
+            self.thruster_r = 0.5
+            self.thruster_l = 0
+            self.rotation -= rotationSpeed
+
+        if (keys[pygame.K_RIGHT]):
+            self.thruster_m = 0
+            self.thruster_r = 0
+            self.thruster_l = 0.5
+            self.rotation += rotationSpeed
+
+        # Break ship
+        if (keys[pygame.K_DOWN]):
+            self.add_velocity(-self.break_acceleration * delta_time * self.get_direction_vector())
+
+        # Fire
+        if (keys[pygame.K_LCTRL]):
+            if (self.current_shot_cooldown &lt;= 0):
+                laser_pos, laser_dir = self.get_mountpoint(&#34;laser_pos0&#34;)
+                Engine.Scene.main.add(Laser(&#34;PlayerLaser&#34;, (64, 255, 64), 4, 20, laser_pos, laser_dir * 400, 2))
+                self.current_shot_cooldown = self.shot_cooldown
+                Engine.SoundManager.play(&#34;Laser&#34;, 0.5)
+
+        Ship.update(self, delta_time)
+
+        # Check bounds and wrap around position
+        if (self.position.x &lt; -self.max_radius):
+            self.position.x = 1280 + self.max_radius
+        elif (self.position.x &gt; (1280 + self.max_radius)):
+            self.position.x = self.max_radius
+
+        if (self.position.y &lt; -self.max_radius):
+            self.position.y = 720 + self.max_radius
+        elif (self.position.y &gt; (720 + self.max_radius)):
+            self.position.y = -self.max_radius
+
+    def render(self, screen):
+        &#34;&#34;&#34;Render the ship
+        
+        Arguments:
+            screen {int} -- Display surface handler
+        &#34;&#34;&#34;
+        Ship.render(self, screen)
+
+        self.gfx.drawPRS(screen, self.position, self.rotation, self.scale)
+
+    def on_destroy(self):
+        &#34;&#34;&#34;Destroy the player ship, shutting down any sound that might be playing.&#34;&#34;&#34;
+        Engine.GameObject.on_destroy(self)
+
+        if (self.engine_sound != None):
+            self.engine_sound.stop()</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>Ship.Ship</li>
+<li>Engine.GameObject.GameObject</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="Pysteroids.PlayerShip.PlayerShip.on_destroy"><code class="name flex">
+<span>def <span class="ident">on_destroy</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Destroy the player ship, shutting down any sound that might be playing.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def on_destroy(self):
+    &#34;&#34;&#34;Destroy the player ship, shutting down any sound that might be playing.&#34;&#34;&#34;
+    Engine.GameObject.on_destroy(self)
+
+    if (self.engine_sound != None):
+        self.engine_sound.stop()</code></pre>
+</details>
+</dd>
+<dt id="Pysteroids.PlayerShip.PlayerShip.render"><code class="name flex">
+<span>def <span class="ident">render</span></span>(<span>self, screen)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Render the ship</p>
+<h2 id="arguments">Arguments</h2>
+<p>screen {int} &ndash; Display surface handler</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def render(self, screen):
+    &#34;&#34;&#34;Render the ship
+    
+    Arguments:
+        screen {int} -- Display surface handler
+    &#34;&#34;&#34;
+    Ship.render(self, screen)
+
+    self.gfx.drawPRS(screen, self.position, self.rotation, self.scale)</code></pre>
+</details>
+</dd>
+<dt id="Pysteroids.PlayerShip.PlayerShip.update"><code class="name flex">
+<span>def <span class="ident">update</span></span>(<span>self, delta_time)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Updates the ship, by handling the player input.</p>
+<h2 id="arguments">Arguments</h2>
+<p>delta_time {float} &ndash; Time to elapse in seconds</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def update(self, delta_time):
+    &#34;&#34;&#34;Updates the ship, by handling the player input.
+    
+    Arguments:
+        delta_time {float} -- Time to elapse in seconds
+    &#34;&#34;&#34;
+
+    # Update shot cooldown time
+    self.current_shot_cooldown = self.current_shot_cooldown - delta_time
+
+    keys = pygame.key.get_pressed()
+
+    # Reset thruster strength (for visual effect)
+    self.thruster_m = self.thruster_r = self.thruster_l = 0
+
+    # Accelerate ship
+    if (keys[pygame.K_UP]):
+        self.add_velocity(self.acceleration * delta_time * self.get_direction_vector())
+        self.thruster_m = self.thruster_r = self.thruster_l = 1
+        
+        if (self.engine_sound != None):
+            self.engine_sound.set_volume(0.1)
+    else:
+        if (self.engine_sound != None):
+            self.engine_sound.set_volume(0.0)
+
+    # Rotate ship
+    rotationSpeed = delta_time * GameDefs.player_defs.rotationSpeed
+    if (keys[pygame.K_LEFT]):
+        self.thruster_m = 0
+        self.thruster_r = 0.5
+        self.thruster_l = 0
+        self.rotation -= rotationSpeed
+
+    if (keys[pygame.K_RIGHT]):
+        self.thruster_m = 0
+        self.thruster_r = 0
+        self.thruster_l = 0.5
+        self.rotation += rotationSpeed
+
+    # Break ship
+    if (keys[pygame.K_DOWN]):
+        self.add_velocity(-self.break_acceleration * delta_time * self.get_direction_vector())
+
+    # Fire
+    if (keys[pygame.K_LCTRL]):
+        if (self.current_shot_cooldown &lt;= 0):
+            laser_pos, laser_dir = self.get_mountpoint(&#34;laser_pos0&#34;)
+            Engine.Scene.main.add(Laser(&#34;PlayerLaser&#34;, (64, 255, 64), 4, 20, laser_pos, laser_dir * 400, 2))
+            self.current_shot_cooldown = self.shot_cooldown
+            Engine.SoundManager.play(&#34;Laser&#34;, 0.5)
+
+    Ship.update(self, delta_time)
+
+    # Check bounds and wrap around position
+    if (self.position.x &lt; -self.max_radius):
+        self.position.x = 1280 + self.max_radius
+    elif (self.position.x &gt; (1280 + self.max_radius)):
+        self.position.x = self.max_radius
+
+    if (self.position.y &lt; -self.max_radius):
+        self.position.y = 720 + self.max_radius
+    elif (self.position.y &gt; (720 + self.max_radius)):
+        self.position.y = -self.max_radius</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="Pysteroids" href="index.html">Pysteroids</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="Pysteroids.PlayerShip.PlayerShip" href="#Pysteroids.PlayerShip.PlayerShip">PlayerShip</a></code></h4>
+<ul class="">
+<li><code><a title="Pysteroids.PlayerShip.PlayerShip.on_destroy" href="#Pysteroids.PlayerShip.PlayerShip.on_destroy">on_destroy</a></code></li>
+<li><code><a title="Pysteroids.PlayerShip.PlayerShip.render" href="#Pysteroids.PlayerShip.PlayerShip.render">render</a></code></li>
+<li><code><a title="Pysteroids.PlayerShip.PlayerShip.update" href="#Pysteroids.PlayerShip.PlayerShip.update">update</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.6.3</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>

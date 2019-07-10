@@ -3,10 +3,16 @@ from PlayerShip import *
 from EnemyShip import *
 
 class ScreenAsteroidsGame(ScreenAsteroids):
+    """ScreenAsteroidsGame class.
+    This is the class for the gameplay screen in the game.
+    """
     def __init__(self):
+        """
+        """
         self.reset()
 
     def reset(self):
+        """Resets the game variables, for a new game session."""
         self.level = 1
         self.lives = 3
         self.score = 0
@@ -15,6 +21,7 @@ class ScreenAsteroidsGame(ScreenAsteroids):
         self.inputDelay = 0
 
     def init(self):
+        """Initializes the screen, creating the base objects, and setting up the enemy spawn timer."""
         ScreenAsteroids.init(self)
 
         self.time_to_spawn = 1.5
@@ -25,8 +32,15 @@ class ScreenAsteroidsGame(ScreenAsteroids):
         self.enemy_timer = self.enemy_rate
 
     def update(self, delta_time):
+        """Updates this screen, checking for collisions between objects and setting up the reactions.
+        It also handles the game over and the name selection for highscores.
+        
+        Arguments:
+            delta_time {float} - Time to elapse in seconds
+        """
         ScreenAsteroids.update(self, delta_time)
 
+        # Check collisions between the player ship and everything else
         collisions = Scene.main.check_collisions_between_tags("PlayerShip", [ "Asteroid", "EnemyShip", "EnemyMissile", "EnemyLaser" ])
 
         if (len(collisions) > 0):
@@ -38,6 +52,7 @@ class ScreenAsteroidsGame(ScreenAsteroids):
                 if (GameDefs.is_highscore(self.score)):
                     self.inputChar = 0
 
+        # Check collisions between the player laser and the hostile objects
         collisions = Scene.main.check_collisions_between_tags("PlayerLaser", [ "Asteroid", "EnemyShip", "EnemyMissile" ])
         if (len(collisions) > 0):
             for collision in collisions:
@@ -45,6 +60,7 @@ class ScreenAsteroidsGame(ScreenAsteroids):
                 collision.obj2.explode()
                 self.score = self.score + collision.obj2.score_to_add
 
+        # Setup spawning of the player, and spawn it if necessary
         if (self.time_to_spawn > 0):
             self.time_to_spawn = self.time_to_spawn - delta_time
 
@@ -56,6 +72,7 @@ class ScreenAsteroidsGame(ScreenAsteroids):
 
         keys = pygame.key.get_pressed()
 
+        # Handle name edit on highscore
         if (self.inputChar != -1):
             if ((keys[pygame.K_DOWN]) and (self.inputDelay <= 0)):
                 self.inputDelay = 0.2
@@ -87,17 +104,20 @@ class ScreenAsteroidsGame(ScreenAsteroids):
                     if (keys[pygame.K_LCTRL]):
                         self.set_exit(0)
 
+        # Spawn enemy if necessary
         if (self.level > 1):
             self.enemy_timer = self.enemy_timer - delta_time
             if (self.enemy_timer < 0):
                 self.spawn_enemy()
 
+        # Check if there are any more asteroids, if not go to next level
         asteroid =  Scene.main.get_object_by_tag("Asteroid")
         if (asteroid == None):
             self.level = self.level + 1
             self.set_exit(1)
 
     def spawn_enemy(self):
+        """Spawn enemy ship, and choose the weapon it's going to use."""
         enemy = EnemyShip("EnemyShip")
         enemy.position = Vector2(1000, 500)
         if (self.level > 5):
@@ -115,6 +135,7 @@ class ScreenAsteroidsGame(ScreenAsteroids):
         self.enemy_timer = self.enemy_rate
 
     def spawn_player(self):
+        """Spawn the player, if there is a clear area in the middle of the screen."""
         player = Scene.main.get_object_by_tag("PlayerShip")
         if (player == None):
             # Check if some asteroid is nearby
@@ -126,12 +147,15 @@ class ScreenAsteroidsGame(ScreenAsteroids):
                 Scene.main.add(PlayerShip("PlayerShip"))
 
     def render(self):
+        """Render the screen."""
         ScreenAsteroids.render(self)
 
+        # UI: Score and lives
         FontManager.write(Engine.Screen.screen, "VectorTTF", str(self.score).zfill(6), (5, 5), (255, 255, 255))
         for i in range(0, self.lives):
             WireMesh.draw_model(Engine.Screen.screen, "PlayerShip", Vector2(i * 20 + 15, 45), 0, Vector2(0.5, 0.5))
         
+        # Check if Game Over text needs to be displayed
         player =  Scene.main.get_object_by_tag("PlayerShip")
         if (player == None):
             if (self.lives > 0):

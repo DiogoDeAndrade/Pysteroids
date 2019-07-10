@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.6.3" />
+<title>Pysteroids.GameDefs API documentation</title>
+<meta name="description" content="" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase;cursor:pointer}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>Pysteroids.GameDefs</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">import json
+import os
+
+import Engine
+
+class PlayerDefs:
+    &#34;&#34;&#34;Player definitions, it stores constants and gameplay variables to easily access them throughout the code&#34;&#34;&#34;
+    rotationSpeed = 360
+    &#34;&#34;&#34; Rotation speed of the player (in degrees per second) &#34;&#34;&#34;
+
+class GameDefs:
+    &#34;&#34;&#34;Game definitions, it stores constants and game variables like highscores, so we can access them throughout the code&#34;&#34;&#34;
+    # Stores the player defs (statically)
+    player_defs = PlayerDefs()
+    &#34;&#34;&#34; Player definitions &#34;&#34;&#34;
+    # Stores the highscores (statically)
+    highscores = []
+    &#34;&#34;&#34; Highscores (array of tuples in the form (name, score)) &#34;&#34;&#34;
+
+    @staticmethod
+    def load_highscores():
+        &#34;&#34;&#34;Loads the highscore table from a JSON file called highscore.dat&#34;&#34;&#34;
+
+        try:    
+            text_file = open(&#34;highscore.dat&#34;, &#34;rt&#34;)
+            json_string = text_file.read()
+            text_file.close()
+
+            GameDefs.highscores = json.loads(json_string)
+
+        except:
+            # If there is no file found with the proper name (or something happens during parsing), create a default highscore table.
+            GameDefs.highscores = []
+
+            for i in range(0,10):
+                hs = (&#34;DGA&#34;, (i + 1) * 250)
+                GameDefs.highscores.append(hs)
+
+        GameDefs.highscores.sort(key = lambda hs: hs[1], reverse = True)
+
+    @staticmethod
+    def is_highscore(score):
+        &#34;&#34;&#34;Check if the given score should be on the highscore table.
+        
+        Arguments:
+            score {integer} -- Score to check
+        
+        Returns:
+            bool -- True if the score belongs on the table.
+        &#34;&#34;&#34;
+        if (score &gt; GameDefs.highscores[9][1]):
+            return True
+        
+        return False
+
+    @staticmethod
+    def display_highscores(base_y):
+        &#34;&#34;&#34;Displays the highscore table on the given height
+        
+        Arguments:
+            base_y {integer} -- Height in which to display the highscore table.
+        &#34;&#34;&#34;
+        for i in range(0, 10):
+            hs_text = str(i + 1).rjust(2,&#34; &#34;) + &#34;.&#34; + GameDefs.highscores[i][0] + &#34;......&#34; + str(GameDefs.highscores[i][1]).rjust(6, &#34;0&#34;)
+            Engine.FontManager.write_center(Engine.Screen.screen, &#34;Vector&#34;, hs_text, (640, base_y + i * 30), (255, 255, 180), scale = 0.2, width_scale = 0.25)
+
+    @staticmethod
+    def add_highscore(score, name):
+        &#34;&#34;&#34;Adds a score with a certain name to the highscore table.
+        
+        Arguments:
+            score {integer} -- Score to the add
+            
+            name {string} -- Name of the player
+        &#34;&#34;&#34;
+
+        hs = (name, score)
+        # Add the highscore
+        GameDefs.highscores.append(hs)
+        # Sort highscore table
+        GameDefs.highscores.sort(key = lambda hs: hs[1], reverse = True)
+        # Remove last entry of the highscore table
+        GameDefs.highscores.remove(GameDefs.highscores[10])
+
+        # Save the JSON file with the highscores
+        json_string = json.dumps(GameDefs.highscores)
+
+        text_file = open(&#34;highscore.dat&#34;, &#34;wt&#34;)
+        text_file.write(json_string)
+        text_file.close()</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="Pysteroids.GameDefs.GameDefs"><code class="flex name class">
+<span>class <span class="ident">GameDefs</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Game definitions, it stores constants and game variables like highscores, so we can access them throughout the code</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">class GameDefs:
+    &#34;&#34;&#34;Game definitions, it stores constants and game variables like highscores, so we can access them throughout the code&#34;&#34;&#34;
+    # Stores the player defs (statically)
+    player_defs = PlayerDefs()
+    &#34;&#34;&#34; Player definitions &#34;&#34;&#34;
+    # Stores the highscores (statically)
+    highscores = []
+    &#34;&#34;&#34; Highscores (array of tuples in the form (name, score)) &#34;&#34;&#34;
+
+    @staticmethod
+    def load_highscores():
+        &#34;&#34;&#34;Loads the highscore table from a JSON file called highscore.dat&#34;&#34;&#34;
+
+        try:    
+            text_file = open(&#34;highscore.dat&#34;, &#34;rt&#34;)
+            json_string = text_file.read()
+            text_file.close()
+
+            GameDefs.highscores = json.loads(json_string)
+
+        except:
+            # If there is no file found with the proper name (or something happens during parsing), create a default highscore table.
+            GameDefs.highscores = []
+
+            for i in range(0,10):
+                hs = (&#34;DGA&#34;, (i + 1) * 250)
+                GameDefs.highscores.append(hs)
+
+        GameDefs.highscores.sort(key = lambda hs: hs[1], reverse = True)
+
+    @staticmethod
+    def is_highscore(score):
+        &#34;&#34;&#34;Check if the given score should be on the highscore table.
+        
+        Arguments:
+            score {integer} -- Score to check
+        
+        Returns:
+            bool -- True if the score belongs on the table.
+        &#34;&#34;&#34;
+        if (score &gt; GameDefs.highscores[9][1]):
+            return True
+        
+        return False
+
+    @staticmethod
+    def display_highscores(base_y):
+        &#34;&#34;&#34;Displays the highscore table on the given height
+        
+        Arguments:
+            base_y {integer} -- Height in which to display the highscore table.
+        &#34;&#34;&#34;
+        for i in range(0, 10):
+            hs_text = str(i + 1).rjust(2,&#34; &#34;) + &#34;.&#34; + GameDefs.highscores[i][0] + &#34;......&#34; + str(GameDefs.highscores[i][1]).rjust(6, &#34;0&#34;)
+            Engine.FontManager.write_center(Engine.Screen.screen, &#34;Vector&#34;, hs_text, (640, base_y + i * 30), (255, 255, 180), scale = 0.2, width_scale = 0.25)
+
+    @staticmethod
+    def add_highscore(score, name):
+        &#34;&#34;&#34;Adds a score with a certain name to the highscore table.
+        
+        Arguments:
+            score {integer} -- Score to the add
+            
+            name {string} -- Name of the player
+        &#34;&#34;&#34;
+
+        hs = (name, score)
+        # Add the highscore
+        GameDefs.highscores.append(hs)
+        # Sort highscore table
+        GameDefs.highscores.sort(key = lambda hs: hs[1], reverse = True)
+        # Remove last entry of the highscore table
+        GameDefs.highscores.remove(GameDefs.highscores[10])
+
+        # Save the JSON file with the highscores
+        json_string = json.dumps(GameDefs.highscores)
+
+        text_file = open(&#34;highscore.dat&#34;, &#34;wt&#34;)
+        text_file.write(json_string)
+        text_file.close()</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="Pysteroids.GameDefs.GameDefs.highscores"><code class="name">var <span class="ident">highscores</span></code></dt>
+<dd>
+<section class="desc"><p>Highscores (array of tuples in the form (name, score))</p></section>
+</dd>
+<dt id="Pysteroids.GameDefs.GameDefs.player_defs"><code class="name">var <span class="ident">player_defs</span></code></dt>
+<dd>
+<section class="desc"><p>Player definitions</p></section>
+</dd>
+</dl>
+<h3>Static methods</h3>
+<dl>
+<dt id="Pysteroids.GameDefs.GameDefs.add_highscore"><code class="name flex">
+<span>def <span class="ident">add_highscore</span></span>(<span>score, name)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Adds a score with a certain name to the highscore table.</p>
+<h2 id="arguments">Arguments</h2>
+<p>score {integer} &ndash; Score to the add</p>
+<p>name {string} &ndash; Name of the player</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">@staticmethod
+def add_highscore(score, name):
+    &#34;&#34;&#34;Adds a score with a certain name to the highscore table.
+    
+    Arguments:
+        score {integer} -- Score to the add
+        
+        name {string} -- Name of the player
+    &#34;&#34;&#34;
+
+    hs = (name, score)
+    # Add the highscore
+    GameDefs.highscores.append(hs)
+    # Sort highscore table
+    GameDefs.highscores.sort(key = lambda hs: hs[1], reverse = True)
+    # Remove last entry of the highscore table
+    GameDefs.highscores.remove(GameDefs.highscores[10])
+
+    # Save the JSON file with the highscores
+    json_string = json.dumps(GameDefs.highscores)
+
+    text_file = open(&#34;highscore.dat&#34;, &#34;wt&#34;)
+    text_file.write(json_string)
+    text_file.close()</code></pre>
+</details>
+</dd>
+<dt id="Pysteroids.GameDefs.GameDefs.display_highscores"><code class="name flex">
+<span>def <span class="ident">display_highscores</span></span>(<span>base_y)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Displays the highscore table on the given height</p>
+<h2 id="arguments">Arguments</h2>
+<p>base_y {integer} &ndash; Height in which to display the highscore table.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">@staticmethod
+def display_highscores(base_y):
+    &#34;&#34;&#34;Displays the highscore table on the given height
+    
+    Arguments:
+        base_y {integer} -- Height in which to display the highscore table.
+    &#34;&#34;&#34;
+    for i in range(0, 10):
+        hs_text = str(i + 1).rjust(2,&#34; &#34;) + &#34;.&#34; + GameDefs.highscores[i][0] + &#34;......&#34; + str(GameDefs.highscores[i][1]).rjust(6, &#34;0&#34;)
+        Engine.FontManager.write_center(Engine.Screen.screen, &#34;Vector&#34;, hs_text, (640, base_y + i * 30), (255, 255, 180), scale = 0.2, width_scale = 0.25)</code></pre>
+</details>
+</dd>
+<dt id="Pysteroids.GameDefs.GameDefs.is_highscore"><code class="name flex">
+<span>def <span class="ident">is_highscore</span></span>(<span>score)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Check if the given score should be on the highscore table.</p>
+<h2 id="arguments">Arguments</h2>
+<p>score {integer} &ndash; Score to check</p>
+<h2 id="returns">Returns</h2>
+<p>bool &ndash; True if the score belongs on the table.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">@staticmethod
+def is_highscore(score):
+    &#34;&#34;&#34;Check if the given score should be on the highscore table.
+    
+    Arguments:
+        score {integer} -- Score to check
+    
+    Returns:
+        bool -- True if the score belongs on the table.
+    &#34;&#34;&#34;
+    if (score &gt; GameDefs.highscores[9][1]):
+        return True
+    
+    return False</code></pre>
+</details>
+</dd>
+<dt id="Pysteroids.GameDefs.GameDefs.load_highscores"><code class="name flex">
+<span>def <span class="ident">load_highscores</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Loads the highscore table from a JSON file called highscore.dat</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">@staticmethod
+def load_highscores():
+    &#34;&#34;&#34;Loads the highscore table from a JSON file called highscore.dat&#34;&#34;&#34;
+
+    try:    
+        text_file = open(&#34;highscore.dat&#34;, &#34;rt&#34;)
+        json_string = text_file.read()
+        text_file.close()
+
+        GameDefs.highscores = json.loads(json_string)
+
+    except:
+        # If there is no file found with the proper name (or something happens during parsing), create a default highscore table.
+        GameDefs.highscores = []
+
+        for i in range(0,10):
+            hs = (&#34;DGA&#34;, (i + 1) * 250)
+            GameDefs.highscores.append(hs)
+
+    GameDefs.highscores.sort(key = lambda hs: hs[1], reverse = True)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="Pysteroids.GameDefs.PlayerDefs"><code class="flex name class">
+<span>class <span class="ident">PlayerDefs</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Player definitions, it stores constants and gameplay variables to easily access them throughout the code</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">class PlayerDefs:
+    &#34;&#34;&#34;Player definitions, it stores constants and gameplay variables to easily access them throughout the code&#34;&#34;&#34;
+    rotationSpeed = 360
+    &#34;&#34;&#34; Rotation speed of the player (in degrees per second) &#34;&#34;&#34;</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="Pysteroids.GameDefs.PlayerDefs.rotationSpeed"><code class="name">var <span class="ident">rotationSpeed</span></code></dt>
+<dd>
+<section class="desc"><p>Rotation speed of the player (in degrees per second)</p></section>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="Pysteroids" href="index.html">Pysteroids</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="Pysteroids.GameDefs.GameDefs" href="#Pysteroids.GameDefs.GameDefs">GameDefs</a></code></h4>
+<ul class="two-column">
+<li><code><a title="Pysteroids.GameDefs.GameDefs.add_highscore" href="#Pysteroids.GameDefs.GameDefs.add_highscore">add_highscore</a></code></li>
+<li><code><a title="Pysteroids.GameDefs.GameDefs.display_highscores" href="#Pysteroids.GameDefs.GameDefs.display_highscores">display_highscores</a></code></li>
+<li><code><a title="Pysteroids.GameDefs.GameDefs.highscores" href="#Pysteroids.GameDefs.GameDefs.highscores">highscores</a></code></li>
+<li><code><a title="Pysteroids.GameDefs.GameDefs.is_highscore" href="#Pysteroids.GameDefs.GameDefs.is_highscore">is_highscore</a></code></li>
+<li><code><a title="Pysteroids.GameDefs.GameDefs.load_highscores" href="#Pysteroids.GameDefs.GameDefs.load_highscores">load_highscores</a></code></li>
+<li><code><a title="Pysteroids.GameDefs.GameDefs.player_defs" href="#Pysteroids.GameDefs.GameDefs.player_defs">player_defs</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="Pysteroids.GameDefs.PlayerDefs" href="#Pysteroids.GameDefs.PlayerDefs">PlayerDefs</a></code></h4>
+<ul class="">
+<li><code><a title="Pysteroids.GameDefs.PlayerDefs.rotationSpeed" href="#Pysteroids.GameDefs.PlayerDefs.rotationSpeed">rotationSpeed</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.6.3</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>

@@ -7,7 +7,15 @@ from Laser import *
 from GameDefs import *
 
 class PlayerShip(Ship):
+    """PlayerShip class
+    This class encapsulates the functionality of a ship that has player control
+    """
     def __init__(self, name):
+        """
+        
+        Arguments:
+            name {string} -- Name of the ship object
+        """
         Ship.__init__(self, name)
 
         self.gfx = Engine.WireMesh.get_model("PlayerShip")
@@ -21,11 +29,18 @@ class PlayerShip(Ship):
         self.engine_sound = Engine.SoundManager.play("Engine", 0, True)
         
     def update(self, delta_time):
+        """Updates the ship, by handling the player input.
+        
+        Arguments:
+            delta_time {float} -- Time to elapse in seconds
+        """
 
+        # Update shot cooldown time
         self.current_shot_cooldown = self.current_shot_cooldown - delta_time
 
         keys = pygame.key.get_pressed()
 
+        # Reset thruster strength (for visual effect)
         self.thruster_m = self.thruster_r = self.thruster_l = 0
 
         # Accelerate ship
@@ -67,7 +82,7 @@ class PlayerShip(Ship):
 
         Ship.update(self, delta_time)
 
-        # Check bounds
+        # Check bounds and wrap around position
         if (self.position.x < -self.max_radius):
             self.position.x = 1280 + self.max_radius
         elif (self.position.x > (1280 + self.max_radius)):
@@ -79,11 +94,17 @@ class PlayerShip(Ship):
             self.position.y = -self.max_radius
 
     def render(self, screen):
+        """Render the ship
+        
+        Arguments:
+            screen {int} -- Display surface handler
+        """
         Ship.render(self, screen)
 
         self.gfx.drawPRS(screen, self.position, self.rotation, self.scale)
 
     def on_destroy(self):
+        """Destroy the player ship, shutting down any sound that might be playing."""
         Engine.GameObject.on_destroy(self)
 
         if (self.engine_sound != None):

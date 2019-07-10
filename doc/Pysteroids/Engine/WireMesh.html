@@ -1,0 +1,1757 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.6.3" />
+<title>Pysteroids.Engine.WireMesh API documentation</title>
+<meta name="description" content="" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase;cursor:pointer}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>Pysteroids.Engine.WireMesh</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">import pygame
+import math
+import random
+import enum
+import os
+import json
+from pygame.math import Vector2
+
+class RenderMode(enum.Enum): 
+    AntiAlias = 0
+    Normal = 1
+
+class PrimitiveType(enum.Enum):
+    LineStrip = 0,
+    LineList = 1
+  
+class WireMeshJSON:
+    pass
+
+class WireMesh:
+    def __init__(self):
+        self.name = &#34;&#34;
+        self.vertex = []
+        self.poly = []
+        self.poly_color = []
+        self.position = Vector2(0,0)
+        self.rotation = 0
+        self.scale = Vector2(1,1)
+        self.dirty = True
+        self.current_poly = []
+        self.closed = True
+        self.primitive_type = PrimitiveType.LineStrip
+        self.render_mode = RenderMode.AntiAlias
+        self.width = 1
+        self.override_color_enable = False
+        self.override_color = (255, 255, 255)
+        self.mountpoints = dict()
+
+    def to_JSON(self):
+        out = WireMeshJSON()
+
+        out.closed = self.closed
+        if (self.primitive_type == PrimitiveType.LineStrip):
+            out.primitive = &#34;LineStrip&#34;
+        elif (self.primitive_type == PrimitiveType.LineList):
+            out.primitive = &#34;LineList&#34;
+        if (self.render_mode == RenderMode.Normal):
+            out.render_mode = &#34;Normal&#34;
+        elif (self.render_mode == RenderMode.AntiAlias):
+            out.render_mode = &#34;AntiAlias&#34;
+        out.lineWidth = self.width
+
+        out.vertex = [ ]
+        for vertex in self.vertex:
+            out.vertex.append( (vertex.x, vertex.y) )
+
+        out.polygons = [ ]
+        idx = 0
+        for polygon in self.poly:
+            poly = dict()
+            poly[&#34;color&#34;] = self.poly_color[idx]
+            poly[&#34;index&#34;] = polygon
+            idx = idx + 1        
+            out.polygons.append(poly)
+
+        out.mountpoints = dict()
+        for name, mountpoint in self.mountpoints.items():
+            mp = dict()
+            mp[&#34;pos&#34;] = (mountpoint[0][0],mountpoint[0][1])
+            mp[&#34;dir&#34;] = (mountpoint[1][0],mountpoint[1][1])
+            out.mountpoints[name] = mp
+
+        ret = dict()
+        ret[self.name] = out
+
+        return json.dumps(ret, default=lambda o: o.__dict__, indent=4)
+
+    def from_JSON(self, data):
+        self.closed = data[&#34;closed&#34;]
+        if (data[&#34;primitive&#34;] == &#34;LineStrip&#34;):
+            self.primitive_type = PrimitiveType.LineStrip
+        elif (data[&#34;primitive&#34;] == &#34;LineList&#34;):
+            self.primitive_type = PrimitiveType.LineList
+        if (data[&#34;render_mode&#34;] == &#34;Normal&#34;):
+            self.render_mode = RenderMode.Normal
+        elif (data[&#34;render_mode&#34;] == &#34;AntiAlias&#34;):
+            self.render_mode = RenderMode.AntiAlias
+        self.width = data[&#34;lineWidth&#34;]
+
+        self.vertex = []
+        for v in data[&#34;vertex&#34;]:
+            self.vertex.append(Vector2(v[0], v[1]))
+
+        self.poly = []
+        self.poly_color = []
+
+        for p in data[&#34;polygons&#34;]:
+            self.poly_color.append(p[&#34;color&#34;])        
+            self.poly.append(p[&#34;index&#34;])
+
+        self.mountpoints = dict()
+
+        if (&#34;mountpoints&#34; in data):
+            for name in data[&#34;mountpoints&#34;]:
+                self.mountpoints[name] = ( Vector2(data[&#34;mountpoints&#34;][name][&#34;pos&#34;][0], data[&#34;mountpoints&#34;][name][&#34;pos&#34;][1]), Vector2(data[&#34;mountpoints&#34;][name][&#34;dir&#34;][0], data[&#34;mountpoints&#34;][name][&#34;dir&#34;][1]))
+
+
+    def add_vertex(self, vertex):
+        self.vertex.append(vertex)
+        return len(self.vertex) - 1
+
+    def begin_poly(self):
+        self.current_poly = []
+        self.currentPolyColor = (255, 255, 255)
+
+    def add_vertex_to_poly(self, index):
+        self.current_poly.append(index)
+
+    def end_poly(self):
+        self.poly.append(self.current_poly)
+        self.poly_color.append(self.currentPolyColor)
+        self.current_poly = []
+        self.currentPolyColor = (255, 255, 255)
+
+    def set_poly_color(self, color):
+        self.currentPolyColor = color
+
+    def get_color(self, polyIndex):
+        if (self.override_color_enable):
+            return self.override_color
+                   
+        return self.poly_color[polyIndex]
+
+    def add_mountpoint(self, name, pos, dir):
+        self.mountpoints[name] = ( pos, dir )
+
+    def add_mountpoint_pos(self, name, pos):
+        if (name in self.mountpoints):
+            self.mountpoints[name] = (pos, self.mountpoints[name][1])
+        else:
+            self.mountpoints[name] = ( pos, (0, 1) )
+
+    def get_mountpoint(self, name):
+        if (name in self.mountpoints):
+            return self.vertex_transform(self.mountpoints[name][0]), vertex_transform_no_pos(self.mountpoints[name][1])
+
+        return self.vertex_transform(Vector2(0,0)), vertex_transform(Vector2(0,1))
+
+    def get_mountpointPRS(self, name, position, rotation, scale):
+        if (name in self.mountpoints):
+            return WireMesh.vertex_transformPRS(self.mountpoints[name][0], position, rotation, scale), WireMesh.vertex_transformPRS(self.mountpoints[name][1], Vector2(0,0), rotation, scale)
+
+        return WireMesh.vertex_transformPRS(Vector2(0,0), position, rotation, scale), WireMesh.vertex_transformPRS(Vector2(0,1), Vector2(0,0), rotation, scale)
+
+    def mountpoint_exists(self, name):
+        if (name in self.mountpoints):
+            return True
+
+        return False
+
+    def draw(self, screen):
+        if (self.dirty):
+            self.rebuild()   
+
+        self.draw_processed_vertex(screen, self.cache_vertex)
+        
+    def drawPRS(self, screen, position, rotation, scale):
+        cache_vertex = [WireMesh.vertex_transformPRS(v, position,rotation, scale) for v in self.vertex]
+
+        self.draw_processed_vertex(screen, cache_vertex)
+
+    def draw_processed_vertex(self, screen, cache_vertex):
+        for idx, poly in enumerate(self.poly):
+            pointlist = [cache_vertex[i] for i in poly]
+            if (self.primitive_type == PrimitiveType.LineStrip):
+                if (self.render_mode == RenderMode.AntiAlias):
+                    pygame.draw.aalines(screen, self.get_color(idx), self.closed, pointlist)
+                else:
+                    pygame.draw.lines(screen, self.get_color(idx), self.closed, pointlist, (int)(self.width))
+            elif (self.primitive_type == PrimitiveType.LineList):
+                if (self.render_mode == RenderMode.AntiAlias):
+                    for idx2 in range(0, len(pointlist), 2):
+                        pygame.draw.aaline(screen, self.get_color(idx), pointlist[idx2], pointlist[idx2 + 1], False)
+                else:
+                    for idx2 in range(0, len(pointlist), 2):
+                        pygame.draw.line(screen, self.get_color(idx), pointlist[idx2], pointlist[idx2 + 1], (int)(self.width))
+
+    def rebuild(self):
+        self.cache_vertex = [self.vertex_transform(v) for v in self.vertex]
+        self.dirty = False
+
+    def vertex_transform(self, vertex):
+        return self.vertex_transform_no_pos(vertex) + self.position
+
+    def vertex_transform_no_pos(self, vertex):
+        a = math.radians(self.rotation)
+        s = math.sin(a)
+        c = math.cos(a)
+        v = Vector2(vertex.x * self.scale.x, vertex.y * self.scale.y)
+        v = Vector2(c * v.x - s * v.y, s * v.x + c * v.y)
+
+        return v
+
+    @staticmethod
+    def vertex_transformPRS(vertex, position, rotation, scale):
+        a = math.radians(rotation)
+        s = math.sin(a)
+        c = math.cos(a)
+        v = Vector2(vertex.x * scale.x, vertex.y * scale.y)
+        v = Vector2(c * v.x - s * v.y, s * v.x + c * v.y)
+        v = v + position
+
+        return v
+
+    def set_position(self, position):
+        self.position = position
+        self.dirty = True
+
+    def set_rotation(self, rotation):
+        self.rotation = rotation
+        self.dirty = True
+
+    def set_scale(self, scale):
+        self.scale = scale
+        self.dirty = True
+    
+    def get_radius(self):
+        maxDist = 0
+        for v in self.vertex:
+            maxDist = max(v.magnitude_squared(), maxDist)
+
+        return math.sqrt(maxDist)
+
+    def apply_transform(self):
+        self.vertex = [self.vertex_transform(v) for v in self.vertex]
+        self.dirty = True
+        self.position = (0,0)
+        self.rotation = 0
+        self.scale = (1,1)
+
+    def convert_to_unindexed_line_list(self):
+        if (self.primitive_type == PrimitiveType.LineStrip):
+            newVertex = []
+            for polyId, p in enumerate(self.poly):
+                newPoly = []
+                for src in range(0, len(p)):
+                    oldId = p[src]
+                    newVertex.append(self.vertex[oldId])
+                    newPoly.append(len(newVertex) - 1)
+                    oldId = p[(src + 1) % len(p)]
+                    newVertex.append(self.vertex[oldId])
+                    newPoly.append(len(newVertex) - 1)
+                self.poly[polyId] = newPoly
+            self.vertex = newVertex
+        elif (self.primitive_type == PrimitiveType.LineList):
+            newVertex = []
+            for polyId, p in enumerate(self.poly):
+                newPoly = []
+                for src in range(0, len(p)):
+                    oldId = p[src]
+                    newVertex.append(self.vertex[oldId])
+                    newPoly.append(len(newVertex) - 1)
+                self.poly[polyId] = newPoly
+            self.vertex = newVertex
+
+        self.primitive_type = PrimitiveType.LineList
+
+    def add_circle(self, sides, radius, variance, color, angular_offset = 0, center_pos = Vector2(0,0)):
+        self.begin_poly()
+        self.set_poly_color(color)
+
+        angle = angular_offset
+        angleInc = math.pi * 2 / sides
+        r = radius
+
+        for i in range(0, sides):
+            if (variance &gt; 0):
+                r = random.uniform(radius - variance, radius + variance)                
+            idx = self.add_vertex(center_pos + Vector2(r * math.cos(angle), r * math.sin(angle)))
+            self.add_vertex_to_poly(idx)
+            angle += angleInc
+
+        self.end_poly()
+
+    #-- Model Management --#
+    models = dict()
+
+    @staticmethod
+    def load_model(filename, model_name = &#34;&#34;):
+        just_filename, file_extension = os.path.splitext(filename)
+        if (file_extension == &#34;.wm&#34;):
+            return WireMesh.load_modelWM(filename, model_name)
+        elif (file_extension == &#34;.json&#34;):
+            return WireMesh.load_modelJSON(filename, model_name)
+        
+        return None
+    
+    @staticmethod
+    def load_modelWM(filename, model_name):
+        new_mesh = WireMesh()
+        with open(filename, &#34;rt&#34;) as file:
+            str = &#34;\n&#34;
+            while (str != &#34;&#34;):                
+                str = str.strip()
+                if (str == &#34;polygon:&#34;):
+                    new_mesh.begin_poly()
+                    exit = False
+                    while (not exit):
+                        str = file.readline().strip()
+                        if (str.find(&#39;:&#39;) != -1):
+                            if (str.find(&#39;color:&#39;) != -1):
+                                new_mesh.set_poly_color(WireMesh.read_color(file))
+                            elif (str.find(&#39;vertex:&#39;) != -1):
+                                vertex_exit = False
+                                while (not vertex_exit):
+                                    str = file.readline().strip()
+                                    if (str.find(&#39;:&#39;) != -1):                                        
+                                        break
+                                    elif (str == &#34;&#34;):
+                                        vertex_exit = True
+                                    else:
+                                        v = WireMesh.parse_vector2(str)
+                                        new_mesh.add_vertex_to_poly(new_mesh.add_vertex(v))
+                                
+                                if (not vertex_exit):
+                                    break
+                        elif (str == &#34;&#34;):
+                            exit = True
+
+                    new_mesh.end_poly()
+
+                    if (not exit):
+                        # Left because I found a tag of something but polygons
+                        continue
+                elif (str == &#34;mountpoint:&#34;):
+                    exit = False
+                    mountpoint_name = &#34;&#34;
+                    while (not exit):
+                        str = file.readline().strip()
+                        if (str.find(&#39;:&#39;) != -1):
+                            if (str.find(&#39;name:&#39;) != -1):
+                                mountpoint_name = file.readline().strip()
+                            elif (str.find(&#39;position:&#39;) != -1):
+                                mountpoint_position = v = WireMesh.parse_vector2(file.readline().strip())
+                                if (mountpoint_name != &#34;&#34;):
+                                    new_mesh.add_mountpoint_pos(mountpoint_name, mountpoint_position)
+                                    break
+                        else:
+                            exit = True
+
+                    if (not exit):
+                        # Left because I found a tag of something but polygons
+                        continue
+
+                # Only reach here if everything works fine (a bit convoluted, but lack of goto does this, and I don&#39;t want to use terminators on my file format)
+                str = file.readline()
+
+        if (model_name == &#34;&#34;):
+            model_name = filename
+        
+        new_mesh.name = model_name
+        WireMesh.models[model_name] = new_mesh    
+
+        return new_mesh    
+
+    @staticmethod
+    def load_modelJSON(filename, model_name):
+        ret = None
+
+        text_file = open(filename, &#34;rt&#34;)
+        json_string = text_file.read()
+        text_file.close()
+
+        meshes = json.loads(json_string)
+
+        for name in meshes:
+            new_mesh = WireMesh()
+            new_mesh.from_JSON(meshes[name])
+
+            new_mesh.name = name
+            WireMesh.models[name] = new_mesh
+
+            if (ret == None):
+                ret = new_mesh
+
+        return ret
+
+    @staticmethod
+    def read_color(file):
+        str = file.readline()
+        if (str == &#34;&#34;):
+            return (255, 255, 255)
+        str = str.strip().replace(&#39;(&#39;, &#39;&#39;).replace(&#39;)&#39;, &#39;&#39;)
+        values = str.split(&#39;,&#39;)
+        return (int(values[0]), int(values[1]), int(values[2]))
+
+    @staticmethod
+    def parse_vector2(str):
+        if (str == &#34;&#34;):
+            return (0, 0, 0)
+        str = str.replace(&#39;(&#39;, &#39;&#39;).replace(&#39;)&#39;, &#39;&#39;)
+        values = str.split(&#39;,&#39;)
+        return Vector2(float(values[0]), float(values[1]))
+
+    @staticmethod
+    def get_model(model_name):
+        if (model_name in WireMesh.models):
+            return WireMesh.models[model_name]
+
+        return None
+    
+    @staticmethod
+    def copy(src):
+        mesh = WireMesh()
+        mesh.vertex = src.vertex.copy()
+        mesh.poly = src.poly.copy()
+        mesh.poly_color = src.poly_color.copy()
+        mesh.position = src.position
+        mesh.rotation = src.rotation
+        mesh.scale = src.scale
+        mesh.dirty = True
+        mesh.closed = src.closed
+        mesh.primitive_type = src.primitive_type
+        mesh.render_mode = src.render_mode
+        mesh.width = src.width
+
+        return mesh
+
+    @staticmethod
+    def circle(sides, radius, variance, color, angular_offset = 0, center_pos = Vector2(0,0)):
+        mesh = WireMesh()
+
+        mesh.add_circle(sides, radius, variance, color, angular_offset)
+
+        return mesh
+
+    @staticmethod
+    def draw_model(screen, name, position, rotation, scale):
+        WireMesh.models[name].drawPRS(screen, position, rotation, scale)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="Pysteroids.Engine.WireMesh.PrimitiveType"><code class="flex name class">
+<span>class <span class="ident">PrimitiveType</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>An enumeration.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">class PrimitiveType(enum.Enum):
+    LineStrip = 0,
+    LineList = 1</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="Pysteroids.Engine.WireMesh.PrimitiveType.LineList"><code class="name">var <span class="ident">LineList</span></code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt id="Pysteroids.Engine.WireMesh.PrimitiveType.LineStrip"><code class="name">var <span class="ident">LineStrip</span></code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+</dl>
+</dd>
+<dt id="Pysteroids.Engine.WireMesh.RenderMode"><code class="flex name class">
+<span>class <span class="ident">RenderMode</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>An enumeration.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">class RenderMode(enum.Enum): 
+    AntiAlias = 0
+    Normal = 1</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="Pysteroids.Engine.WireMesh.RenderMode.AntiAlias"><code class="name">var <span class="ident">AntiAlias</span></code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt id="Pysteroids.Engine.WireMesh.RenderMode.Normal"><code class="name">var <span class="ident">Normal</span></code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+</dl>
+</dd>
+<dt id="Pysteroids.Engine.WireMesh.WireMesh"><code class="flex name class">
+<span>class <span class="ident">WireMesh</span></span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">class WireMesh:
+    def __init__(self):
+        self.name = &#34;&#34;
+        self.vertex = []
+        self.poly = []
+        self.poly_color = []
+        self.position = Vector2(0,0)
+        self.rotation = 0
+        self.scale = Vector2(1,1)
+        self.dirty = True
+        self.current_poly = []
+        self.closed = True
+        self.primitive_type = PrimitiveType.LineStrip
+        self.render_mode = RenderMode.AntiAlias
+        self.width = 1
+        self.override_color_enable = False
+        self.override_color = (255, 255, 255)
+        self.mountpoints = dict()
+
+    def to_JSON(self):
+        out = WireMeshJSON()
+
+        out.closed = self.closed
+        if (self.primitive_type == PrimitiveType.LineStrip):
+            out.primitive = &#34;LineStrip&#34;
+        elif (self.primitive_type == PrimitiveType.LineList):
+            out.primitive = &#34;LineList&#34;
+        if (self.render_mode == RenderMode.Normal):
+            out.render_mode = &#34;Normal&#34;
+        elif (self.render_mode == RenderMode.AntiAlias):
+            out.render_mode = &#34;AntiAlias&#34;
+        out.lineWidth = self.width
+
+        out.vertex = [ ]
+        for vertex in self.vertex:
+            out.vertex.append( (vertex.x, vertex.y) )
+
+        out.polygons = [ ]
+        idx = 0
+        for polygon in self.poly:
+            poly = dict()
+            poly[&#34;color&#34;] = self.poly_color[idx]
+            poly[&#34;index&#34;] = polygon
+            idx = idx + 1        
+            out.polygons.append(poly)
+
+        out.mountpoints = dict()
+        for name, mountpoint in self.mountpoints.items():
+            mp = dict()
+            mp[&#34;pos&#34;] = (mountpoint[0][0],mountpoint[0][1])
+            mp[&#34;dir&#34;] = (mountpoint[1][0],mountpoint[1][1])
+            out.mountpoints[name] = mp
+
+        ret = dict()
+        ret[self.name] = out
+
+        return json.dumps(ret, default=lambda o: o.__dict__, indent=4)
+
+    def from_JSON(self, data):
+        self.closed = data[&#34;closed&#34;]
+        if (data[&#34;primitive&#34;] == &#34;LineStrip&#34;):
+            self.primitive_type = PrimitiveType.LineStrip
+        elif (data[&#34;primitive&#34;] == &#34;LineList&#34;):
+            self.primitive_type = PrimitiveType.LineList
+        if (data[&#34;render_mode&#34;] == &#34;Normal&#34;):
+            self.render_mode = RenderMode.Normal
+        elif (data[&#34;render_mode&#34;] == &#34;AntiAlias&#34;):
+            self.render_mode = RenderMode.AntiAlias
+        self.width = data[&#34;lineWidth&#34;]
+
+        self.vertex = []
+        for v in data[&#34;vertex&#34;]:
+            self.vertex.append(Vector2(v[0], v[1]))
+
+        self.poly = []
+        self.poly_color = []
+
+        for p in data[&#34;polygons&#34;]:
+            self.poly_color.append(p[&#34;color&#34;])        
+            self.poly.append(p[&#34;index&#34;])
+
+        self.mountpoints = dict()
+
+        if (&#34;mountpoints&#34; in data):
+            for name in data[&#34;mountpoints&#34;]:
+                self.mountpoints[name] = ( Vector2(data[&#34;mountpoints&#34;][name][&#34;pos&#34;][0], data[&#34;mountpoints&#34;][name][&#34;pos&#34;][1]), Vector2(data[&#34;mountpoints&#34;][name][&#34;dir&#34;][0], data[&#34;mountpoints&#34;][name][&#34;dir&#34;][1]))
+
+
+    def add_vertex(self, vertex):
+        self.vertex.append(vertex)
+        return len(self.vertex) - 1
+
+    def begin_poly(self):
+        self.current_poly = []
+        self.currentPolyColor = (255, 255, 255)
+
+    def add_vertex_to_poly(self, index):
+        self.current_poly.append(index)
+
+    def end_poly(self):
+        self.poly.append(self.current_poly)
+        self.poly_color.append(self.currentPolyColor)
+        self.current_poly = []
+        self.currentPolyColor = (255, 255, 255)
+
+    def set_poly_color(self, color):
+        self.currentPolyColor = color
+
+    def get_color(self, polyIndex):
+        if (self.override_color_enable):
+            return self.override_color
+                   
+        return self.poly_color[polyIndex]
+
+    def add_mountpoint(self, name, pos, dir):
+        self.mountpoints[name] = ( pos, dir )
+
+    def add_mountpoint_pos(self, name, pos):
+        if (name in self.mountpoints):
+            self.mountpoints[name] = (pos, self.mountpoints[name][1])
+        else:
+            self.mountpoints[name] = ( pos, (0, 1) )
+
+    def get_mountpoint(self, name):
+        if (name in self.mountpoints):
+            return self.vertex_transform(self.mountpoints[name][0]), vertex_transform_no_pos(self.mountpoints[name][1])
+
+        return self.vertex_transform(Vector2(0,0)), vertex_transform(Vector2(0,1))
+
+    def get_mountpointPRS(self, name, position, rotation, scale):
+        if (name in self.mountpoints):
+            return WireMesh.vertex_transformPRS(self.mountpoints[name][0], position, rotation, scale), WireMesh.vertex_transformPRS(self.mountpoints[name][1], Vector2(0,0), rotation, scale)
+
+        return WireMesh.vertex_transformPRS(Vector2(0,0), position, rotation, scale), WireMesh.vertex_transformPRS(Vector2(0,1), Vector2(0,0), rotation, scale)
+
+    def mountpoint_exists(self, name):
+        if (name in self.mountpoints):
+            return True
+
+        return False
+
+    def draw(self, screen):
+        if (self.dirty):
+            self.rebuild()   
+
+        self.draw_processed_vertex(screen, self.cache_vertex)
+        
+    def drawPRS(self, screen, position, rotation, scale):
+        cache_vertex = [WireMesh.vertex_transformPRS(v, position,rotation, scale) for v in self.vertex]
+
+        self.draw_processed_vertex(screen, cache_vertex)
+
+    def draw_processed_vertex(self, screen, cache_vertex):
+        for idx, poly in enumerate(self.poly):
+            pointlist = [cache_vertex[i] for i in poly]
+            if (self.primitive_type == PrimitiveType.LineStrip):
+                if (self.render_mode == RenderMode.AntiAlias):
+                    pygame.draw.aalines(screen, self.get_color(idx), self.closed, pointlist)
+                else:
+                    pygame.draw.lines(screen, self.get_color(idx), self.closed, pointlist, (int)(self.width))
+            elif (self.primitive_type == PrimitiveType.LineList):
+                if (self.render_mode == RenderMode.AntiAlias):
+                    for idx2 in range(0, len(pointlist), 2):
+                        pygame.draw.aaline(screen, self.get_color(idx), pointlist[idx2], pointlist[idx2 + 1], False)
+                else:
+                    for idx2 in range(0, len(pointlist), 2):
+                        pygame.draw.line(screen, self.get_color(idx), pointlist[idx2], pointlist[idx2 + 1], (int)(self.width))
+
+    def rebuild(self):
+        self.cache_vertex = [self.vertex_transform(v) for v in self.vertex]
+        self.dirty = False
+
+    def vertex_transform(self, vertex):
+        return self.vertex_transform_no_pos(vertex) + self.position
+
+    def vertex_transform_no_pos(self, vertex):
+        a = math.radians(self.rotation)
+        s = math.sin(a)
+        c = math.cos(a)
+        v = Vector2(vertex.x * self.scale.x, vertex.y * self.scale.y)
+        v = Vector2(c * v.x - s * v.y, s * v.x + c * v.y)
+
+        return v
+
+    @staticmethod
+    def vertex_transformPRS(vertex, position, rotation, scale):
+        a = math.radians(rotation)
+        s = math.sin(a)
+        c = math.cos(a)
+        v = Vector2(vertex.x * scale.x, vertex.y * scale.y)
+        v = Vector2(c * v.x - s * v.y, s * v.x + c * v.y)
+        v = v + position
+
+        return v
+
+    def set_position(self, position):
+        self.position = position
+        self.dirty = True
+
+    def set_rotation(self, rotation):
+        self.rotation = rotation
+        self.dirty = True
+
+    def set_scale(self, scale):
+        self.scale = scale
+        self.dirty = True
+    
+    def get_radius(self):
+        maxDist = 0
+        for v in self.vertex:
+            maxDist = max(v.magnitude_squared(), maxDist)
+
+        return math.sqrt(maxDist)
+
+    def apply_transform(self):
+        self.vertex = [self.vertex_transform(v) for v in self.vertex]
+        self.dirty = True
+        self.position = (0,0)
+        self.rotation = 0
+        self.scale = (1,1)
+
+    def convert_to_unindexed_line_list(self):
+        if (self.primitive_type == PrimitiveType.LineStrip):
+            newVertex = []
+            for polyId, p in enumerate(self.poly):
+                newPoly = []
+                for src in range(0, len(p)):
+                    oldId = p[src]
+                    newVertex.append(self.vertex[oldId])
+                    newPoly.append(len(newVertex) - 1)
+                    oldId = p[(src + 1) % len(p)]
+                    newVertex.append(self.vertex[oldId])
+                    newPoly.append(len(newVertex) - 1)
+                self.poly[polyId] = newPoly
+            self.vertex = newVertex
+        elif (self.primitive_type == PrimitiveType.LineList):
+            newVertex = []
+            for polyId, p in enumerate(self.poly):
+                newPoly = []
+                for src in range(0, len(p)):
+                    oldId = p[src]
+                    newVertex.append(self.vertex[oldId])
+                    newPoly.append(len(newVertex) - 1)
+                self.poly[polyId] = newPoly
+            self.vertex = newVertex
+
+        self.primitive_type = PrimitiveType.LineList
+
+    def add_circle(self, sides, radius, variance, color, angular_offset = 0, center_pos = Vector2(0,0)):
+        self.begin_poly()
+        self.set_poly_color(color)
+
+        angle = angular_offset
+        angleInc = math.pi * 2 / sides
+        r = radius
+
+        for i in range(0, sides):
+            if (variance &gt; 0):
+                r = random.uniform(radius - variance, radius + variance)                
+            idx = self.add_vertex(center_pos + Vector2(r * math.cos(angle), r * math.sin(angle)))
+            self.add_vertex_to_poly(idx)
+            angle += angleInc
+
+        self.end_poly()
+
+    #-- Model Management --#
+    models = dict()
+
+    @staticmethod
+    def load_model(filename, model_name = &#34;&#34;):
+        just_filename, file_extension = os.path.splitext(filename)
+        if (file_extension == &#34;.wm&#34;):
+            return WireMesh.load_modelWM(filename, model_name)
+        elif (file_extension == &#34;.json&#34;):
+            return WireMesh.load_modelJSON(filename, model_name)
+        
+        return None
+    
+    @staticmethod
+    def load_modelWM(filename, model_name):
+        new_mesh = WireMesh()
+        with open(filename, &#34;rt&#34;) as file:
+            str = &#34;\n&#34;
+            while (str != &#34;&#34;):                
+                str = str.strip()
+                if (str == &#34;polygon:&#34;):
+                    new_mesh.begin_poly()
+                    exit = False
+                    while (not exit):
+                        str = file.readline().strip()
+                        if (str.find(&#39;:&#39;) != -1):
+                            if (str.find(&#39;color:&#39;) != -1):
+                                new_mesh.set_poly_color(WireMesh.read_color(file))
+                            elif (str.find(&#39;vertex:&#39;) != -1):
+                                vertex_exit = False
+                                while (not vertex_exit):
+                                    str = file.readline().strip()
+                                    if (str.find(&#39;:&#39;) != -1):                                        
+                                        break
+                                    elif (str == &#34;&#34;):
+                                        vertex_exit = True
+                                    else:
+                                        v = WireMesh.parse_vector2(str)
+                                        new_mesh.add_vertex_to_poly(new_mesh.add_vertex(v))
+                                
+                                if (not vertex_exit):
+                                    break
+                        elif (str == &#34;&#34;):
+                            exit = True
+
+                    new_mesh.end_poly()
+
+                    if (not exit):
+                        # Left because I found a tag of something but polygons
+                        continue
+                elif (str == &#34;mountpoint:&#34;):
+                    exit = False
+                    mountpoint_name = &#34;&#34;
+                    while (not exit):
+                        str = file.readline().strip()
+                        if (str.find(&#39;:&#39;) != -1):
+                            if (str.find(&#39;name:&#39;) != -1):
+                                mountpoint_name = file.readline().strip()
+                            elif (str.find(&#39;position:&#39;) != -1):
+                                mountpoint_position = v = WireMesh.parse_vector2(file.readline().strip())
+                                if (mountpoint_name != &#34;&#34;):
+                                    new_mesh.add_mountpoint_pos(mountpoint_name, mountpoint_position)
+                                    break
+                        else:
+                            exit = True
+
+                    if (not exit):
+                        # Left because I found a tag of something but polygons
+                        continue
+
+                # Only reach here if everything works fine (a bit convoluted, but lack of goto does this, and I don&#39;t want to use terminators on my file format)
+                str = file.readline()
+
+        if (model_name == &#34;&#34;):
+            model_name = filename
+        
+        new_mesh.name = model_name
+        WireMesh.models[model_name] = new_mesh    
+
+        return new_mesh    
+
+    @staticmethod
+    def load_modelJSON(filename, model_name):
+        ret = None
+
+        text_file = open(filename, &#34;rt&#34;)
+        json_string = text_file.read()
+        text_file.close()
+
+        meshes = json.loads(json_string)
+
+        for name in meshes:
+            new_mesh = WireMesh()
+            new_mesh.from_JSON(meshes[name])
+
+            new_mesh.name = name
+            WireMesh.models[name] = new_mesh
+
+            if (ret == None):
+                ret = new_mesh
+
+        return ret
+
+    @staticmethod
+    def read_color(file):
+        str = file.readline()
+        if (str == &#34;&#34;):
+            return (255, 255, 255)
+        str = str.strip().replace(&#39;(&#39;, &#39;&#39;).replace(&#39;)&#39;, &#39;&#39;)
+        values = str.split(&#39;,&#39;)
+        return (int(values[0]), int(values[1]), int(values[2]))
+
+    @staticmethod
+    def parse_vector2(str):
+        if (str == &#34;&#34;):
+            return (0, 0, 0)
+        str = str.replace(&#39;(&#39;, &#39;&#39;).replace(&#39;)&#39;, &#39;&#39;)
+        values = str.split(&#39;,&#39;)
+        return Vector2(float(values[0]), float(values[1]))
+
+    @staticmethod
+    def get_model(model_name):
+        if (model_name in WireMesh.models):
+            return WireMesh.models[model_name]
+
+        return None
+    
+    @staticmethod
+    def copy(src):
+        mesh = WireMesh()
+        mesh.vertex = src.vertex.copy()
+        mesh.poly = src.poly.copy()
+        mesh.poly_color = src.poly_color.copy()
+        mesh.position = src.position
+        mesh.rotation = src.rotation
+        mesh.scale = src.scale
+        mesh.dirty = True
+        mesh.closed = src.closed
+        mesh.primitive_type = src.primitive_type
+        mesh.render_mode = src.render_mode
+        mesh.width = src.width
+
+        return mesh
+
+    @staticmethod
+    def circle(sides, radius, variance, color, angular_offset = 0, center_pos = Vector2(0,0)):
+        mesh = WireMesh()
+
+        mesh.add_circle(sides, radius, variance, color, angular_offset)
+
+        return mesh
+
+    @staticmethod
+    def draw_model(screen, name, position, rotation, scale):
+        WireMesh.models[name].drawPRS(screen, position, rotation, scale)</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="Pysteroids.Engine.WireMesh.WireMesh.models"><code class="name">var <span class="ident">models</span></code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+</dl>
+<h3>Static methods</h3>
+<dl>
+<dt id="Pysteroids.Engine.WireMesh.WireMesh.circle"><code class="name flex">
+<span>def <span class="ident">circle</span></span>(<span>sides, radius, variance, color, angular_offset=0, center_pos=<Vector2(0, 0)>)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">@staticmethod
+def circle(sides, radius, variance, color, angular_offset = 0, center_pos = Vector2(0,0)):
+    mesh = WireMesh()
+
+    mesh.add_circle(sides, radius, variance, color, angular_offset)
+
+    return mesh</code></pre>
+</details>
+</dd>
+<dt id="Pysteroids.Engine.WireMesh.WireMesh.copy"><code class="name flex">
+<span>def <span class="ident">copy</span></span>(<span>src)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">@staticmethod
+def copy(src):
+    mesh = WireMesh()
+    mesh.vertex = src.vertex.copy()
+    mesh.poly = src.poly.copy()
+    mesh.poly_color = src.poly_color.copy()
+    mesh.position = src.position
+    mesh.rotation = src.rotation
+    mesh.scale = src.scale
+    mesh.dirty = True
+    mesh.closed = src.closed
+    mesh.primitive_type = src.primitive_type
+    mesh.render_mode = src.render_mode
+    mesh.width = src.width
+
+    return mesh</code></pre>
+</details>
+</dd>
+<dt id="Pysteroids.Engine.WireMesh.WireMesh.draw_model"><code class="name flex">
+<span>def <span class="ident">draw_model</span></span>(<span>screen, name, position, rotation, scale)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">@staticmethod
+def draw_model(screen, name, position, rotation, scale):
+    WireMesh.models[name].drawPRS(screen, position, rotation, scale)</code></pre>
+</details>
+</dd>
+<dt id="Pysteroids.Engine.WireMesh.WireMesh.get_model"><code class="name flex">
+<span>def <span class="ident">get_model</span></span>(<span>model_name)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">@staticmethod
+def get_model(model_name):
+    if (model_name in WireMesh.models):
+        return WireMesh.models[model_name]
+
+    return None</code></pre>
+</details>
+</dd>
+<dt id="Pysteroids.Engine.WireMesh.WireMesh.load_model"><code class="name flex">
+<span>def <span class="ident">load_model</span></span>(<span>filename, model_name='')</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">@staticmethod
+def load_model(filename, model_name = &#34;&#34;):
+    just_filename, file_extension = os.path.splitext(filename)
+    if (file_extension == &#34;.wm&#34;):
+        return WireMesh.load_modelWM(filename, model_name)
+    elif (file_extension == &#34;.json&#34;):
+        return WireMesh.load_modelJSON(filename, model_name)
+    
+    return None</code></pre>
+</details>
+</dd>
+<dt id="Pysteroids.Engine.WireMesh.WireMesh.load_modelJSON"><code class="name flex">
+<span>def <span class="ident">load_modelJSON</span></span>(<span>filename, model_name)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">@staticmethod
+def load_modelJSON(filename, model_name):
+    ret = None
+
+    text_file = open(filename, &#34;rt&#34;)
+    json_string = text_file.read()
+    text_file.close()
+
+    meshes = json.loads(json_string)
+
+    for name in meshes:
+        new_mesh = WireMesh()
+        new_mesh.from_JSON(meshes[name])
+
+        new_mesh.name = name
+        WireMesh.models[name] = new_mesh
+
+        if (ret == None):
+            ret = new_mesh
+
+    return ret</code></pre>
+</details>
+</dd>
+<dt id="Pysteroids.Engine.WireMesh.WireMesh.load_modelWM"><code class="name flex">
+<span>def <span class="ident">load_modelWM</span></span>(<span>filename, model_name)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">@staticmethod
+def load_modelWM(filename, model_name):
+    new_mesh = WireMesh()
+    with open(filename, &#34;rt&#34;) as file:
+        str = &#34;\n&#34;
+        while (str != &#34;&#34;):                
+            str = str.strip()
+            if (str == &#34;polygon:&#34;):
+                new_mesh.begin_poly()
+                exit = False
+                while (not exit):
+                    str = file.readline().strip()
+                    if (str.find(&#39;:&#39;) != -1):
+                        if (str.find(&#39;color:&#39;) != -1):
+                            new_mesh.set_poly_color(WireMesh.read_color(file))
+                        elif (str.find(&#39;vertex:&#39;) != -1):
+                            vertex_exit = False
+                            while (not vertex_exit):
+                                str = file.readline().strip()
+                                if (str.find(&#39;:&#39;) != -1):                                        
+                                    break
+                                elif (str == &#34;&#34;):
+                                    vertex_exit = True
+                                else:
+                                    v = WireMesh.parse_vector2(str)
+                                    new_mesh.add_vertex_to_poly(new_mesh.add_vertex(v))
+                            
+                            if (not vertex_exit):
+                                break
+                    elif (str == &#34;&#34;):
+                        exit = True
+
+                new_mesh.end_poly()
+
+                if (not exit):
+                    # Left because I found a tag of something but polygons
+                    continue
+            elif (str == &#34;mountpoint:&#34;):
+                exit = False
+                mountpoint_name = &#34;&#34;
+                while (not exit):
+                    str = file.readline().strip()
+                    if (str.find(&#39;:&#39;) != -1):
+                        if (str.find(&#39;name:&#39;) != -1):
+                            mountpoint_name = file.readline().strip()
+                        elif (str.find(&#39;position:&#39;) != -1):
+                            mountpoint_position = v = WireMesh.parse_vector2(file.readline().strip())
+                            if (mountpoint_name != &#34;&#34;):
+                                new_mesh.add_mountpoint_pos(mountpoint_name, mountpoint_position)
+                                break
+                    else:
+                        exit = True
+
+                if (not exit):
+                    # Left because I found a tag of something but polygons
+                    continue
+
+            # Only reach here if everything works fine (a bit convoluted, but lack of goto does this, and I don&#39;t want to use terminators on my file format)
+            str = file.readline()
+
+    if (model_name == &#34;&#34;):
+        model_name = filename
+    
+    new_mesh.name = model_name
+    WireMesh.models[model_name] = new_mesh    
+
+    return new_mesh    </code></pre>
+</details>
+</dd>
+<dt id="Pysteroids.Engine.WireMesh.WireMesh.parse_vector2"><code class="name flex">
+<span>def <span class="ident">parse_vector2</span></span>(<span>str)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">@staticmethod
+def parse_vector2(str):
+    if (str == &#34;&#34;):
+        return (0, 0, 0)
+    str = str.replace(&#39;(&#39;, &#39;&#39;).replace(&#39;)&#39;, &#39;&#39;)
+    values = str.split(&#39;,&#39;)
+    return Vector2(float(values[0]), float(values[1]))</code></pre>
+</details>
+</dd>
+<dt id="Pysteroids.Engine.WireMesh.WireMesh.read_color"><code class="name flex">
+<span>def <span class="ident">read_color</span></span>(<span>file)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">@staticmethod
+def read_color(file):
+    str = file.readline()
+    if (str == &#34;&#34;):
+        return (255, 255, 255)
+    str = str.strip().replace(&#39;(&#39;, &#39;&#39;).replace(&#39;)&#39;, &#39;&#39;)
+    values = str.split(&#39;,&#39;)
+    return (int(values[0]), int(values[1]), int(values[2]))</code></pre>
+</details>
+</dd>
+<dt id="Pysteroids.Engine.WireMesh.WireMesh.vertex_transformPRS"><code class="name flex">
+<span>def <span class="ident">vertex_transformPRS</span></span>(<span>vertex, position, rotation, scale)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">@staticmethod
+def vertex_transformPRS(vertex, position, rotation, scale):
+    a = math.radians(rotation)
+    s = math.sin(a)
+    c = math.cos(a)
+    v = Vector2(vertex.x * scale.x, vertex.y * scale.y)
+    v = Vector2(c * v.x - s * v.y, s * v.x + c * v.y)
+    v = v + position
+
+    return v</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="Pysteroids.Engine.WireMesh.WireMesh.add_circle"><code class="name flex">
+<span>def <span class="ident">add_circle</span></span>(<span>self, sides, radius, variance, color, angular_offset=0, center_pos=<Vector2(0, 0)>)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def add_circle(self, sides, radius, variance, color, angular_offset = 0, center_pos = Vector2(0,0)):
+    self.begin_poly()
+    self.set_poly_color(color)
+
+    angle = angular_offset
+    angleInc = math.pi * 2 / sides
+    r = radius
+
+    for i in range(0, sides):
+        if (variance &gt; 0):
+            r = random.uniform(radius - variance, radius + variance)                
+        idx = self.add_vertex(center_pos + Vector2(r * math.cos(angle), r * math.sin(angle)))
+        self.add_vertex_to_poly(idx)
+        angle += angleInc
+
+    self.end_poly()</code></pre>
+</details>
+</dd>
+<dt id="Pysteroids.Engine.WireMesh.WireMesh.add_mountpoint"><code class="name flex">
+<span>def <span class="ident">add_mountpoint</span></span>(<span>self, name, pos, dir)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def add_mountpoint(self, name, pos, dir):
+    self.mountpoints[name] = ( pos, dir )</code></pre>
+</details>
+</dd>
+<dt id="Pysteroids.Engine.WireMesh.WireMesh.add_mountpoint_pos"><code class="name flex">
+<span>def <span class="ident">add_mountpoint_pos</span></span>(<span>self, name, pos)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def add_mountpoint_pos(self, name, pos):
+    if (name in self.mountpoints):
+        self.mountpoints[name] = (pos, self.mountpoints[name][1])
+    else:
+        self.mountpoints[name] = ( pos, (0, 1) )</code></pre>
+</details>
+</dd>
+<dt id="Pysteroids.Engine.WireMesh.WireMesh.add_vertex"><code class="name flex">
+<span>def <span class="ident">add_vertex</span></span>(<span>self, vertex)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def add_vertex(self, vertex):
+    self.vertex.append(vertex)
+    return len(self.vertex) - 1</code></pre>
+</details>
+</dd>
+<dt id="Pysteroids.Engine.WireMesh.WireMesh.add_vertex_to_poly"><code class="name flex">
+<span>def <span class="ident">add_vertex_to_poly</span></span>(<span>self, index)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def add_vertex_to_poly(self, index):
+    self.current_poly.append(index)</code></pre>
+</details>
+</dd>
+<dt id="Pysteroids.Engine.WireMesh.WireMesh.apply_transform"><code class="name flex">
+<span>def <span class="ident">apply_transform</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def apply_transform(self):
+    self.vertex = [self.vertex_transform(v) for v in self.vertex]
+    self.dirty = True
+    self.position = (0,0)
+    self.rotation = 0
+    self.scale = (1,1)</code></pre>
+</details>
+</dd>
+<dt id="Pysteroids.Engine.WireMesh.WireMesh.begin_poly"><code class="name flex">
+<span>def <span class="ident">begin_poly</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def begin_poly(self):
+    self.current_poly = []
+    self.currentPolyColor = (255, 255, 255)</code></pre>
+</details>
+</dd>
+<dt id="Pysteroids.Engine.WireMesh.WireMesh.convert_to_unindexed_line_list"><code class="name flex">
+<span>def <span class="ident">convert_to_unindexed_line_list</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def convert_to_unindexed_line_list(self):
+    if (self.primitive_type == PrimitiveType.LineStrip):
+        newVertex = []
+        for polyId, p in enumerate(self.poly):
+            newPoly = []
+            for src in range(0, len(p)):
+                oldId = p[src]
+                newVertex.append(self.vertex[oldId])
+                newPoly.append(len(newVertex) - 1)
+                oldId = p[(src + 1) % len(p)]
+                newVertex.append(self.vertex[oldId])
+                newPoly.append(len(newVertex) - 1)
+            self.poly[polyId] = newPoly
+        self.vertex = newVertex
+    elif (self.primitive_type == PrimitiveType.LineList):
+        newVertex = []
+        for polyId, p in enumerate(self.poly):
+            newPoly = []
+            for src in range(0, len(p)):
+                oldId = p[src]
+                newVertex.append(self.vertex[oldId])
+                newPoly.append(len(newVertex) - 1)
+            self.poly[polyId] = newPoly
+        self.vertex = newVertex
+
+    self.primitive_type = PrimitiveType.LineList</code></pre>
+</details>
+</dd>
+<dt id="Pysteroids.Engine.WireMesh.WireMesh.draw"><code class="name flex">
+<span>def <span class="ident">draw</span></span>(<span>self, screen)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def draw(self, screen):
+    if (self.dirty):
+        self.rebuild()   
+
+    self.draw_processed_vertex(screen, self.cache_vertex)</code></pre>
+</details>
+</dd>
+<dt id="Pysteroids.Engine.WireMesh.WireMesh.drawPRS"><code class="name flex">
+<span>def <span class="ident">drawPRS</span></span>(<span>self, screen, position, rotation, scale)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def drawPRS(self, screen, position, rotation, scale):
+    cache_vertex = [WireMesh.vertex_transformPRS(v, position,rotation, scale) for v in self.vertex]
+
+    self.draw_processed_vertex(screen, cache_vertex)</code></pre>
+</details>
+</dd>
+<dt id="Pysteroids.Engine.WireMesh.WireMesh.draw_processed_vertex"><code class="name flex">
+<span>def <span class="ident">draw_processed_vertex</span></span>(<span>self, screen, cache_vertex)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def draw_processed_vertex(self, screen, cache_vertex):
+    for idx, poly in enumerate(self.poly):
+        pointlist = [cache_vertex[i] for i in poly]
+        if (self.primitive_type == PrimitiveType.LineStrip):
+            if (self.render_mode == RenderMode.AntiAlias):
+                pygame.draw.aalines(screen, self.get_color(idx), self.closed, pointlist)
+            else:
+                pygame.draw.lines(screen, self.get_color(idx), self.closed, pointlist, (int)(self.width))
+        elif (self.primitive_type == PrimitiveType.LineList):
+            if (self.render_mode == RenderMode.AntiAlias):
+                for idx2 in range(0, len(pointlist), 2):
+                    pygame.draw.aaline(screen, self.get_color(idx), pointlist[idx2], pointlist[idx2 + 1], False)
+            else:
+                for idx2 in range(0, len(pointlist), 2):
+                    pygame.draw.line(screen, self.get_color(idx), pointlist[idx2], pointlist[idx2 + 1], (int)(self.width))</code></pre>
+</details>
+</dd>
+<dt id="Pysteroids.Engine.WireMesh.WireMesh.end_poly"><code class="name flex">
+<span>def <span class="ident">end_poly</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def end_poly(self):
+    self.poly.append(self.current_poly)
+    self.poly_color.append(self.currentPolyColor)
+    self.current_poly = []
+    self.currentPolyColor = (255, 255, 255)</code></pre>
+</details>
+</dd>
+<dt id="Pysteroids.Engine.WireMesh.WireMesh.from_JSON"><code class="name flex">
+<span>def <span class="ident">from_JSON</span></span>(<span>self, data)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def from_JSON(self, data):
+    self.closed = data[&#34;closed&#34;]
+    if (data[&#34;primitive&#34;] == &#34;LineStrip&#34;):
+        self.primitive_type = PrimitiveType.LineStrip
+    elif (data[&#34;primitive&#34;] == &#34;LineList&#34;):
+        self.primitive_type = PrimitiveType.LineList
+    if (data[&#34;render_mode&#34;] == &#34;Normal&#34;):
+        self.render_mode = RenderMode.Normal
+    elif (data[&#34;render_mode&#34;] == &#34;AntiAlias&#34;):
+        self.render_mode = RenderMode.AntiAlias
+    self.width = data[&#34;lineWidth&#34;]
+
+    self.vertex = []
+    for v in data[&#34;vertex&#34;]:
+        self.vertex.append(Vector2(v[0], v[1]))
+
+    self.poly = []
+    self.poly_color = []
+
+    for p in data[&#34;polygons&#34;]:
+        self.poly_color.append(p[&#34;color&#34;])        
+        self.poly.append(p[&#34;index&#34;])
+
+    self.mountpoints = dict()
+
+    if (&#34;mountpoints&#34; in data):
+        for name in data[&#34;mountpoints&#34;]:
+            self.mountpoints[name] = ( Vector2(data[&#34;mountpoints&#34;][name][&#34;pos&#34;][0], data[&#34;mountpoints&#34;][name][&#34;pos&#34;][1]), Vector2(data[&#34;mountpoints&#34;][name][&#34;dir&#34;][0], data[&#34;mountpoints&#34;][name][&#34;dir&#34;][1]))</code></pre>
+</details>
+</dd>
+<dt id="Pysteroids.Engine.WireMesh.WireMesh.get_color"><code class="name flex">
+<span>def <span class="ident">get_color</span></span>(<span>self, polyIndex)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def get_color(self, polyIndex):
+    if (self.override_color_enable):
+        return self.override_color
+               
+    return self.poly_color[polyIndex]</code></pre>
+</details>
+</dd>
+<dt id="Pysteroids.Engine.WireMesh.WireMesh.get_mountpoint"><code class="name flex">
+<span>def <span class="ident">get_mountpoint</span></span>(<span>self, name)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def get_mountpoint(self, name):
+    if (name in self.mountpoints):
+        return self.vertex_transform(self.mountpoints[name][0]), vertex_transform_no_pos(self.mountpoints[name][1])
+
+    return self.vertex_transform(Vector2(0,0)), vertex_transform(Vector2(0,1))</code></pre>
+</details>
+</dd>
+<dt id="Pysteroids.Engine.WireMesh.WireMesh.get_mountpointPRS"><code class="name flex">
+<span>def <span class="ident">get_mountpointPRS</span></span>(<span>self, name, position, rotation, scale)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def get_mountpointPRS(self, name, position, rotation, scale):
+    if (name in self.mountpoints):
+        return WireMesh.vertex_transformPRS(self.mountpoints[name][0], position, rotation, scale), WireMesh.vertex_transformPRS(self.mountpoints[name][1], Vector2(0,0), rotation, scale)
+
+    return WireMesh.vertex_transformPRS(Vector2(0,0), position, rotation, scale), WireMesh.vertex_transformPRS(Vector2(0,1), Vector2(0,0), rotation, scale)</code></pre>
+</details>
+</dd>
+<dt id="Pysteroids.Engine.WireMesh.WireMesh.get_radius"><code class="name flex">
+<span>def <span class="ident">get_radius</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def get_radius(self):
+    maxDist = 0
+    for v in self.vertex:
+        maxDist = max(v.magnitude_squared(), maxDist)
+
+    return math.sqrt(maxDist)</code></pre>
+</details>
+</dd>
+<dt id="Pysteroids.Engine.WireMesh.WireMesh.mountpoint_exists"><code class="name flex">
+<span>def <span class="ident">mountpoint_exists</span></span>(<span>self, name)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def mountpoint_exists(self, name):
+    if (name in self.mountpoints):
+        return True
+
+    return False</code></pre>
+</details>
+</dd>
+<dt id="Pysteroids.Engine.WireMesh.WireMesh.rebuild"><code class="name flex">
+<span>def <span class="ident">rebuild</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def rebuild(self):
+    self.cache_vertex = [self.vertex_transform(v) for v in self.vertex]
+    self.dirty = False</code></pre>
+</details>
+</dd>
+<dt id="Pysteroids.Engine.WireMesh.WireMesh.set_poly_color"><code class="name flex">
+<span>def <span class="ident">set_poly_color</span></span>(<span>self, color)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def set_poly_color(self, color):
+    self.currentPolyColor = color</code></pre>
+</details>
+</dd>
+<dt id="Pysteroids.Engine.WireMesh.WireMesh.set_position"><code class="name flex">
+<span>def <span class="ident">set_position</span></span>(<span>self, position)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def set_position(self, position):
+    self.position = position
+    self.dirty = True</code></pre>
+</details>
+</dd>
+<dt id="Pysteroids.Engine.WireMesh.WireMesh.set_rotation"><code class="name flex">
+<span>def <span class="ident">set_rotation</span></span>(<span>self, rotation)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def set_rotation(self, rotation):
+    self.rotation = rotation
+    self.dirty = True</code></pre>
+</details>
+</dd>
+<dt id="Pysteroids.Engine.WireMesh.WireMesh.set_scale"><code class="name flex">
+<span>def <span class="ident">set_scale</span></span>(<span>self, scale)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def set_scale(self, scale):
+    self.scale = scale
+    self.dirty = True</code></pre>
+</details>
+</dd>
+<dt id="Pysteroids.Engine.WireMesh.WireMesh.to_JSON"><code class="name flex">
+<span>def <span class="ident">to_JSON</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def to_JSON(self):
+    out = WireMeshJSON()
+
+    out.closed = self.closed
+    if (self.primitive_type == PrimitiveType.LineStrip):
+        out.primitive = &#34;LineStrip&#34;
+    elif (self.primitive_type == PrimitiveType.LineList):
+        out.primitive = &#34;LineList&#34;
+    if (self.render_mode == RenderMode.Normal):
+        out.render_mode = &#34;Normal&#34;
+    elif (self.render_mode == RenderMode.AntiAlias):
+        out.render_mode = &#34;AntiAlias&#34;
+    out.lineWidth = self.width
+
+    out.vertex = [ ]
+    for vertex in self.vertex:
+        out.vertex.append( (vertex.x, vertex.y) )
+
+    out.polygons = [ ]
+    idx = 0
+    for polygon in self.poly:
+        poly = dict()
+        poly[&#34;color&#34;] = self.poly_color[idx]
+        poly[&#34;index&#34;] = polygon
+        idx = idx + 1        
+        out.polygons.append(poly)
+
+    out.mountpoints = dict()
+    for name, mountpoint in self.mountpoints.items():
+        mp = dict()
+        mp[&#34;pos&#34;] = (mountpoint[0][0],mountpoint[0][1])
+        mp[&#34;dir&#34;] = (mountpoint[1][0],mountpoint[1][1])
+        out.mountpoints[name] = mp
+
+    ret = dict()
+    ret[self.name] = out
+
+    return json.dumps(ret, default=lambda o: o.__dict__, indent=4)</code></pre>
+</details>
+</dd>
+<dt id="Pysteroids.Engine.WireMesh.WireMesh.vertex_transform"><code class="name flex">
+<span>def <span class="ident">vertex_transform</span></span>(<span>self, vertex)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def vertex_transform(self, vertex):
+    return self.vertex_transform_no_pos(vertex) + self.position</code></pre>
+</details>
+</dd>
+<dt id="Pysteroids.Engine.WireMesh.WireMesh.vertex_transform_no_pos"><code class="name flex">
+<span>def <span class="ident">vertex_transform_no_pos</span></span>(<span>self, vertex)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def vertex_transform_no_pos(self, vertex):
+    a = math.radians(self.rotation)
+    s = math.sin(a)
+    c = math.cos(a)
+    v = Vector2(vertex.x * self.scale.x, vertex.y * self.scale.y)
+    v = Vector2(c * v.x - s * v.y, s * v.x + c * v.y)
+
+    return v</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="Pysteroids.Engine.WireMesh.WireMeshJSON"><code class="flex name class">
+<span>class <span class="ident">WireMeshJSON</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">class WireMeshJSON:
+    pass</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="Pysteroids.Engine" href="index.html">Pysteroids.Engine</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="Pysteroids.Engine.WireMesh.PrimitiveType" href="#Pysteroids.Engine.WireMesh.PrimitiveType">PrimitiveType</a></code></h4>
+<ul class="">
+<li><code><a title="Pysteroids.Engine.WireMesh.PrimitiveType.LineList" href="#Pysteroids.Engine.WireMesh.PrimitiveType.LineList">LineList</a></code></li>
+<li><code><a title="Pysteroids.Engine.WireMesh.PrimitiveType.LineStrip" href="#Pysteroids.Engine.WireMesh.PrimitiveType.LineStrip">LineStrip</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="Pysteroids.Engine.WireMesh.RenderMode" href="#Pysteroids.Engine.WireMesh.RenderMode">RenderMode</a></code></h4>
+<ul class="">
+<li><code><a title="Pysteroids.Engine.WireMesh.RenderMode.AntiAlias" href="#Pysteroids.Engine.WireMesh.RenderMode.AntiAlias">AntiAlias</a></code></li>
+<li><code><a title="Pysteroids.Engine.WireMesh.RenderMode.Normal" href="#Pysteroids.Engine.WireMesh.RenderMode.Normal">Normal</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="Pysteroids.Engine.WireMesh.WireMesh" href="#Pysteroids.Engine.WireMesh.WireMesh">WireMesh</a></code></h4>
+<ul class="">
+<li><code><a title="Pysteroids.Engine.WireMesh.WireMesh.add_circle" href="#Pysteroids.Engine.WireMesh.WireMesh.add_circle">add_circle</a></code></li>
+<li><code><a title="Pysteroids.Engine.WireMesh.WireMesh.add_mountpoint" href="#Pysteroids.Engine.WireMesh.WireMesh.add_mountpoint">add_mountpoint</a></code></li>
+<li><code><a title="Pysteroids.Engine.WireMesh.WireMesh.add_mountpoint_pos" href="#Pysteroids.Engine.WireMesh.WireMesh.add_mountpoint_pos">add_mountpoint_pos</a></code></li>
+<li><code><a title="Pysteroids.Engine.WireMesh.WireMesh.add_vertex" href="#Pysteroids.Engine.WireMesh.WireMesh.add_vertex">add_vertex</a></code></li>
+<li><code><a title="Pysteroids.Engine.WireMesh.WireMesh.add_vertex_to_poly" href="#Pysteroids.Engine.WireMesh.WireMesh.add_vertex_to_poly">add_vertex_to_poly</a></code></li>
+<li><code><a title="Pysteroids.Engine.WireMesh.WireMesh.apply_transform" href="#Pysteroids.Engine.WireMesh.WireMesh.apply_transform">apply_transform</a></code></li>
+<li><code><a title="Pysteroids.Engine.WireMesh.WireMesh.begin_poly" href="#Pysteroids.Engine.WireMesh.WireMesh.begin_poly">begin_poly</a></code></li>
+<li><code><a title="Pysteroids.Engine.WireMesh.WireMesh.circle" href="#Pysteroids.Engine.WireMesh.WireMesh.circle">circle</a></code></li>
+<li><code><a title="Pysteroids.Engine.WireMesh.WireMesh.convert_to_unindexed_line_list" href="#Pysteroids.Engine.WireMesh.WireMesh.convert_to_unindexed_line_list">convert_to_unindexed_line_list</a></code></li>
+<li><code><a title="Pysteroids.Engine.WireMesh.WireMesh.copy" href="#Pysteroids.Engine.WireMesh.WireMesh.copy">copy</a></code></li>
+<li><code><a title="Pysteroids.Engine.WireMesh.WireMesh.draw" href="#Pysteroids.Engine.WireMesh.WireMesh.draw">draw</a></code></li>
+<li><code><a title="Pysteroids.Engine.WireMesh.WireMesh.drawPRS" href="#Pysteroids.Engine.WireMesh.WireMesh.drawPRS">drawPRS</a></code></li>
+<li><code><a title="Pysteroids.Engine.WireMesh.WireMesh.draw_model" href="#Pysteroids.Engine.WireMesh.WireMesh.draw_model">draw_model</a></code></li>
+<li><code><a title="Pysteroids.Engine.WireMesh.WireMesh.draw_processed_vertex" href="#Pysteroids.Engine.WireMesh.WireMesh.draw_processed_vertex">draw_processed_vertex</a></code></li>
+<li><code><a title="Pysteroids.Engine.WireMesh.WireMesh.end_poly" href="#Pysteroids.Engine.WireMesh.WireMesh.end_poly">end_poly</a></code></li>
+<li><code><a title="Pysteroids.Engine.WireMesh.WireMesh.from_JSON" href="#Pysteroids.Engine.WireMesh.WireMesh.from_JSON">from_JSON</a></code></li>
+<li><code><a title="Pysteroids.Engine.WireMesh.WireMesh.get_color" href="#Pysteroids.Engine.WireMesh.WireMesh.get_color">get_color</a></code></li>
+<li><code><a title="Pysteroids.Engine.WireMesh.WireMesh.get_model" href="#Pysteroids.Engine.WireMesh.WireMesh.get_model">get_model</a></code></li>
+<li><code><a title="Pysteroids.Engine.WireMesh.WireMesh.get_mountpoint" href="#Pysteroids.Engine.WireMesh.WireMesh.get_mountpoint">get_mountpoint</a></code></li>
+<li><code><a title="Pysteroids.Engine.WireMesh.WireMesh.get_mountpointPRS" href="#Pysteroids.Engine.WireMesh.WireMesh.get_mountpointPRS">get_mountpointPRS</a></code></li>
+<li><code><a title="Pysteroids.Engine.WireMesh.WireMesh.get_radius" href="#Pysteroids.Engine.WireMesh.WireMesh.get_radius">get_radius</a></code></li>
+<li><code><a title="Pysteroids.Engine.WireMesh.WireMesh.load_model" href="#Pysteroids.Engine.WireMesh.WireMesh.load_model">load_model</a></code></li>
+<li><code><a title="Pysteroids.Engine.WireMesh.WireMesh.load_modelJSON" href="#Pysteroids.Engine.WireMesh.WireMesh.load_modelJSON">load_modelJSON</a></code></li>
+<li><code><a title="Pysteroids.Engine.WireMesh.WireMesh.load_modelWM" href="#Pysteroids.Engine.WireMesh.WireMesh.load_modelWM">load_modelWM</a></code></li>
+<li><code><a title="Pysteroids.Engine.WireMesh.WireMesh.models" href="#Pysteroids.Engine.WireMesh.WireMesh.models">models</a></code></li>
+<li><code><a title="Pysteroids.Engine.WireMesh.WireMesh.mountpoint_exists" href="#Pysteroids.Engine.WireMesh.WireMesh.mountpoint_exists">mountpoint_exists</a></code></li>
+<li><code><a title="Pysteroids.Engine.WireMesh.WireMesh.parse_vector2" href="#Pysteroids.Engine.WireMesh.WireMesh.parse_vector2">parse_vector2</a></code></li>
+<li><code><a title="Pysteroids.Engine.WireMesh.WireMesh.read_color" href="#Pysteroids.Engine.WireMesh.WireMesh.read_color">read_color</a></code></li>
+<li><code><a title="Pysteroids.Engine.WireMesh.WireMesh.rebuild" href="#Pysteroids.Engine.WireMesh.WireMesh.rebuild">rebuild</a></code></li>
+<li><code><a title="Pysteroids.Engine.WireMesh.WireMesh.set_poly_color" href="#Pysteroids.Engine.WireMesh.WireMesh.set_poly_color">set_poly_color</a></code></li>
+<li><code><a title="Pysteroids.Engine.WireMesh.WireMesh.set_position" href="#Pysteroids.Engine.WireMesh.WireMesh.set_position">set_position</a></code></li>
+<li><code><a title="Pysteroids.Engine.WireMesh.WireMesh.set_rotation" href="#Pysteroids.Engine.WireMesh.WireMesh.set_rotation">set_rotation</a></code></li>
+<li><code><a title="Pysteroids.Engine.WireMesh.WireMesh.set_scale" href="#Pysteroids.Engine.WireMesh.WireMesh.set_scale">set_scale</a></code></li>
+<li><code><a title="Pysteroids.Engine.WireMesh.WireMesh.to_JSON" href="#Pysteroids.Engine.WireMesh.WireMesh.to_JSON">to_JSON</a></code></li>
+<li><code><a title="Pysteroids.Engine.WireMesh.WireMesh.vertex_transform" href="#Pysteroids.Engine.WireMesh.WireMesh.vertex_transform">vertex_transform</a></code></li>
+<li><code><a title="Pysteroids.Engine.WireMesh.WireMesh.vertex_transformPRS" href="#Pysteroids.Engine.WireMesh.WireMesh.vertex_transformPRS">vertex_transformPRS</a></code></li>
+<li><code><a title="Pysteroids.Engine.WireMesh.WireMesh.vertex_transform_no_pos" href="#Pysteroids.Engine.WireMesh.WireMesh.vertex_transform_no_pos">vertex_transform_no_pos</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="Pysteroids.Engine.WireMesh.WireMeshJSON" href="#Pysteroids.Engine.WireMesh.WireMeshJSON">WireMeshJSON</a></code></h4>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.6.3</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>

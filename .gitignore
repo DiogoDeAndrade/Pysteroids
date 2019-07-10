@@ -1,4 +1,6 @@
 __pycache__/*
+Engine/__pycache__/*
+Engine/FX/__pycache__/*
 .vscode/*
 .DS_Store
 highscore.dat

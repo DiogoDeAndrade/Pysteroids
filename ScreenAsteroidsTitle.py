@@ -1,7 +1,11 @@
 from ScreenAsteroids import *
 
 class ScreenAsteroidsTitle(ScreenAsteroids):
+    """ScreenAsteroidsTitle class.
+    This is the class for the title screen in the game.
+    """
     def init(self):
+        """"""
         ScreenAsteroids.init(self)
 
         self.scaling = 40
@@ -9,6 +13,11 @@ class ScreenAsteroidsTitle(ScreenAsteroids):
         self.time = 0
 
     def update(self, delta_time):
+        """Updates the title screen, doign the title effect and showing the highscore table in an animated fashion.
+        
+        Arguments:
+            delta_time {float} - Time to elapse in seconds.
+        """
         ScreenAsteroids.update(self, delta_time)
 
         if (self.scaling  > 1):
@@ -16,6 +25,7 @@ class ScreenAsteroidsTitle(ScreenAsteroids):
             if (self.scaling < 1):
                 self.scaling = 1
 
+        # Check if the player presses the fire button to start the game.
         keys = pygame.key.get_pressed()
         if (keys[pygame.K_LCTRL]):
             self.set_exit(1)
@@ -24,6 +34,7 @@ class ScreenAsteroidsTitle(ScreenAsteroids):
         
 
     def render(self):
+        """Renders the title screen."""
         ScreenAsteroids.render(self)
 
         color_min = 32
