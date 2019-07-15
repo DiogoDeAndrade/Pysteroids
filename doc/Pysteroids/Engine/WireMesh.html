@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.6.3" />
 <title>Pysteroids.Engine.WireMesh API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="WireMesh is the primary rendering class …" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
@@ -20,9 +20,17 @@
 <h1 class="title">Module <code>Pysteroids.Engine.WireMesh</code></h1>
 </header>
 <section id="section-intro">
+<p>WireMesh is the primary rendering class.</p>
+<p>It manages and renders 2d wireframe meshes.</p>
+<p>There is not many optimization considerations, to use with care.</p>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">import pygame
+<pre><code class="python">&#34;&#34;&#34;WireMesh is the primary rendering class.
+
+It manages and renders 2d wireframe meshes.
+
+There is not many optimization considerations, to use with care.&#34;&#34;&#34;
+import pygame
 import math
 import random
 import enum
@@ -31,18 +39,43 @@ import json
 from pygame.math import Vector2
 
 class RenderMode(enum.Enum): 
+    &#34;&#34;&#34;Rendering mode for the lines.
+    &#34;&#34;&#34;
     AntiAlias = 0
+    &#34;&#34;&#34;Lines are anti-aliased&#34;&#34;&#34;
     Normal = 1
+    &#34;&#34;&#34;Lines are normal&#34;&#34;&#34;
 
 class PrimitiveType(enum.Enum):
+    &#34;&#34;&#34;Primitive type for the mesh.&#34;&#34;&#34;
     LineStrip = 0,
+    &#34;&#34;&#34;End of one line is the beginning of the next one.&#34;&#34;&#34;
     LineList = 1
+    &#34;&#34;&#34;Lines are pairs of vertices.&#34;&#34;&#34;
   
 class WireMeshJSON:
+    &#34;&#34;&#34;Helper class to convert a mesh to JSON.&#34;&#34;&#34;
     pass
 
 class WireMesh:
+    &#34;&#34;&#34;WireMesh class&#34;&#34;&#34;
     def __init__(self):
+        &#34;&#34;&#34;Base constructor sets the following defaults:
+
+        * Mesh is a line strip
+
+        * Lines are anti-aliased
+
+        * Color is white
+
+        * Position is (0,0)
+
+        * Rotation is 0
+
+        * Scale is (1,1)
+
+        * Mesh is closed (last point and first point are connected)
+        &#34;&#34;&#34;
         self.name = &#34;&#34;
         self.vertex = []
         self.poly = []
@@ -61,6 +94,11 @@ class WireMesh:
         self.mountpoints = dict()
 
     def to_JSON(self):
+        &#34;&#34;&#34;Converts a WireMesh to a JSON representation
+        
+        Returns:
+            string -- JSON representation of the mesh
+        &#34;&#34;&#34;
         out = WireMeshJSON()
 
         out.closed = self.closed
@@ -100,6 +138,11 @@ class WireMesh:
         return json.dumps(ret, default=lambda o: o.__dict__, indent=4)
 
     def from_JSON(self, data):
+        &#34;&#34;&#34;Loads an object structure (parsed from JSON) to this mesh
+        
+        Arguments:
+            data {WireMeshJSON} -- Data structure read from JSON
+        &#34;&#34;&#34;
         self.closed = data[&#34;closed&#34;]
         if (data[&#34;primitive&#34;] == &#34;LineStrip&#34;):
             self.primitive_type = PrimitiveType.LineStrip
@@ -130,70 +173,167 @@ class WireMesh:
 
 
     def add_vertex(self, vertex):
+        &#34;&#34;&#34;Adds a vertex to the current mesh.
+        
+        Arguments:
+            vertex {Vector2} -- Vertex to add
+        
+        Returns:
+            int -- Index of the vertex
+        &#34;&#34;&#34;
         self.vertex.append(vertex)
         return len(self.vertex) - 1
 
     def begin_poly(self):
+        &#34;&#34;&#34;Begins a new polygon (white by default)
+        &#34;&#34;&#34;
         self.current_poly = []
         self.currentPolyColor = (255, 255, 255)
 
     def add_vertex_to_poly(self, index):
+        &#34;&#34;&#34;Adds the given index to the current polygon
+        
+        Arguments:
+            index {int} -- Index of the vertex to add to this polygon.
+        &#34;&#34;&#34;
         self.current_poly.append(index)
 
     def end_poly(self):
+        &#34;&#34;&#34;Finishes the current polygon, and sets up a new one.
+        &#34;&#34;&#34;
         self.poly.append(self.current_poly)
         self.poly_color.append(self.currentPolyColor)
         self.current_poly = []
         self.currentPolyColor = (255, 255, 255)
 
     def set_poly_color(self, color):
+        &#34;&#34;&#34;Sets the color of the current polygon
+        
+        Arguments:
+            color {tuple(R,G,B)} -- Color to set the polygon
+        &#34;&#34;&#34;
         self.currentPolyColor = color
 
-    def get_color(self, polyIndex):
+    def get_color(self, poly_index):
+        &#34;&#34;&#34;Fetches the color for the given polygon
+        
+        Arguments:
+            poly_index {int} -- Index of the polygon
+        
+        Returns:
+            tuple(R,G,B) -- Color of the polygon
+        &#34;&#34;&#34;
         if (self.override_color_enable):
             return self.override_color
                    
-        return self.poly_color[polyIndex]
+        return self.poly_color[poly_index]
 
     def add_mountpoint(self, name, pos, dir):
+        &#34;&#34;&#34;Adds a mountpoint with the given name, position and direction
+        
+        Arguments:
+            name {string} -- Name of the mountpoint
+            
+            pos {Vector2} -- Position in local space
+
+            dir {Vector2} -- Direction in local space
+        &#34;&#34;&#34;
         self.mountpoints[name] = ( pos, dir )
 
     def add_mountpoint_pos(self, name, pos):
+        &#34;&#34;&#34;Adds a new mountpoint with the given name/position, or updates the position of an existing mountpoint.
+        
+        Arguments:
+            name {string} -- Name of the mountpoint
+            
+            pos {Vector2} -- Position in local space
+        &#34;&#34;&#34;
         if (name in self.mountpoints):
             self.mountpoints[name] = (pos, self.mountpoints[name][1])
         else:
             self.mountpoints[name] = ( pos, (0, 1) )
 
     def get_mountpoint(self, name):
+        &#34;&#34;&#34;Retrives the position and direction of the mountpoint in the mesh space
+        
+        Arguments:
+            name {string} -- Name of the mountpoint
+        
+        Returns:
+            tuple(Vector2, Vector2) -- Position and direction of the mountpoint
+        &#34;&#34;&#34;
         if (name in self.mountpoints):
             return self.vertex_transform(self.mountpoints[name][0]), vertex_transform_no_pos(self.mountpoints[name][1])
 
         return self.vertex_transform(Vector2(0,0)), vertex_transform(Vector2(0,1))
 
     def get_mountpointPRS(self, name, position, rotation, scale):
+        &#34;&#34;&#34;Retrives the position and direction of the mountpoint in the given PRS space
+        
+        Arguments:
+            name {string} -- Name of the mountpoint
+
+            position {Vector2} -- Position of the mesh
+
+            rotation {float} -- Rotation of the mesh (radians)
+
+            scale {Vector2} -- Scale of the mesh
+        
+        Returns:
+            tuple(Vector2, Vector2) -- Position and direction of the mountpoint
+        &#34;&#34;&#34;
         if (name in self.mountpoints):
             return WireMesh.vertex_transformPRS(self.mountpoints[name][0], position, rotation, scale), WireMesh.vertex_transformPRS(self.mountpoints[name][1], Vector2(0,0), rotation, scale)
 
         return WireMesh.vertex_transformPRS(Vector2(0,0), position, rotation, scale), WireMesh.vertex_transformPRS(Vector2(0,1), Vector2(0,0), rotation, scale)
 
     def mountpoint_exists(self, name):
+        &#34;&#34;&#34;Checks if a mountpoint exists
+        
+        Arguments:
+            name {string} -- Mountpoint name
+        
+        Returns:
+            bool -- True if the mountpoint exists
+        &#34;&#34;&#34;
         if (name in self.mountpoints):
             return True
 
         return False
 
     def draw(self, screen):
+        &#34;&#34;&#34;Draws the mesh in it&#39;s current space (current position, rotation and scale)
+        
+        Arguments:
+            screen {int} -- Display surface handle
+        &#34;&#34;&#34;
         if (self.dirty):
             self.rebuild()   
 
         self.draw_processed_vertex(screen, self.cache_vertex)
         
     def drawPRS(self, screen, position, rotation, scale):
+        &#34;&#34;&#34;Draws the mesh in the given PRS space
+        
+        Arguments:
+            screen {int} -- Display surface handle
+            position {Vector2} -- Position of the mesh
+            rotation {float} -- Rotation of the mesh (radians)
+            scale {Vector2} -- Scale of the mesh
+        &#34;&#34;&#34;
         cache_vertex = [WireMesh.vertex_transformPRS(v, position,rotation, scale) for v in self.vertex]
 
         self.draw_processed_vertex(screen, cache_vertex)
 
     def draw_processed_vertex(self, screen, cache_vertex):
+        &#34;&#34;&#34;Renders the points given.
+
+        This is used internally do draw the mesh and shouldn&#39;t be called explicitely
+        
+        Arguments:
+            screen {int} -- Display surface handle
+            cache_vertex {Vector2[]} -- Positions of the vertices of the polygons
+        &#34;&#34;&#34;
         for idx, poly in enumerate(self.poly):
             pointlist = [cache_vertex[i] for i in poly]
             if (self.primitive_type == PrimitiveType.LineStrip):
@@ -210,13 +350,35 @@ class WireMesh:
                         pygame.draw.line(screen, self.get_color(idx), pointlist[idx2], pointlist[idx2 + 1], (int)(self.width))
 
     def rebuild(self):
+        &#34;&#34;&#34;Updates the internal point cache to the local mesh space.
+
+        This is called automatically from draw(), if the dirty flag is set.
+
+        After any change in the local mesh space (manipulating directly self.position, etc), you should do obj.dirty = True, to force an update of the mesh. 
+        &#34;&#34;&#34;
         self.cache_vertex = [self.vertex_transform(v) for v in self.vertex]
         self.dirty = False
 
     def vertex_transform(self, vertex):
+        &#34;&#34;&#34;Transform a vertex to the local mesh space.
+        
+        Arguments:
+            vertex {Vector2} -- Vector to transform
+        
+        Returns:
+            Vector2 -- Transformed point
+        &#34;&#34;&#34;
         return self.vertex_transform_no_pos(vertex) + self.position
 
     def vertex_transform_no_pos(self, vertex):
+        &#34;&#34;&#34;Transform a vertex to the local mesh space, ignoring the position (ideal for directions)
+        
+        Arguments:
+            vertex {Vector2} -- Vector to transform
+        
+        Returns:
+            Vector2 -- Transformed point
+        &#34;&#34;&#34;
         a = math.radians(self.rotation)
         s = math.sin(a)
         c = math.cos(a)
@@ -227,6 +389,20 @@ class WireMesh:
 
     @staticmethod
     def vertex_transformPRS(vertex, position, rotation, scale):
+        &#34;&#34;&#34;Transforms a vertex to the given PRS space
+        
+        Arguments:
+            vertex {Vector2} -- Vertex to transform
+
+            position {Vector2} -- Position
+
+            rotation {float} -- Rotation (radians)
+
+            scale {Vector2} -- Scale
+        
+        Returns:
+            Vector2 -- Transformed point
+        &#34;&#34;&#34;
         a = math.radians(rotation)
         s = math.sin(a)
         c = math.cos(a)
@@ -237,18 +413,46 @@ class WireMesh:
         return v
 
     def set_position(self, position):
+        &#34;&#34;&#34;Sets the local position of this mesh to the given position.
+
+        This function sets the dirty flag to True.
+        
+        Arguments:
+            position {Vector2} -- Position
+        &#34;&#34;&#34;
         self.position = position
         self.dirty = True
 
     def set_rotation(self, rotation):
+        &#34;&#34;&#34;Sets the local rotation of this mesh to the given rotation.
+
+        This function sets the dirty flag to True.
+        
+        Arguments:
+            rotation {float} -- Rotation (radians)
+        &#34;&#34;&#34;
         self.rotation = rotation
         self.dirty = True
 
     def set_scale(self, scale):
+        &#34;&#34;&#34;Sets the local scale of this mesh to the given value.
+        
+        This function sets the dirty flag to True.
+
+        Arguments:
+            scale {Vector2} -- Scale
+        &#34;&#34;&#34;
         self.scale = scale
         self.dirty = True
     
     def get_radius(self):
+        &#34;&#34;&#34;Gets the radius of this WireMesh.
+
+        That means finding the vertex furthest away from the mesh origin and returning that distance.
+        
+        Returns:
+            float -- Radius of this mesh.
+        &#34;&#34;&#34;
         maxDist = 0
         for v in self.vertex:
             maxDist = max(v.magnitude_squared(), maxDist)
@@ -256,6 +460,7 @@ class WireMesh:
         return math.sqrt(maxDist)
 
     def apply_transform(self):
+        &#34;&#34;&#34;Applies the local mesh space to the mesh, and resets the local space.&#34;&#34;&#34;
         self.vertex = [self.vertex_transform(v) for v in self.vertex]
         self.dirty = True
         self.position = (0,0)
@@ -263,6 +468,10 @@ class WireMesh:
         self.scale = (1,1)
 
     def convert_to_unindexed_line_list(self):
+        &#34;&#34;&#34;Converts the mesh to a line strip without any indexes.
+
+        This is mainly used for special effects, and means that all line segments are composed from individual vertices, instead of sharing start and end points.
+        &#34;&#34;&#34;
         if (self.primitive_type == PrimitiveType.LineStrip):
             newVertex = []
             for polyId, p in enumerate(self.poly):
@@ -290,6 +499,23 @@ class WireMesh:
         self.primitive_type = PrimitiveType.LineList
 
     def add_circle(self, sides, radius, variance, color, angular_offset = 0, center_pos = Vector2(0,0)):
+        &#34;&#34;&#34;Adds a circle polygon to the current WireMesh
+        
+        By specifying few sides, you can use this function to generate different types of shapes, and by setting the angular_offset, you can control the orientation of that shape.
+
+        Arguments:
+            sides {int} -- How many sides
+
+            radius {float} -- Radius of the circle
+
+            variance {float} -- Variance of the radius
+
+            color {tuple(R,G,B)} -- Color of the polygon
+
+            angular_offset {int} -- What&#39;s the angle of the initial point? (default: {0})
+
+            center_pos {Vector2} -- Center of the shape (default: {Vector2(0,0)})
+        &#34;&#34;&#34;
         self.begin_poly()
         self.set_poly_color(color)
 
@@ -308,9 +534,23 @@ class WireMesh:
 
     #-- Model Management --#
     models = dict()
+    &#34;&#34;&#34;Dictionary that stores all loaded models.
+    &#34;&#34;&#34;
 
     @staticmethod
     def load_model(filename, model_name = &#34;&#34;):
+        &#34;&#34;&#34;Loads a WireMesh model.
+        
+        Format can be either WM or JSON, and the extension defines which one the file is.
+    
+        Arguments:
+            filename {string} -- Filename to load
+
+            model_name {string} -- Internal name of the model (default: {&#34;&#34;})
+        
+        Returns:
+            WireMesh -- Loaded model, or None if something goes wrong.
+        &#34;&#34;&#34;
         just_filename, file_extension = os.path.splitext(filename)
         if (file_extension == &#34;.wm&#34;):
             return WireMesh.load_modelWM(filename, model_name)
@@ -321,6 +561,50 @@ class WireMesh:
     
     @staticmethod
     def load_modelWM(filename, model_name):
+        &#34;&#34;&#34;Loads a WM file.
+
+        The WM format has the following structure:
+        ```
+        polygon:
+            color:
+                (&lt;R&gt;,&lt;G&gt;,&lt;B&gt;)
+            vertex:    
+                (&lt;x1&gt;,&lt;y1&gt;),
+                (&lt;x2&gt;,&lt;y2&gt;),
+                ...
+                (&lt;xn&gt;,&lt;yn&gt;)   
+        ...
+        polygon:
+            color:
+                (&lt;R&gt;,&lt;G&gt;,&lt;B&gt;)
+            vertex:    
+                (&lt;x1&gt;,&lt;y1&gt;),
+                (&lt;x2&gt;,&lt;y2&gt;),
+                ...
+                (&lt;xn&gt;,&lt;yn&gt;)   
+        ...     
+        mountpoint:
+            name:
+                &lt;mountpoint_name&gt;
+            position:
+                (&lt;x&gt;,&lt;y&gt;)
+        ...
+        mountpoint:
+            name:
+                &lt;mountpoint_name&gt;
+            position:
+                (&lt;x&gt;,&lt;y&gt;)
+        ...
+        ```
+        
+        Arguments:
+            filename {string} -- Filename to load
+            
+            model_name {string} -- Internal name of the model (default: {&#34;&#34;})
+        
+        Returns:
+            WireMesh -- Loaded model, or None if something goes wrong.
+        &#34;&#34;&#34;
         new_mesh = WireMesh()
         with open(filename, &#34;rt&#34;) as file:
             str = &#34;\n&#34;
@@ -389,6 +673,52 @@ class WireMesh:
 
     @staticmethod
     def load_modelJSON(filename, model_name):
+        &#34;&#34;&#34;Loads a JSON file.
+
+        The JSON format has the following structure:
+        ```
+        {
+            &lt;name&gt;: {
+                &#34;closed&#34;: &lt;true|false&gt;,
+                &#34;primitive&#34;: &lt;&#34;LineList&#34;|&#34;LineStrip&#34;&gt;,
+                &#34;render_mode&#34;: &lt;&#34;AntiAlias&#34;|&#34;Normal&#34;&gt;,
+                &#34;lineWidth&#34;: &lt;int&gt;,
+                &#34;vertex&#34;: [
+                    [ &lt;v1.x&gt;, &lt;v1.y&gt; ], ... , [ &lt;vn.x&gt;, &lt;vn.y&gt; ]
+                ],
+                &#34;polygons&#34;: [
+                    {
+                        &#34;color&#34;: [ &lt;R&gt;, &lt;G&gt;, &lt;B&gt; ],
+                        &#34;index&#34;: [
+                            &lt;i1&gt;, &lt;i2&gt; ... &lt;in&gt;
+                        ]
+                    },
+                    ...
+                    {
+                        &#34;color&#34;: [ &lt;R&gt;, &lt;G&gt;, &lt;B&gt; ],
+                        &#34;index&#34;: [
+                            &lt;i1&gt;, &lt;i2&gt; ... &lt;in&gt;
+                        ]
+                    }
+                ],
+                &#34;mountpoints&#34;: {
+                    &lt;name&gt;: {
+                        &#34;pos&#34;: [ &lt;p.x&gt;, &lt;p.y&gt; ],
+                        &#34;dir&#34;: [ &lt;d.x&gt;, &lt;d.y&gt; ]
+                    }
+                }
+            }
+        }
+        ```
+        
+        Arguments:
+            filename {string} -- Filename to load
+            
+            model_name {string} -- Internal name of the model (default: {&#34;&#34;})
+        
+        Returns:
+            WireMesh -- Loaded model, or None if something goes wrong.
+        &#34;&#34;&#34;
         ret = None
 
         text_file = open(filename, &#34;rt&#34;)
@@ -411,6 +741,16 @@ class WireMesh:
 
     @staticmethod
     def read_color(file):
+        &#34;&#34;&#34;Helper function for WM parsing, reads a color from a file.
+        
+        This function expects a line on the file with the format &#34;(R,G,B)&#34;
+
+        Arguments:
+            file {File} -- File to read from
+        
+        Returns:
+            tuple(R,G,B) -- Parsed color
+        &#34;&#34;&#34;
         str = file.readline()
         if (str == &#34;&#34;):
             return (255, 255, 255)
@@ -420,14 +760,32 @@ class WireMesh:
 
     @staticmethod
     def parse_vector2(str):
+        &#34;&#34;&#34;Helper function for WM parsing, reads a 2d vector from a string.
+        
+        This function expects a string with the format &#34;(X,Y)&#34;
+
+        Arguments:
+            str {string} -- String to parse
+        
+        Returns:
+            tuple(X,Y) -- Parsed vector
+        &#34;&#34;&#34;
         if (str == &#34;&#34;):
-            return (0, 0, 0)
+            return (0, 0)
         str = str.replace(&#39;(&#39;, &#39;&#39;).replace(&#39;)&#39;, &#39;&#39;)
         values = str.split(&#39;,&#39;)
         return Vector2(float(values[0]), float(values[1]))
 
     @staticmethod
     def get_model(model_name):
+        &#34;&#34;&#34;Retrieves the model with the given name.
+        
+        Arguments:
+            model_name {string} -- Internal name of the mesh
+        
+        Returns:
+            WireMesh -- Mesh or None if no mesh with the given name was loaded
+        &#34;&#34;&#34;
         if (model_name in WireMesh.models):
             return WireMesh.models[model_name]
 
@@ -435,6 +793,14 @@ class WireMesh:
     
     @staticmethod
     def copy(src):
+        &#34;&#34;&#34;Creates a copy of the given mesh.
+        
+        Arguments:
+            src {WireMesh} -- Source mesh
+        
+        Returns:
+            WireMesh -- Clone of the given mesh
+        &#34;&#34;&#34;
         mesh = WireMesh()
         mesh.vertex = src.vertex.copy()
         mesh.poly = src.poly.copy()
@@ -452,6 +818,24 @@ class WireMesh:
 
     @staticmethod
     def circle(sides, radius, variance, color, angular_offset = 0, center_pos = Vector2(0,0)):
+        &#34;&#34;&#34;Creates a new WireMesh with a circle as a basis
+        
+        Arguments:
+            sides {int} -- How many sides
+
+            radius {float} -- Radius of the circle
+
+            variance {float} -- Variance of the radius
+
+            color {tuple(R,G,B)} -- Color of the polygon
+
+            angular_offset {int} -- What&#39;s the angle of the initial point? (default: {0})
+
+            center_pos {Vector2} -- Center of the shape (default: {Vector2(0,0)})
+        
+        Returns:
+            WireMesh -- New WireMesh with the desired geometry
+        &#34;&#34;&#34;
         mesh = WireMesh()
 
         mesh.add_circle(sides, radius, variance, color, angular_offset)
@@ -460,6 +844,15 @@ class WireMesh:
 
     @staticmethod
     def draw_model(screen, name, position, rotation, scale):
+        &#34;&#34;&#34;Renders a mesh by name, on the specified position, rotation and scale
+        
+        Arguments:
+            screen {int} -- Display surface handle
+            name {string} -- Name of th emesh to display
+            position {Vector2} -- Position to draw the mesh
+            rotation {float} -- Rotation in which to draw the mesh (radians)
+            scale {Vector2} -- Scale of the mesh
+        &#34;&#34;&#34;
         WireMesh.models[name].drawPRS(screen, position, rotation, scale)</code></pre>
 </details>
 </section>
@@ -477,12 +870,15 @@ class WireMesh:
 <span>(</span><span>*args, **kwargs)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>An enumeration.</p></section>
+<section class="desc"><p>Primitive type for the mesh.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">class PrimitiveType(enum.Enum):
+    &#34;&#34;&#34;Primitive type for the mesh.&#34;&#34;&#34;
     LineStrip = 0,
-    LineList = 1</code></pre>
+    &#34;&#34;&#34;End of one line is the beginning of the next one.&#34;&#34;&#34;
+    LineList = 1
+    &#34;&#34;&#34;Lines are pairs of vertices.&#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -492,11 +888,11 @@ class WireMesh:
 <dl>
 <dt id="Pysteroids.Engine.WireMesh.PrimitiveType.LineList"><code class="name">var <span class="ident">LineList</span></code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Lines are pairs of vertices.</p></section>
 </dd>
 <dt id="Pysteroids.Engine.WireMesh.PrimitiveType.LineStrip"><code class="name">var <span class="ident">LineStrip</span></code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>End of one line is the beginning of the next one.</p></section>
 </dd>
 </dl>
 </dd>
@@ -505,12 +901,16 @@ class WireMesh:
 <span>(</span><span>*args, **kwargs)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>An enumeration.</p></section>
+<section class="desc"><p>Rendering mode for the lines.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">class RenderMode(enum.Enum): 
+    &#34;&#34;&#34;Rendering mode for the lines.
+    &#34;&#34;&#34;
     AntiAlias = 0
-    Normal = 1</code></pre>
+    &#34;&#34;&#34;Lines are anti-aliased&#34;&#34;&#34;
+    Normal = 1
+    &#34;&#34;&#34;Lines are normal&#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -520,11 +920,11 @@ class WireMesh:
 <dl>
 <dt id="Pysteroids.Engine.WireMesh.RenderMode.AntiAlias"><code class="name">var <span class="ident">AntiAlias</span></code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Lines are anti-aliased</p></section>
 </dd>
 <dt id="Pysteroids.Engine.WireMesh.RenderMode.Normal"><code class="name">var <span class="ident">Normal</span></code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Lines are normal</p></section>
 </dd>
 </dl>
 </dd>
@@ -532,11 +932,52 @@ class WireMesh:
 <span>class <span class="ident">WireMesh</span></span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>WireMesh class</p>
+<p>Base constructor sets the following defaults:</p>
+<ul>
+<li>
+<p>Mesh is a line strip</p>
+</li>
+<li>
+<p>Lines are anti-aliased</p>
+</li>
+<li>
+<p>Color is white</p>
+</li>
+<li>
+<p>Position is (0,0)</p>
+</li>
+<li>
+<p>Rotation is 0</p>
+</li>
+<li>
+<p>Scale is (1,1)</p>
+</li>
+<li>
+<p>Mesh is closed (last point and first point are connected)</p>
+</li>
+</ul></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">class WireMesh:
+    &#34;&#34;&#34;WireMesh class&#34;&#34;&#34;
     def __init__(self):
+        &#34;&#34;&#34;Base constructor sets the following defaults:
+
+        * Mesh is a line strip
+
+        * Lines are anti-aliased
+
+        * Color is white
+
+        * Position is (0,0)
+
+        * Rotation is 0
+
+        * Scale is (1,1)
+
+        * Mesh is closed (last point and first point are connected)
+        &#34;&#34;&#34;
         self.name = &#34;&#34;
         self.vertex = []
         self.poly = []
@@ -555,6 +996,11 @@ class WireMesh:
         self.mountpoints = dict()
 
     def to_JSON(self):
+        &#34;&#34;&#34;Converts a WireMesh to a JSON representation
+        
+        Returns:
+            string -- JSON representation of the mesh
+        &#34;&#34;&#34;
         out = WireMeshJSON()
 
         out.closed = self.closed
@@ -594,6 +1040,11 @@ class WireMesh:
         return json.dumps(ret, default=lambda o: o.__dict__, indent=4)
 
     def from_JSON(self, data):
+        &#34;&#34;&#34;Loads an object structure (parsed from JSON) to this mesh
+        
+        Arguments:
+            data {WireMeshJSON} -- Data structure read from JSON
+        &#34;&#34;&#34;
         self.closed = data[&#34;closed&#34;]
         if (data[&#34;primitive&#34;] == &#34;LineStrip&#34;):
             self.primitive_type = PrimitiveType.LineStrip
@@ -624,70 +1075,167 @@ class WireMesh:
 
 
     def add_vertex(self, vertex):
+        &#34;&#34;&#34;Adds a vertex to the current mesh.
+        
+        Arguments:
+            vertex {Vector2} -- Vertex to add
+        
+        Returns:
+            int -- Index of the vertex
+        &#34;&#34;&#34;
         self.vertex.append(vertex)
         return len(self.vertex) - 1
 
     def begin_poly(self):
+        &#34;&#34;&#34;Begins a new polygon (white by default)
+        &#34;&#34;&#34;
         self.current_poly = []
         self.currentPolyColor = (255, 255, 255)
 
     def add_vertex_to_poly(self, index):
+        &#34;&#34;&#34;Adds the given index to the current polygon
+        
+        Arguments:
+            index {int} -- Index of the vertex to add to this polygon.
+        &#34;&#34;&#34;
         self.current_poly.append(index)
 
     def end_poly(self):
+        &#34;&#34;&#34;Finishes the current polygon, and sets up a new one.
+        &#34;&#34;&#34;
         self.poly.append(self.current_poly)
         self.poly_color.append(self.currentPolyColor)
         self.current_poly = []
         self.currentPolyColor = (255, 255, 255)
 
     def set_poly_color(self, color):
+        &#34;&#34;&#34;Sets the color of the current polygon
+        
+        Arguments:
+            color {tuple(R,G,B)} -- Color to set the polygon
+        &#34;&#34;&#34;
         self.currentPolyColor = color
 
-    def get_color(self, polyIndex):
+    def get_color(self, poly_index):
+        &#34;&#34;&#34;Fetches the color for the given polygon
+        
+        Arguments:
+            poly_index {int} -- Index of the polygon
+        
+        Returns:
+            tuple(R,G,B) -- Color of the polygon
+        &#34;&#34;&#34;
         if (self.override_color_enable):
             return self.override_color
                    
-        return self.poly_color[polyIndex]
+        return self.poly_color[poly_index]
 
     def add_mountpoint(self, name, pos, dir):
+        &#34;&#34;&#34;Adds a mountpoint with the given name, position and direction
+        
+        Arguments:
+            name {string} -- Name of the mountpoint
+            
+            pos {Vector2} -- Position in local space
+
+            dir {Vector2} -- Direction in local space
+        &#34;&#34;&#34;
         self.mountpoints[name] = ( pos, dir )
 
     def add_mountpoint_pos(self, name, pos):
+        &#34;&#34;&#34;Adds a new mountpoint with the given name/position, or updates the position of an existing mountpoint.
+        
+        Arguments:
+            name {string} -- Name of the mountpoint
+            
+            pos {Vector2} -- Position in local space
+        &#34;&#34;&#34;
         if (name in self.mountpoints):
             self.mountpoints[name] = (pos, self.mountpoints[name][1])
         else:
             self.mountpoints[name] = ( pos, (0, 1) )
 
     def get_mountpoint(self, name):
+        &#34;&#34;&#34;Retrives the position and direction of the mountpoint in the mesh space
+        
+        Arguments:
+            name {string} -- Name of the mountpoint
+        
+        Returns:
+            tuple(Vector2, Vector2) -- Position and direction of the mountpoint
+        &#34;&#34;&#34;
         if (name in self.mountpoints):
             return self.vertex_transform(self.mountpoints[name][0]), vertex_transform_no_pos(self.mountpoints[name][1])
 
         return self.vertex_transform(Vector2(0,0)), vertex_transform(Vector2(0,1))
 
     def get_mountpointPRS(self, name, position, rotation, scale):
+        &#34;&#34;&#34;Retrives the position and direction of the mountpoint in the given PRS space
+        
+        Arguments:
+            name {string} -- Name of the mountpoint
+
+            position {Vector2} -- Position of the mesh
+
+            rotation {float} -- Rotation of the mesh (radians)
+
+            scale {Vector2} -- Scale of the mesh
+        
+        Returns:
+            tuple(Vector2, Vector2) -- Position and direction of the mountpoint
+        &#34;&#34;&#34;
         if (name in self.mountpoints):
             return WireMesh.vertex_transformPRS(self.mountpoints[name][0], position, rotation, scale), WireMesh.vertex_transformPRS(self.mountpoints[name][1], Vector2(0,0), rotation, scale)
 
         return WireMesh.vertex_transformPRS(Vector2(0,0), position, rotation, scale), WireMesh.vertex_transformPRS(Vector2(0,1), Vector2(0,0), rotation, scale)
 
     def mountpoint_exists(self, name):
+        &#34;&#34;&#34;Checks if a mountpoint exists
+        
+        Arguments:
+            name {string} -- Mountpoint name
+        
+        Returns:
+            bool -- True if the mountpoint exists
+        &#34;&#34;&#34;
         if (name in self.mountpoints):
             return True
 
         return False
 
     def draw(self, screen):
+        &#34;&#34;&#34;Draws the mesh in it&#39;s current space (current position, rotation and scale)
+        
+        Arguments:
+            screen {int} -- Display surface handle
+        &#34;&#34;&#34;
         if (self.dirty):
             self.rebuild()   
 
         self.draw_processed_vertex(screen, self.cache_vertex)
         
     def drawPRS(self, screen, position, rotation, scale):
+        &#34;&#34;&#34;Draws the mesh in the given PRS space
+        
+        Arguments:
+            screen {int} -- Display surface handle
+            position {Vector2} -- Position of the mesh
+            rotation {float} -- Rotation of the mesh (radians)
+            scale {Vector2} -- Scale of the mesh
+        &#34;&#34;&#34;
         cache_vertex = [WireMesh.vertex_transformPRS(v, position,rotation, scale) for v in self.vertex]
 
         self.draw_processed_vertex(screen, cache_vertex)
 
     def draw_processed_vertex(self, screen, cache_vertex):
+        &#34;&#34;&#34;Renders the points given.
+
+        This is used internally do draw the mesh and shouldn&#39;t be called explicitely
+        
+        Arguments:
+            screen {int} -- Display surface handle
+            cache_vertex {Vector2[]} -- Positions of the vertices of the polygons
+        &#34;&#34;&#34;
         for idx, poly in enumerate(self.poly):
             pointlist = [cache_vertex[i] for i in poly]
             if (self.primitive_type == PrimitiveType.LineStrip):
@@ -704,13 +1252,35 @@ class WireMesh:
                         pygame.draw.line(screen, self.get_color(idx), pointlist[idx2], pointlist[idx2 + 1], (int)(self.width))
 
     def rebuild(self):
+        &#34;&#34;&#34;Updates the internal point cache to the local mesh space.
+
+        This is called automatically from draw(), if the dirty flag is set.
+
+        After any change in the local mesh space (manipulating directly self.position, etc), you should do obj.dirty = True, to force an update of the mesh. 
+        &#34;&#34;&#34;
         self.cache_vertex = [self.vertex_transform(v) for v in self.vertex]
         self.dirty = False
 
     def vertex_transform(self, vertex):
+        &#34;&#34;&#34;Transform a vertex to the local mesh space.
+        
+        Arguments:
+            vertex {Vector2} -- Vector to transform
+        
+        Returns:
+            Vector2 -- Transformed point
+        &#34;&#34;&#34;
         return self.vertex_transform_no_pos(vertex) + self.position
 
     def vertex_transform_no_pos(self, vertex):
+        &#34;&#34;&#34;Transform a vertex to the local mesh space, ignoring the position (ideal for directions)
+        
+        Arguments:
+            vertex {Vector2} -- Vector to transform
+        
+        Returns:
+            Vector2 -- Transformed point
+        &#34;&#34;&#34;
         a = math.radians(self.rotation)
         s = math.sin(a)
         c = math.cos(a)
@@ -721,6 +1291,20 @@ class WireMesh:
 
     @staticmethod
     def vertex_transformPRS(vertex, position, rotation, scale):
+        &#34;&#34;&#34;Transforms a vertex to the given PRS space
+        
+        Arguments:
+            vertex {Vector2} -- Vertex to transform
+
+            position {Vector2} -- Position
+
+            rotation {float} -- Rotation (radians)
+
+            scale {Vector2} -- Scale
+        
+        Returns:
+            Vector2 -- Transformed point
+        &#34;&#34;&#34;
         a = math.radians(rotation)
         s = math.sin(a)
         c = math.cos(a)
@@ -731,18 +1315,46 @@ class WireMesh:
         return v
 
     def set_position(self, position):
+        &#34;&#34;&#34;Sets the local position of this mesh to the given position.
+
+        This function sets the dirty flag to True.
+        
+        Arguments:
+            position {Vector2} -- Position
+        &#34;&#34;&#34;
         self.position = position
         self.dirty = True
 
     def set_rotation(self, rotation):
+        &#34;&#34;&#34;Sets the local rotation of this mesh to the given rotation.
+
+        This function sets the dirty flag to True.
+        
+        Arguments:
+            rotation {float} -- Rotation (radians)
+        &#34;&#34;&#34;
         self.rotation = rotation
         self.dirty = True
 
     def set_scale(self, scale):
+        &#34;&#34;&#34;Sets the local scale of this mesh to the given value.
+        
+        This function sets the dirty flag to True.
+
+        Arguments:
+            scale {Vector2} -- Scale
+        &#34;&#34;&#34;
         self.scale = scale
         self.dirty = True
     
     def get_radius(self):
+        &#34;&#34;&#34;Gets the radius of this WireMesh.
+
+        That means finding the vertex furthest away from the mesh origin and returning that distance.
+        
+        Returns:
+            float -- Radius of this mesh.
+        &#34;&#34;&#34;
         maxDist = 0
         for v in self.vertex:
             maxDist = max(v.magnitude_squared(), maxDist)
@@ -750,6 +1362,7 @@ class WireMesh:
         return math.sqrt(maxDist)
 
     def apply_transform(self):
+        &#34;&#34;&#34;Applies the local mesh space to the mesh, and resets the local space.&#34;&#34;&#34;
         self.vertex = [self.vertex_transform(v) for v in self.vertex]
         self.dirty = True
         self.position = (0,0)
@@ -757,6 +1370,10 @@ class WireMesh:
         self.scale = (1,1)
 
     def convert_to_unindexed_line_list(self):
+        &#34;&#34;&#34;Converts the mesh to a line strip without any indexes.
+
+        This is mainly used for special effects, and means that all line segments are composed from individual vertices, instead of sharing start and end points.
+        &#34;&#34;&#34;
         if (self.primitive_type == PrimitiveType.LineStrip):
             newVertex = []
             for polyId, p in enumerate(self.poly):
@@ -784,6 +1401,23 @@ class WireMesh:
         self.primitive_type = PrimitiveType.LineList
 
     def add_circle(self, sides, radius, variance, color, angular_offset = 0, center_pos = Vector2(0,0)):
+        &#34;&#34;&#34;Adds a circle polygon to the current WireMesh
+        
+        By specifying few sides, you can use this function to generate different types of shapes, and by setting the angular_offset, you can control the orientation of that shape.
+
+        Arguments:
+            sides {int} -- How many sides
+
+            radius {float} -- Radius of the circle
+
+            variance {float} -- Variance of the radius
+
+            color {tuple(R,G,B)} -- Color of the polygon
+
+            angular_offset {int} -- What&#39;s the angle of the initial point? (default: {0})
+
+            center_pos {Vector2} -- Center of the shape (default: {Vector2(0,0)})
+        &#34;&#34;&#34;
         self.begin_poly()
         self.set_poly_color(color)
 
@@ -802,9 +1436,23 @@ class WireMesh:
 
     #-- Model Management --#
     models = dict()
+    &#34;&#34;&#34;Dictionary that stores all loaded models.
+    &#34;&#34;&#34;
 
     @staticmethod
     def load_model(filename, model_name = &#34;&#34;):
+        &#34;&#34;&#34;Loads a WireMesh model.
+        
+        Format can be either WM or JSON, and the extension defines which one the file is.
+    
+        Arguments:
+            filename {string} -- Filename to load
+
+            model_name {string} -- Internal name of the model (default: {&#34;&#34;})
+        
+        Returns:
+            WireMesh -- Loaded model, or None if something goes wrong.
+        &#34;&#34;&#34;
         just_filename, file_extension = os.path.splitext(filename)
         if (file_extension == &#34;.wm&#34;):
             return WireMesh.load_modelWM(filename, model_name)
@@ -815,6 +1463,50 @@ class WireMesh:
     
     @staticmethod
     def load_modelWM(filename, model_name):
+        &#34;&#34;&#34;Loads a WM file.
+
+        The WM format has the following structure:
+        ```
+        polygon:
+            color:
+                (&lt;R&gt;,&lt;G&gt;,&lt;B&gt;)
+            vertex:    
+                (&lt;x1&gt;,&lt;y1&gt;),
+                (&lt;x2&gt;,&lt;y2&gt;),
+                ...
+                (&lt;xn&gt;,&lt;yn&gt;)   
+        ...
+        polygon:
+            color:
+                (&lt;R&gt;,&lt;G&gt;,&lt;B&gt;)
+            vertex:    
+                (&lt;x1&gt;,&lt;y1&gt;),
+                (&lt;x2&gt;,&lt;y2&gt;),
+                ...
+                (&lt;xn&gt;,&lt;yn&gt;)   
+        ...     
+        mountpoint:
+            name:
+                &lt;mountpoint_name&gt;
+            position:
+                (&lt;x&gt;,&lt;y&gt;)
+        ...
+        mountpoint:
+            name:
+                &lt;mountpoint_name&gt;
+            position:
+                (&lt;x&gt;,&lt;y&gt;)
+        ...
+        ```
+        
+        Arguments:
+            filename {string} -- Filename to load
+            
+            model_name {string} -- Internal name of the model (default: {&#34;&#34;})
+        
+        Returns:
+            WireMesh -- Loaded model, or None if something goes wrong.
+        &#34;&#34;&#34;
         new_mesh = WireMesh()
         with open(filename, &#34;rt&#34;) as file:
             str = &#34;\n&#34;
@@ -883,6 +1575,52 @@ class WireMesh:
 
     @staticmethod
     def load_modelJSON(filename, model_name):
+        &#34;&#34;&#34;Loads a JSON file.
+
+        The JSON format has the following structure:
+        ```
+        {
+            &lt;name&gt;: {
+                &#34;closed&#34;: &lt;true|false&gt;,
+                &#34;primitive&#34;: &lt;&#34;LineList&#34;|&#34;LineStrip&#34;&gt;,
+                &#34;render_mode&#34;: &lt;&#34;AntiAlias&#34;|&#34;Normal&#34;&gt;,
+                &#34;lineWidth&#34;: &lt;int&gt;,
+                &#34;vertex&#34;: [
+                    [ &lt;v1.x&gt;, &lt;v1.y&gt; ], ... , [ &lt;vn.x&gt;, &lt;vn.y&gt; ]
+                ],
+                &#34;polygons&#34;: [
+                    {
+                        &#34;color&#34;: [ &lt;R&gt;, &lt;G&gt;, &lt;B&gt; ],
+                        &#34;index&#34;: [
+                            &lt;i1&gt;, &lt;i2&gt; ... &lt;in&gt;
+                        ]
+                    },
+                    ...
+                    {
+                        &#34;color&#34;: [ &lt;R&gt;, &lt;G&gt;, &lt;B&gt; ],
+                        &#34;index&#34;: [
+                            &lt;i1&gt;, &lt;i2&gt; ... &lt;in&gt;
+                        ]
+                    }
+                ],
+                &#34;mountpoints&#34;: {
+                    &lt;name&gt;: {
+                        &#34;pos&#34;: [ &lt;p.x&gt;, &lt;p.y&gt; ],
+                        &#34;dir&#34;: [ &lt;d.x&gt;, &lt;d.y&gt; ]
+                    }
+                }
+            }
+        }
+        ```
+        
+        Arguments:
+            filename {string} -- Filename to load
+            
+            model_name {string} -- Internal name of the model (default: {&#34;&#34;})
+        
+        Returns:
+            WireMesh -- Loaded model, or None if something goes wrong.
+        &#34;&#34;&#34;
         ret = None
 
         text_file = open(filename, &#34;rt&#34;)
@@ -905,6 +1643,16 @@ class WireMesh:
 
     @staticmethod
     def read_color(file):
+        &#34;&#34;&#34;Helper function for WM parsing, reads a color from a file.
+        
+        This function expects a line on the file with the format &#34;(R,G,B)&#34;
+
+        Arguments:
+            file {File} -- File to read from
+        
+        Returns:
+            tuple(R,G,B) -- Parsed color
+        &#34;&#34;&#34;
         str = file.readline()
         if (str == &#34;&#34;):
             return (255, 255, 255)
@@ -914,14 +1662,32 @@ class WireMesh:
 
     @staticmethod
     def parse_vector2(str):
+        &#34;&#34;&#34;Helper function for WM parsing, reads a 2d vector from a string.
+        
+        This function expects a string with the format &#34;(X,Y)&#34;
+
+        Arguments:
+            str {string} -- String to parse
+        
+        Returns:
+            tuple(X,Y) -- Parsed vector
+        &#34;&#34;&#34;
         if (str == &#34;&#34;):
-            return (0, 0, 0)
+            return (0, 0)
         str = str.replace(&#39;(&#39;, &#39;&#39;).replace(&#39;)&#39;, &#39;&#39;)
         values = str.split(&#39;,&#39;)
         return Vector2(float(values[0]), float(values[1]))
 
     @staticmethod
     def get_model(model_name):
+        &#34;&#34;&#34;Retrieves the model with the given name.
+        
+        Arguments:
+            model_name {string} -- Internal name of the mesh
+        
+        Returns:
+            WireMesh -- Mesh or None if no mesh with the given name was loaded
+        &#34;&#34;&#34;
         if (model_name in WireMesh.models):
             return WireMesh.models[model_name]
 
@@ -929,6 +1695,14 @@ class WireMesh:
     
     @staticmethod
     def copy(src):
+        &#34;&#34;&#34;Creates a copy of the given mesh.
+        
+        Arguments:
+            src {WireMesh} -- Source mesh
+        
+        Returns:
+            WireMesh -- Clone of the given mesh
+        &#34;&#34;&#34;
         mesh = WireMesh()
         mesh.vertex = src.vertex.copy()
         mesh.poly = src.poly.copy()
@@ -946,6 +1720,24 @@ class WireMesh:
 
     @staticmethod
     def circle(sides, radius, variance, color, angular_offset = 0, center_pos = Vector2(0,0)):
+        &#34;&#34;&#34;Creates a new WireMesh with a circle as a basis
+        
+        Arguments:
+            sides {int} -- How many sides
+
+            radius {float} -- Radius of the circle
+
+            variance {float} -- Variance of the radius
+
+            color {tuple(R,G,B)} -- Color of the polygon
+
+            angular_offset {int} -- What&#39;s the angle of the initial point? (default: {0})
+
+            center_pos {Vector2} -- Center of the shape (default: {Vector2(0,0)})
+        
+        Returns:
+            WireMesh -- New WireMesh with the desired geometry
+        &#34;&#34;&#34;
         mesh = WireMesh()
 
         mesh.add_circle(sides, radius, variance, color, angular_offset)
@@ -954,13 +1746,22 @@ class WireMesh:
 
     @staticmethod
     def draw_model(screen, name, position, rotation, scale):
+        &#34;&#34;&#34;Renders a mesh by name, on the specified position, rotation and scale
+        
+        Arguments:
+            screen {int} -- Display surface handle
+            name {string} -- Name of th emesh to display
+            position {Vector2} -- Position to draw the mesh
+            rotation {float} -- Rotation in which to draw the mesh (radians)
+            scale {Vector2} -- Scale of the mesh
+        &#34;&#34;&#34;
         WireMesh.models[name].drawPRS(screen, position, rotation, scale)</code></pre>
 </details>
 <h3>Class variables</h3>
 <dl>
 <dt id="Pysteroids.Engine.WireMesh.WireMesh.models"><code class="name">var <span class="ident">models</span></code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Dictionary that stores all loaded models.</p></section>
 </dd>
 </dl>
 <h3>Static methods</h3>
@@ -969,11 +1770,41 @@ class WireMesh:
 <span>def <span class="ident">circle</span></span>(<span>sides, radius, variance, color, angular_offset=0, center_pos=<Vector2(0, 0)>)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Creates a new WireMesh with a circle as a basis</p>
+<h2 id="arguments">Arguments</h2>
+<p>sides {int} &ndash; How many sides</p>
+<p>radius {float} &ndash; Radius of the circle</p>
+<p>variance {float} &ndash; Variance of the radius</p>
+<p>color {tuple(R,G,B)} &ndash; Color of the polygon</p>
+<p>angular_offset {int} &ndash; What's the angle of the initial point? (default: {0})</p>
+<p>center_pos {Vector2} &ndash; Center of the shape (default: {Vector2(0,0)})</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><a title="Pysteroids.Engine.WireMesh.WireMesh" href="#Pysteroids.Engine.WireMesh.WireMesh"><code>WireMesh</code></a> &ndash; <code>New</code> <a title="Pysteroids.Engine.WireMesh.WireMesh" href="#Pysteroids.Engine.WireMesh.WireMesh"><code>WireMesh</code></a> <code>with</code> <code>the</code> <code>desired</code> <code>geometry</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">@staticmethod
 def circle(sides, radius, variance, color, angular_offset = 0, center_pos = Vector2(0,0)):
+    &#34;&#34;&#34;Creates a new WireMesh with a circle as a basis
+    
+    Arguments:
+        sides {int} -- How many sides
+
+        radius {float} -- Radius of the circle
+
+        variance {float} -- Variance of the radius
+
+        color {tuple(R,G,B)} -- Color of the polygon
+
+        angular_offset {int} -- What&#39;s the angle of the initial point? (default: {0})
+
+        center_pos {Vector2} -- Center of the shape (default: {Vector2(0,0)})
+    
+    Returns:
+        WireMesh -- New WireMesh with the desired geometry
+    &#34;&#34;&#34;
     mesh = WireMesh()
 
     mesh.add_circle(sides, radius, variance, color, angular_offset)
@@ -985,11 +1816,26 @@ def circle(sides, radius, variance, color, angular_offset = 0, center_pos = Vect
 <span>def <span class="ident">copy</span></span>(<span>src)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Creates a copy of the given mesh.</p>
+<h2 id="arguments">Arguments</h2>
+<p>src {WireMesh} &ndash; Source mesh</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><a title="Pysteroids.Engine.WireMesh.WireMesh" href="#Pysteroids.Engine.WireMesh.WireMesh"><code>WireMesh</code></a> &ndash; <code>Clone</code> of <code>the</code> <code>given</code> <code>mesh</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">@staticmethod
 def copy(src):
+    &#34;&#34;&#34;Creates a copy of the given mesh.
+    
+    Arguments:
+        src {WireMesh} -- Source mesh
+    
+    Returns:
+        WireMesh -- Clone of the given mesh
+    &#34;&#34;&#34;
     mesh = WireMesh()
     mesh.vertex = src.vertex.copy()
     mesh.poly = src.poly.copy()
@@ -1010,11 +1856,26 @@ def copy(src):
 <span>def <span class="ident">draw_model</span></span>(<span>screen, name, position, rotation, scale)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Renders a mesh by name, on the specified position, rotation and scale</p>
+<h2 id="arguments">Arguments</h2>
+<p>screen {int} &ndash; Display surface handle
+name {string} &ndash; Name of th emesh to display
+position {Vector2} &ndash; Position to draw the mesh
+rotation {float} &ndash; Rotation in which to draw the mesh (radians)
+scale {Vector2} &ndash; Scale of the mesh</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">@staticmethod
 def draw_model(screen, name, position, rotation, scale):
+    &#34;&#34;&#34;Renders a mesh by name, on the specified position, rotation and scale
+    
+    Arguments:
+        screen {int} -- Display surface handle
+        name {string} -- Name of th emesh to display
+        position {Vector2} -- Position to draw the mesh
+        rotation {float} -- Rotation in which to draw the mesh (radians)
+        scale {Vector2} -- Scale of the mesh
+    &#34;&#34;&#34;
     WireMesh.models[name].drawPRS(screen, position, rotation, scale)</code></pre>
 </details>
 </dd>
@@ -1022,11 +1883,26 @@ def draw_model(screen, name, position, rotation, scale):
 <span>def <span class="ident">get_model</span></span>(<span>model_name)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Retrieves the model with the given name.</p>
+<h2 id="arguments">Arguments</h2>
+<p>model_name {string} &ndash; Internal name of the mesh</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><a title="Pysteroids.Engine.WireMesh.WireMesh" href="#Pysteroids.Engine.WireMesh.WireMesh"><code>WireMesh</code></a> &ndash; <code>Mesh</code> or <code>None</code> <code>if</code> <code>no</code> <code>mesh</code> <code>with</code> <code>the</code> <code>given</code> <code>name</code> <code>was</code> <code>loaded</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">@staticmethod
 def get_model(model_name):
+    &#34;&#34;&#34;Retrieves the model with the given name.
+    
+    Arguments:
+        model_name {string} -- Internal name of the mesh
+    
+    Returns:
+        WireMesh -- Mesh or None if no mesh with the given name was loaded
+    &#34;&#34;&#34;
     if (model_name in WireMesh.models):
         return WireMesh.models[model_name]
 
@@ -1037,11 +1913,29 @@ def get_model(model_name):
 <span>def <span class="ident">load_model</span></span>(<span>filename, model_name='')</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Loads a WireMesh model.</p>
+<p>Format can be either WM or JSON, and the extension defines which one the file is.</p>
+<h2 id="arguments">Arguments</h2>
+<p>filename {string} &ndash; Filename to load</p>
+<p>model_name {string} &ndash; Internal name of the model (default: {""})</p>
+<h2 id="returns">Returns</h2>
+<p>WireMesh &ndash; Loaded model, or None if something goes wrong.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">@staticmethod
 def load_model(filename, model_name = &#34;&#34;):
+    &#34;&#34;&#34;Loads a WireMesh model.
+    
+    Format can be either WM or JSON, and the extension defines which one the file is.
+
+    Arguments:
+        filename {string} -- Filename to load
+
+        model_name {string} -- Internal name of the model (default: {&#34;&#34;})
+    
+    Returns:
+        WireMesh -- Loaded model, or None if something goes wrong.
+    &#34;&#34;&#34;
     just_filename, file_extension = os.path.splitext(filename)
     if (file_extension == &#34;.wm&#34;):
         return WireMesh.load_modelWM(filename, model_name)
@@ -1055,11 +1949,96 @@ def load_model(filename, model_name = &#34;&#34;):
 <span>def <span class="ident">load_modelJSON</span></span>(<span>filename, model_name)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Loads a JSON file.</p>
+<p>The JSON format has the following structure:</p>
+<pre><code>{
+    &lt;name&gt;: {
+        &quot;closed&quot;: &lt;true|false&gt;,
+        &quot;primitive&quot;: &lt;&quot;LineList&quot;|&quot;LineStrip&quot;&gt;,
+        &quot;render_mode&quot;: &lt;&quot;AntiAlias&quot;|&quot;Normal&quot;&gt;,
+        &quot;lineWidth&quot;: &lt;int&gt;,
+        &quot;vertex&quot;: [
+            [ &lt;v1.x&gt;, &lt;v1.y&gt; ], ... , [ &lt;vn.x&gt;, &lt;vn.y&gt; ]
+        ],
+        &quot;polygons&quot;: [
+            {
+                &quot;color&quot;: [ &lt;R&gt;, &lt;G&gt;, &lt;B&gt; ],
+                &quot;index&quot;: [
+                    &lt;i1&gt;, &lt;i2&gt; ... &lt;in&gt;
+                ]
+            },
+            ...
+            {
+                &quot;color&quot;: [ &lt;R&gt;, &lt;G&gt;, &lt;B&gt; ],
+                &quot;index&quot;: [
+                    &lt;i1&gt;, &lt;i2&gt; ... &lt;in&gt;
+                ]
+            }
+        ],
+        &quot;mountpoints&quot;: {
+            &lt;name&gt;: {
+                &quot;pos&quot;: [ &lt;p.x&gt;, &lt;p.y&gt; ],
+                &quot;dir&quot;: [ &lt;d.x&gt;, &lt;d.y&gt; ]
+            }
+        }
+    }
+}
+</code></pre>
+<h2 id="arguments">Arguments</h2>
+<p>filename {string} &ndash; Filename to load</p>
+<p>model_name {string} &ndash; Internal name of the model (default: {""})</p>
+<h2 id="returns">Returns</h2>
+<p>WireMesh &ndash; Loaded model, or None if something goes wrong.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">@staticmethod
 def load_modelJSON(filename, model_name):
+    &#34;&#34;&#34;Loads a JSON file.
+
+    The JSON format has the following structure:
+    ```
+    {
+        &lt;name&gt;: {
+            &#34;closed&#34;: &lt;true|false&gt;,
+            &#34;primitive&#34;: &lt;&#34;LineList&#34;|&#34;LineStrip&#34;&gt;,
+            &#34;render_mode&#34;: &lt;&#34;AntiAlias&#34;|&#34;Normal&#34;&gt;,
+            &#34;lineWidth&#34;: &lt;int&gt;,
+            &#34;vertex&#34;: [
+                [ &lt;v1.x&gt;, &lt;v1.y&gt; ], ... , [ &lt;vn.x&gt;, &lt;vn.y&gt; ]
+            ],
+            &#34;polygons&#34;: [
+                {
+                    &#34;color&#34;: [ &lt;R&gt;, &lt;G&gt;, &lt;B&gt; ],
+                    &#34;index&#34;: [
+                        &lt;i1&gt;, &lt;i2&gt; ... &lt;in&gt;
+                    ]
+                },
+                ...
+                {
+                    &#34;color&#34;: [ &lt;R&gt;, &lt;G&gt;, &lt;B&gt; ],
+                    &#34;index&#34;: [
+                        &lt;i1&gt;, &lt;i2&gt; ... &lt;in&gt;
+                    ]
+                }
+            ],
+            &#34;mountpoints&#34;: {
+                &lt;name&gt;: {
+                    &#34;pos&#34;: [ &lt;p.x&gt;, &lt;p.y&gt; ],
+                    &#34;dir&#34;: [ &lt;d.x&gt;, &lt;d.y&gt; ]
+                }
+            }
+        }
+    }
+    ```
+    
+    Arguments:
+        filename {string} -- Filename to load
+        
+        model_name {string} -- Internal name of the model (default: {&#34;&#34;})
+    
+    Returns:
+        WireMesh -- Loaded model, or None if something goes wrong.
+    &#34;&#34;&#34;
     ret = None
 
     text_file = open(filename, &#34;rt&#34;)
@@ -1085,11 +2064,92 @@ def load_modelJSON(filename, model_name):
 <span>def <span class="ident">load_modelWM</span></span>(<span>filename, model_name)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Loads a WM file.</p>
+<p>The WM format has the following structure:</p>
+<pre><code>polygon:
+    color:
+        (&lt;R&gt;,&lt;G&gt;,&lt;B&gt;)
+    vertex:    
+        (&lt;x1&gt;,&lt;y1&gt;),
+        (&lt;x2&gt;,&lt;y2&gt;),
+        ...
+        (&lt;xn&gt;,&lt;yn&gt;)   
+...
+polygon:
+    color:
+        (&lt;R&gt;,&lt;G&gt;,&lt;B&gt;)
+    vertex:    
+        (&lt;x1&gt;,&lt;y1&gt;),
+        (&lt;x2&gt;,&lt;y2&gt;),
+        ...
+        (&lt;xn&gt;,&lt;yn&gt;)   
+...     
+mountpoint:
+    name:
+        &lt;mountpoint_name&gt;
+    position:
+        (&lt;x&gt;,&lt;y&gt;)
+...
+mountpoint:
+    name:
+        &lt;mountpoint_name&gt;
+    position:
+        (&lt;x&gt;,&lt;y&gt;)
+...
+</code></pre>
+<h2 id="arguments">Arguments</h2>
+<p>filename {string} &ndash; Filename to load</p>
+<p>model_name {string} &ndash; Internal name of the model (default: {""})</p>
+<h2 id="returns">Returns</h2>
+<p>WireMesh &ndash; Loaded model, or None if something goes wrong.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">@staticmethod
 def load_modelWM(filename, model_name):
+    &#34;&#34;&#34;Loads a WM file.
+
+    The WM format has the following structure:
+    ```
+    polygon:
+        color:
+            (&lt;R&gt;,&lt;G&gt;,&lt;B&gt;)
+        vertex:    
+            (&lt;x1&gt;,&lt;y1&gt;),
+            (&lt;x2&gt;,&lt;y2&gt;),
+            ...
+            (&lt;xn&gt;,&lt;yn&gt;)   
+    ...
+    polygon:
+        color:
+            (&lt;R&gt;,&lt;G&gt;,&lt;B&gt;)
+        vertex:    
+            (&lt;x1&gt;,&lt;y1&gt;),
+            (&lt;x2&gt;,&lt;y2&gt;),
+            ...
+            (&lt;xn&gt;,&lt;yn&gt;)   
+    ...     
+    mountpoint:
+        name:
+            &lt;mountpoint_name&gt;
+        position:
+            (&lt;x&gt;,&lt;y&gt;)
+    ...
+    mountpoint:
+        name:
+            &lt;mountpoint_name&gt;
+        position:
+            (&lt;x&gt;,&lt;y&gt;)
+    ...
+    ```
+    
+    Arguments:
+        filename {string} -- Filename to load
+        
+        model_name {string} -- Internal name of the model (default: {&#34;&#34;})
+    
+    Returns:
+        WireMesh -- Loaded model, or None if something goes wrong.
+    &#34;&#34;&#34;
     new_mesh = WireMesh()
     with open(filename, &#34;rt&#34;) as file:
         str = &#34;\n&#34;
@@ -1161,13 +2221,31 @@ def load_modelWM(filename, model_name):
 <span>def <span class="ident">parse_vector2</span></span>(<span>str)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Helper function for WM parsing, reads a 2d vector from a string.</p>
+<p>This function expects a string with the format "(X,Y)"</p>
+<h2 id="arguments">Arguments</h2>
+<p>str {string} &ndash; String to parse</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>tuple</code>(<code>X</code>,<code>Y</code>) &ndash; <code>Parsed</code> <code>vector</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">@staticmethod
 def parse_vector2(str):
+    &#34;&#34;&#34;Helper function for WM parsing, reads a 2d vector from a string.
+    
+    This function expects a string with the format &#34;(X,Y)&#34;
+
+    Arguments:
+        str {string} -- String to parse
+    
+    Returns:
+        tuple(X,Y) -- Parsed vector
+    &#34;&#34;&#34;
     if (str == &#34;&#34;):
-        return (0, 0, 0)
+        return (0, 0)
     str = str.replace(&#39;(&#39;, &#39;&#39;).replace(&#39;)&#39;, &#39;&#39;)
     values = str.split(&#39;,&#39;)
     return Vector2(float(values[0]), float(values[1]))</code></pre>
@@ -1177,11 +2255,29 @@ def parse_vector2(str):
 <span>def <span class="ident">read_color</span></span>(<span>file)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Helper function for WM parsing, reads a color from a file.</p>
+<p>This function expects a line on the file with the format "(R,G,B)"</p>
+<h2 id="arguments">Arguments</h2>
+<p>file {File} &ndash; File to read from</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>tuple</code>(<code>R</code>,<code>G</code>,<code>B</code>) &ndash; <code>Parsed</code> <code>color</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">@staticmethod
 def read_color(file):
+    &#34;&#34;&#34;Helper function for WM parsing, reads a color from a file.
+    
+    This function expects a line on the file with the format &#34;(R,G,B)&#34;
+
+    Arguments:
+        file {File} -- File to read from
+    
+    Returns:
+        tuple(R,G,B) -- Parsed color
+    &#34;&#34;&#34;
     str = file.readline()
     if (str == &#34;&#34;):
         return (255, 255, 255)
@@ -1194,11 +2290,35 @@ def read_color(file):
 <span>def <span class="ident">vertex_transformPRS</span></span>(<span>vertex, position, rotation, scale)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Transforms a vertex to the given PRS space</p>
+<h2 id="arguments">Arguments</h2>
+<p>vertex {Vector2} &ndash; Vertex to transform</p>
+<p>position {Vector2} &ndash; Position</p>
+<p>rotation {float} &ndash; Rotation (radians)</p>
+<p>scale {Vector2} &ndash; Scale</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Vector2</code> &ndash; <code>Transformed</code> <code>point</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">@staticmethod
 def vertex_transformPRS(vertex, position, rotation, scale):
+    &#34;&#34;&#34;Transforms a vertex to the given PRS space
+    
+    Arguments:
+        vertex {Vector2} -- Vertex to transform
+
+        position {Vector2} -- Position
+
+        rotation {float} -- Rotation (radians)
+
+        scale {Vector2} -- Scale
+    
+    Returns:
+        Vector2 -- Transformed point
+    &#34;&#34;&#34;
     a = math.radians(rotation)
     s = math.sin(a)
     c = math.cos(a)
@@ -1216,10 +2336,35 @@ def vertex_transformPRS(vertex, position, rotation, scale):
 <span>def <span class="ident">add_circle</span></span>(<span>self, sides, radius, variance, color, angular_offset=0, center_pos=<Vector2(0, 0)>)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Adds a circle polygon to the current WireMesh</p>
+<p>By specifying few sides, you can use this function to generate different types of shapes, and by setting the angular_offset, you can control the orientation of that shape.</p>
+<h2 id="arguments">Arguments</h2>
+<p>sides {int} &ndash; How many sides</p>
+<p>radius {float} &ndash; Radius of the circle</p>
+<p>variance {float} &ndash; Variance of the radius</p>
+<p>color {tuple(R,G,B)} &ndash; Color of the polygon</p>
+<p>angular_offset {int} &ndash; What's the angle of the initial point? (default: {0})</p>
+<p>center_pos {Vector2} &ndash; Center of the shape (default: {Vector2(0,0)})</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def add_circle(self, sides, radius, variance, color, angular_offset = 0, center_pos = Vector2(0,0)):
+    &#34;&#34;&#34;Adds a circle polygon to the current WireMesh
+    
+    By specifying few sides, you can use this function to generate different types of shapes, and by setting the angular_offset, you can control the orientation of that shape.
+
+    Arguments:
+        sides {int} -- How many sides
+
+        radius {float} -- Radius of the circle
+
+        variance {float} -- Variance of the radius
+
+        color {tuple(R,G,B)} -- Color of the polygon
+
+        angular_offset {int} -- What&#39;s the angle of the initial point? (default: {0})
+
+        center_pos {Vector2} -- Center of the shape (default: {Vector2(0,0)})
+    &#34;&#34;&#34;
     self.begin_poly()
     self.set_poly_color(color)
 
@@ -1241,10 +2386,23 @@ def vertex_transformPRS(vertex, position, rotation, scale):
 <span>def <span class="ident">add_mountpoint</span></span>(<span>self, name, pos, dir)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Adds a mountpoint with the given name, position and direction</p>
+<h2 id="arguments">Arguments</h2>
+<p>name {string} &ndash; Name of the mountpoint</p>
+<p>pos {Vector2} &ndash; Position in local space</p>
+<p>dir {Vector2} &ndash; Direction in local space</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def add_mountpoint(self, name, pos, dir):
+    &#34;&#34;&#34;Adds a mountpoint with the given name, position and direction
+    
+    Arguments:
+        name {string} -- Name of the mountpoint
+        
+        pos {Vector2} -- Position in local space
+
+        dir {Vector2} -- Direction in local space
+    &#34;&#34;&#34;
     self.mountpoints[name] = ( pos, dir )</code></pre>
 </details>
 </dd>
@@ -1252,10 +2410,20 @@ def vertex_transformPRS(vertex, position, rotation, scale):
 <span>def <span class="ident">add_mountpoint_pos</span></span>(<span>self, name, pos)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Adds a new mountpoint with the given name/position, or updates the position of an existing mountpoint.</p>
+<h2 id="arguments">Arguments</h2>
+<p>name {string} &ndash; Name of the mountpoint</p>
+<p>pos {Vector2} &ndash; Position in local space</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def add_mountpoint_pos(self, name, pos):
+    &#34;&#34;&#34;Adds a new mountpoint with the given name/position, or updates the position of an existing mountpoint.
+    
+    Arguments:
+        name {string} -- Name of the mountpoint
+        
+        pos {Vector2} -- Position in local space
+    &#34;&#34;&#34;
     if (name in self.mountpoints):
         self.mountpoints[name] = (pos, self.mountpoints[name][1])
     else:
@@ -1266,10 +2434,25 @@ def vertex_transformPRS(vertex, position, rotation, scale):
 <span>def <span class="ident">add_vertex</span></span>(<span>self, vertex)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Adds a vertex to the current mesh.</p>
+<h2 id="arguments">Arguments</h2>
+<p>vertex {Vector2} &ndash; Vertex to add</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>int</code> &ndash; <code>Index</code> of <code>the</code> <code>vertex</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def add_vertex(self, vertex):
+    &#34;&#34;&#34;Adds a vertex to the current mesh.
+    
+    Arguments:
+        vertex {Vector2} -- Vertex to add
+    
+    Returns:
+        int -- Index of the vertex
+    &#34;&#34;&#34;
     self.vertex.append(vertex)
     return len(self.vertex) - 1</code></pre>
 </details>
@@ -1278,10 +2461,17 @@ def vertex_transformPRS(vertex, position, rotation, scale):
 <span>def <span class="ident">add_vertex_to_poly</span></span>(<span>self, index)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Adds the given index to the current polygon</p>
+<h2 id="arguments">Arguments</h2>
+<p>index {int} &ndash; Index of the vertex to add to this polygon.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def add_vertex_to_poly(self, index):
+    &#34;&#34;&#34;Adds the given index to the current polygon
+    
+    Arguments:
+        index {int} -- Index of the vertex to add to this polygon.
+    &#34;&#34;&#34;
     self.current_poly.append(index)</code></pre>
 </details>
 </dd>
@@ -1289,10 +2479,11 @@ def vertex_transformPRS(vertex, position, rotation, scale):
 <span>def <span class="ident">apply_transform</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Applies the local mesh space to the mesh, and resets the local space.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def apply_transform(self):
+    &#34;&#34;&#34;Applies the local mesh space to the mesh, and resets the local space.&#34;&#34;&#34;
     self.vertex = [self.vertex_transform(v) for v in self.vertex]
     self.dirty = True
     self.position = (0,0)
@@ -1304,10 +2495,12 @@ def vertex_transformPRS(vertex, position, rotation, scale):
 <span>def <span class="ident">begin_poly</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Begins a new polygon (white by default)</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def begin_poly(self):
+    &#34;&#34;&#34;Begins a new polygon (white by default)
+    &#34;&#34;&#34;
     self.current_poly = []
     self.currentPolyColor = (255, 255, 255)</code></pre>
 </details>
@@ -1316,10 +2509,15 @@ def vertex_transformPRS(vertex, position, rotation, scale):
 <span>def <span class="ident">convert_to_unindexed_line_list</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Converts the mesh to a line strip without any indexes.</p>
+<p>This is mainly used for special effects, and means that all line segments are composed from individual vertices, instead of sharing start and end points.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def convert_to_unindexed_line_list(self):
+    &#34;&#34;&#34;Converts the mesh to a line strip without any indexes.
+
+    This is mainly used for special effects, and means that all line segments are composed from individual vertices, instead of sharing start and end points.
+    &#34;&#34;&#34;
     if (self.primitive_type == PrimitiveType.LineStrip):
         newVertex = []
         for polyId, p in enumerate(self.poly):
@@ -1351,10 +2549,17 @@ def vertex_transformPRS(vertex, position, rotation, scale):
 <span>def <span class="ident">draw</span></span>(<span>self, screen)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Draws the mesh in it's current space (current position, rotation and scale)</p>
+<h2 id="arguments">Arguments</h2>
+<p>screen {int} &ndash; Display surface handle</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def draw(self, screen):
+    &#34;&#34;&#34;Draws the mesh in it&#39;s current space (current position, rotation and scale)
+    
+    Arguments:
+        screen {int} -- Display surface handle
+    &#34;&#34;&#34;
     if (self.dirty):
         self.rebuild()   
 
@@ -1365,10 +2570,23 @@ def vertex_transformPRS(vertex, position, rotation, scale):
 <span>def <span class="ident">drawPRS</span></span>(<span>self, screen, position, rotation, scale)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Draws the mesh in the given PRS space</p>
+<h2 id="arguments">Arguments</h2>
+<p>screen {int} &ndash; Display surface handle
+position {Vector2} &ndash; Position of the mesh
+rotation {float} &ndash; Rotation of the mesh (radians)
+scale {Vector2} &ndash; Scale of the mesh</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def drawPRS(self, screen, position, rotation, scale):
+    &#34;&#34;&#34;Draws the mesh in the given PRS space
+    
+    Arguments:
+        screen {int} -- Display surface handle
+        position {Vector2} -- Position of the mesh
+        rotation {float} -- Rotation of the mesh (radians)
+        scale {Vector2} -- Scale of the mesh
+    &#34;&#34;&#34;
     cache_vertex = [WireMesh.vertex_transformPRS(v, position,rotation, scale) for v in self.vertex]
 
     self.draw_processed_vertex(screen, cache_vertex)</code></pre>
@@ -1378,10 +2596,22 @@ def vertex_transformPRS(vertex, position, rotation, scale):
 <span>def <span class="ident">draw_processed_vertex</span></span>(<span>self, screen, cache_vertex)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Renders the points given.</p>
+<p>This is used internally do draw the mesh and shouldn't be called explicitely</p>
+<h2 id="arguments">Arguments</h2>
+<p>screen {int} &ndash; Display surface handle
+cache_vertex {Vector2[]} &ndash; Positions of the vertices of the polygons</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def draw_processed_vertex(self, screen, cache_vertex):
+    &#34;&#34;&#34;Renders the points given.
+
+    This is used internally do draw the mesh and shouldn&#39;t be called explicitely
+    
+    Arguments:
+        screen {int} -- Display surface handle
+        cache_vertex {Vector2[]} -- Positions of the vertices of the polygons
+    &#34;&#34;&#34;
     for idx, poly in enumerate(self.poly):
         pointlist = [cache_vertex[i] for i in poly]
         if (self.primitive_type == PrimitiveType.LineStrip):
@@ -1402,10 +2632,12 @@ def vertex_transformPRS(vertex, position, rotation, scale):
 <span>def <span class="ident">end_poly</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Finishes the current polygon, and sets up a new one.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def end_poly(self):
+    &#34;&#34;&#34;Finishes the current polygon, and sets up a new one.
+    &#34;&#34;&#34;
     self.poly.append(self.current_poly)
     self.poly_color.append(self.currentPolyColor)
     self.current_poly = []
@@ -1416,10 +2648,17 @@ def vertex_transformPRS(vertex, position, rotation, scale):
 <span>def <span class="ident">from_JSON</span></span>(<span>self, data)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Loads an object structure (parsed from JSON) to this mesh</p>
+<h2 id="arguments">Arguments</h2>
+<p>data {WireMeshJSON} &ndash; Data structure read from JSON</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def from_JSON(self, data):
+    &#34;&#34;&#34;Loads an object structure (parsed from JSON) to this mesh
+    
+    Arguments:
+        data {WireMeshJSON} -- Data structure read from JSON
+    &#34;&#34;&#34;
     self.closed = data[&#34;closed&#34;]
     if (data[&#34;primitive&#34;] == &#34;LineStrip&#34;):
         self.primitive_type = PrimitiveType.LineStrip
@@ -1450,27 +2689,57 @@ def vertex_transformPRS(vertex, position, rotation, scale):
 </details>
 </dd>
 <dt id="Pysteroids.Engine.WireMesh.WireMesh.get_color"><code class="name flex">
-<span>def <span class="ident">get_color</span></span>(<span>self, polyIndex)</span>
+<span>def <span class="ident">get_color</span></span>(<span>self, poly_index)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Fetches the color for the given polygon</p>
+<h2 id="arguments">Arguments</h2>
+<p>poly_index {int} &ndash; Index of the polygon</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>tuple</code>(<code>R</code>,<code>G</code>,<code>B</code>) &ndash; <code>Color</code> of <code>the</code> <code>polygon</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">def get_color(self, polyIndex):
+<pre><code class="python">def get_color(self, poly_index):
+    &#34;&#34;&#34;Fetches the color for the given polygon
+    
+    Arguments:
+        poly_index {int} -- Index of the polygon
+    
+    Returns:
+        tuple(R,G,B) -- Color of the polygon
+    &#34;&#34;&#34;
     if (self.override_color_enable):
         return self.override_color
                
-    return self.poly_color[polyIndex]</code></pre>
+    return self.poly_color[poly_index]</code></pre>
 </details>
 </dd>
 <dt id="Pysteroids.Engine.WireMesh.WireMesh.get_mountpoint"><code class="name flex">
 <span>def <span class="ident">get_mountpoint</span></span>(<span>self, name)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Retrives the position and direction of the mountpoint in the mesh space</p>
+<h2 id="arguments">Arguments</h2>
+<p>name {string} &ndash; Name of the mountpoint</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>tuple</code>(<code>Vector2</code>, <code>Vector2</code>) &ndash; <code>Position</code> <code>and</code> <code>direction</code> of <code>the</code> <code>mountpoint</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def get_mountpoint(self, name):
+    &#34;&#34;&#34;Retrives the position and direction of the mountpoint in the mesh space
+    
+    Arguments:
+        name {string} -- Name of the mountpoint
+    
+    Returns:
+        tuple(Vector2, Vector2) -- Position and direction of the mountpoint
+    &#34;&#34;&#34;
     if (name in self.mountpoints):
         return self.vertex_transform(self.mountpoints[name][0]), vertex_transform_no_pos(self.mountpoints[name][1])
 
@@ -1481,10 +2750,34 @@ def vertex_transformPRS(vertex, position, rotation, scale):
 <span>def <span class="ident">get_mountpointPRS</span></span>(<span>self, name, position, rotation, scale)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Retrives the position and direction of the mountpoint in the given PRS space</p>
+<h2 id="arguments">Arguments</h2>
+<p>name {string} &ndash; Name of the mountpoint</p>
+<p>position {Vector2} &ndash; Position of the mesh</p>
+<p>rotation {float} &ndash; Rotation of the mesh (radians)</p>
+<p>scale {Vector2} &ndash; Scale of the mesh</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>tuple</code>(<code>Vector2</code>, <code>Vector2</code>) &ndash; <code>Position</code> <code>and</code> <code>direction</code> of <code>the</code> <code>mountpoint</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def get_mountpointPRS(self, name, position, rotation, scale):
+    &#34;&#34;&#34;Retrives the position and direction of the mountpoint in the given PRS space
+    
+    Arguments:
+        name {string} -- Name of the mountpoint
+
+        position {Vector2} -- Position of the mesh
+
+        rotation {float} -- Rotation of the mesh (radians)
+
+        scale {Vector2} -- Scale of the mesh
+    
+    Returns:
+        tuple(Vector2, Vector2) -- Position and direction of the mountpoint
+    &#34;&#34;&#34;
     if (name in self.mountpoints):
         return WireMesh.vertex_transformPRS(self.mountpoints[name][0], position, rotation, scale), WireMesh.vertex_transformPRS(self.mountpoints[name][1], Vector2(0,0), rotation, scale)
 
@@ -1495,10 +2788,20 @@ def vertex_transformPRS(vertex, position, rotation, scale):
 <span>def <span class="ident">get_radius</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Gets the radius of this WireMesh.</p>
+<p>That means finding the vertex furthest away from the mesh origin and returning that distance.</p>
+<h2 id="returns">Returns</h2>
+<p>float &ndash; Radius of this mesh.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def get_radius(self):
+    &#34;&#34;&#34;Gets the radius of this WireMesh.
+
+    That means finding the vertex furthest away from the mesh origin and returning that distance.
+    
+    Returns:
+        float -- Radius of this mesh.
+    &#34;&#34;&#34;
     maxDist = 0
     for v in self.vertex:
         maxDist = max(v.magnitude_squared(), maxDist)
@@ -1510,10 +2813,25 @@ def vertex_transformPRS(vertex, position, rotation, scale):
 <span>def <span class="ident">mountpoint_exists</span></span>(<span>self, name)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Checks if a mountpoint exists</p>
+<h2 id="arguments">Arguments</h2>
+<p>name {string} &ndash; Mountpoint name</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>bool</code> &ndash; <code>True</code> <code>if</code> <code>the</code> <code>mountpoint</code> <code>exists</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def mountpoint_exists(self, name):
+    &#34;&#34;&#34;Checks if a mountpoint exists
+    
+    Arguments:
+        name {string} -- Mountpoint name
+    
+    Returns:
+        bool -- True if the mountpoint exists
+    &#34;&#34;&#34;
     if (name in self.mountpoints):
         return True
 
@@ -1524,10 +2842,18 @@ def vertex_transformPRS(vertex, position, rotation, scale):
 <span>def <span class="ident">rebuild</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Updates the internal point cache to the local mesh space.</p>
+<p>This is called automatically from draw(), if the dirty flag is set.</p>
+<p>After any change in the local mesh space (manipulating directly self.position, etc), you should do obj.dirty = True, to force an update of the mesh.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def rebuild(self):
+    &#34;&#34;&#34;Updates the internal point cache to the local mesh space.
+
+    This is called automatically from draw(), if the dirty flag is set.
+
+    After any change in the local mesh space (manipulating directly self.position, etc), you should do obj.dirty = True, to force an update of the mesh. 
+    &#34;&#34;&#34;
     self.cache_vertex = [self.vertex_transform(v) for v in self.vertex]
     self.dirty = False</code></pre>
 </details>
@@ -1536,10 +2862,17 @@ def vertex_transformPRS(vertex, position, rotation, scale):
 <span>def <span class="ident">set_poly_color</span></span>(<span>self, color)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Sets the color of the current polygon</p>
+<h2 id="arguments">Arguments</h2>
+<p>color {tuple(R,G,B)} &ndash; Color to set the polygon</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def set_poly_color(self, color):
+    &#34;&#34;&#34;Sets the color of the current polygon
+    
+    Arguments:
+        color {tuple(R,G,B)} -- Color to set the polygon
+    &#34;&#34;&#34;
     self.currentPolyColor = color</code></pre>
 </details>
 </dd>
@@ -1547,10 +2880,20 @@ def vertex_transformPRS(vertex, position, rotation, scale):
 <span>def <span class="ident">set_position</span></span>(<span>self, position)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Sets the local position of this mesh to the given position.</p>
+<p>This function sets the dirty flag to True.</p>
+<h2 id="arguments">Arguments</h2>
+<p>position {Vector2} &ndash; Position</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def set_position(self, position):
+    &#34;&#34;&#34;Sets the local position of this mesh to the given position.
+
+    This function sets the dirty flag to True.
+    
+    Arguments:
+        position {Vector2} -- Position
+    &#34;&#34;&#34;
     self.position = position
     self.dirty = True</code></pre>
 </details>
@@ -1559,10 +2902,20 @@ def vertex_transformPRS(vertex, position, rotation, scale):
 <span>def <span class="ident">set_rotation</span></span>(<span>self, rotation)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Sets the local rotation of this mesh to the given rotation.</p>
+<p>This function sets the dirty flag to True.</p>
+<h2 id="arguments">Arguments</h2>
+<p>rotation {float} &ndash; Rotation (radians)</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def set_rotation(self, rotation):
+    &#34;&#34;&#34;Sets the local rotation of this mesh to the given rotation.
+
+    This function sets the dirty flag to True.
+    
+    Arguments:
+        rotation {float} -- Rotation (radians)
+    &#34;&#34;&#34;
     self.rotation = rotation
     self.dirty = True</code></pre>
 </details>
@@ -1571,10 +2924,20 @@ def vertex_transformPRS(vertex, position, rotation, scale):
 <span>def <span class="ident">set_scale</span></span>(<span>self, scale)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Sets the local scale of this mesh to the given value.</p>
+<p>This function sets the dirty flag to True.</p>
+<h2 id="arguments">Arguments</h2>
+<p>scale {Vector2} &ndash; Scale</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def set_scale(self, scale):
+    &#34;&#34;&#34;Sets the local scale of this mesh to the given value.
+    
+    This function sets the dirty flag to True.
+
+    Arguments:
+        scale {Vector2} -- Scale
+    &#34;&#34;&#34;
     self.scale = scale
     self.dirty = True</code></pre>
 </details>
@@ -1583,10 +2946,20 @@ def vertex_transformPRS(vertex, position, rotation, scale):
 <span>def <span class="ident">to_JSON</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Converts a WireMesh to a JSON representation</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>string</code> &ndash; <code>JSON</code> <code>representation</code> of <code>the</code> <code>mesh</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def to_JSON(self):
+    &#34;&#34;&#34;Converts a WireMesh to a JSON representation
+    
+    Returns:
+        string -- JSON representation of the mesh
+    &#34;&#34;&#34;
     out = WireMeshJSON()
 
     out.closed = self.closed
@@ -1630,10 +3003,25 @@ def vertex_transformPRS(vertex, position, rotation, scale):
 <span>def <span class="ident">vertex_transform</span></span>(<span>self, vertex)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Transform a vertex to the local mesh space.</p>
+<h2 id="arguments">Arguments</h2>
+<p>vertex {Vector2} &ndash; Vector to transform</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Vector2</code> &ndash; <code>Transformed</code> <code>point</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def vertex_transform(self, vertex):
+    &#34;&#34;&#34;Transform a vertex to the local mesh space.
+    
+    Arguments:
+        vertex {Vector2} -- Vector to transform
+    
+    Returns:
+        Vector2 -- Transformed point
+    &#34;&#34;&#34;
     return self.vertex_transform_no_pos(vertex) + self.position</code></pre>
 </details>
 </dd>
@@ -1641,10 +3029,25 @@ def vertex_transformPRS(vertex, position, rotation, scale):
 <span>def <span class="ident">vertex_transform_no_pos</span></span>(<span>self, vertex)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Transform a vertex to the local mesh space, ignoring the position (ideal for directions)</p>
+<h2 id="arguments">Arguments</h2>
+<p>vertex {Vector2} &ndash; Vector to transform</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Vector2</code> &ndash; <code>Transformed</code> <code>point</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def vertex_transform_no_pos(self, vertex):
+    &#34;&#34;&#34;Transform a vertex to the local mesh space, ignoring the position (ideal for directions)
+    
+    Arguments:
+        vertex {Vector2} -- Vector to transform
+    
+    Returns:
+        Vector2 -- Transformed point
+    &#34;&#34;&#34;
     a = math.radians(self.rotation)
     s = math.sin(a)
     c = math.cos(a)
@@ -1661,10 +3064,11 @@ def vertex_transformPRS(vertex, position, rotation, scale):
 <span>(</span><span>*args, **kwargs)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Helper class to convert a mesh to JSON.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">class WireMeshJSON:
+    &#34;&#34;&#34;Helper class to convert a mesh to JSON.&#34;&#34;&#34;
     pass</code></pre>
 </details>
 </dd>
