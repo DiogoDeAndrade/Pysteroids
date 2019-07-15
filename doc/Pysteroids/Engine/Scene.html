@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.6.3" />
 <title>Pysteroids.Engine.Scene API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="Scene class implementation …" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
@@ -20,12 +20,21 @@
 <h1 class="title">Module <code>Pysteroids.Engine.Scene</code></h1>
 </header>
 <section id="section-intro">
+<p>Scene class implementation.</p>
+<p>Scenes manage a collection of GameObjects.</p>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">from Engine.Collider2d import *
+<pre><code class="python">&#34;&#34;&#34;Scene class implementation.
+
+Scenes manage a collection of GameObjects.
+&#34;&#34;&#34;
+from Engine.Collider2d import *
 
 class Scene:
+    &#34;&#34;&#34;Scene base object&#34;&#34;&#34;
     main = None
+    &#34;&#34;&#34;Currently active scene. All new objects should be added to this scene.
+    &#34;&#34;&#34;
     
     def __init__(self):
         if (Scene.main == None):
@@ -36,6 +45,15 @@ class Scene:
         self.objects_by_tag = dict()
 
     def add(self, game_object):
+        &#34;&#34;&#34;Adds an object to the scene.
+
+        This function will check the given object has an update and render method, and add the object to the correct lists.
+
+        It also adds the object to the right lists of objects, considering its tags.
+        
+        Arguments:
+            game_object {GameObject} -- GameObject to add to scene.
+        &#34;&#34;&#34;
         # Check if object has method Update
         update_method = getattr(game_object, &#34;update&#34;, None)
         if (callable(update_method)):
@@ -57,12 +75,19 @@ class Scene:
             self.objects_by_tag[tag].append(game_object)
 
     def clear(self):
+        &#34;&#34;&#34;Clears a scene
+        &#34;&#34;&#34;
         self.update_objects = []
         self.render_objects = []
         self.objects = []
         self.objects_by_tag = dict()
 
     def remove(self, game_object):
+        &#34;&#34;&#34;Removes a GameObject from this scene&#34;
+        
+        Arguments:
+            game_object {GameObject} -- GameObject to remove from the scene
+        &#34;&#34;&#34;
         try:
             self.update_objects.remove(game_object)
         except ValueError:
@@ -88,6 +113,14 @@ class Scene:
                     pass
 
     def get_object_by_tag(self, tag):
+        &#34;&#34;&#34;Returns the first object that matches a certain tag, or None otherwise
+        
+        Arguments:
+            tag {string} -- Tag to check
+        
+        Returns:
+            GameObject -- First object that matches the given tag.
+        &#34;&#34;&#34;
         if (tag in self.objects_by_tag):
             elements = self.objects_by_tag[tag]
             if (len(elements) &gt; 0):
@@ -98,6 +131,16 @@ class Scene:
         return None
 
     def get_objects_by_tag(self, tags):
+        &#34;&#34;&#34;Returns all objects that match the given tags.
+
+        tags can be either a single string, or an array of strings.
+        
+        Arguments:
+            tags {string / string[]} -- Tag or tags to match
+        
+        Returns:
+            GameObject[] -- List of GameObjects that match the given tags.
+        &#34;&#34;&#34;
         if (isinstance(tags, list)):
             objects = []
             for tag in tags:
@@ -111,14 +154,36 @@ class Scene:
         return []
 
     def update(self, delta_time):
+        &#34;&#34;&#34;Updates all the GameObjects that have an update method.
+        
+        Arguments:
+            delta_time {float} -- Time since the last frame, in seconds.
+        &#34;&#34;&#34;
         for updatable_object in self.update_objects:
             updatable_object.update(delta_time)
 
     def render(self, screen):
+        &#34;&#34;&#34;Renders all the GameObjects that have a render method.
+        
+        Arguments:
+            screen {int} -- Display surface handle
+        &#34;&#34;&#34;
         for renderable_object in self.render_objects:
             renderable_object.render(screen)
 
     def check_collisions_between_tags(self, tags1, tags2):
+        &#34;&#34;&#34;Checks all the collisions between objects that match the given tags.
+
+        All the objects that have any of the tags1 are matched with all the objects that have any of the tags2, and collisions are returned.
+        
+        Arguments:
+            tags1 {string / string[]} -- Tags to check
+
+            tags2 {string / string[]} -- Tags to check
+        
+        Returns:
+            Collision2d[] -- All collisions detected.
+        &#34;&#34;&#34;
         objects1 = self.get_objects_by_tag(tags1)
         objects2 = self.get_objects_by_tag(tags2)
 
@@ -132,6 +197,17 @@ class Scene:
         return collisions
 
     def get_objects_in_collider(self, tag, collider):
+        &#34;&#34;&#34;Returns all the objects that are intersecting the given collider.
+        
+        Arguments:
+            tag {string / string[]} -- Tags to match to the objects
+            
+            collider {Collider2d} -- Collider to check
+        
+        Returns:
+            GameObject[] -- Objects that are intersecting the given collider.
+        &#34;&#34;&#34;
+
         objects = self.get_objects_by_tag(tag)
 
         ret = [] 
@@ -156,11 +232,14 @@ class Scene:
 <span>class <span class="ident">Scene</span></span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Scene base object</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">class Scene:
+    &#34;&#34;&#34;Scene base object&#34;&#34;&#34;
     main = None
+    &#34;&#34;&#34;Currently active scene. All new objects should be added to this scene.
+    &#34;&#34;&#34;
     
     def __init__(self):
         if (Scene.main == None):
@@ -171,6 +250,15 @@ class Scene:
         self.objects_by_tag = dict()
 
     def add(self, game_object):
+        &#34;&#34;&#34;Adds an object to the scene.
+
+        This function will check the given object has an update and render method, and add the object to the correct lists.
+
+        It also adds the object to the right lists of objects, considering its tags.
+        
+        Arguments:
+            game_object {GameObject} -- GameObject to add to scene.
+        &#34;&#34;&#34;
         # Check if object has method Update
         update_method = getattr(game_object, &#34;update&#34;, None)
         if (callable(update_method)):
@@ -192,12 +280,19 @@ class Scene:
             self.objects_by_tag[tag].append(game_object)
 
     def clear(self):
+        &#34;&#34;&#34;Clears a scene
+        &#34;&#34;&#34;
         self.update_objects = []
         self.render_objects = []
         self.objects = []
         self.objects_by_tag = dict()
 
     def remove(self, game_object):
+        &#34;&#34;&#34;Removes a GameObject from this scene&#34;
+        
+        Arguments:
+            game_object {GameObject} -- GameObject to remove from the scene
+        &#34;&#34;&#34;
         try:
             self.update_objects.remove(game_object)
         except ValueError:
@@ -223,6 +318,14 @@ class Scene:
                     pass
 
     def get_object_by_tag(self, tag):
+        &#34;&#34;&#34;Returns the first object that matches a certain tag, or None otherwise
+        
+        Arguments:
+            tag {string} -- Tag to check
+        
+        Returns:
+            GameObject -- First object that matches the given tag.
+        &#34;&#34;&#34;
         if (tag in self.objects_by_tag):
             elements = self.objects_by_tag[tag]
             if (len(elements) &gt; 0):
@@ -233,6 +336,16 @@ class Scene:
         return None
 
     def get_objects_by_tag(self, tags):
+        &#34;&#34;&#34;Returns all objects that match the given tags.
+
+        tags can be either a single string, or an array of strings.
+        
+        Arguments:
+            tags {string / string[]} -- Tag or tags to match
+        
+        Returns:
+            GameObject[] -- List of GameObjects that match the given tags.
+        &#34;&#34;&#34;
         if (isinstance(tags, list)):
             objects = []
             for tag in tags:
@@ -246,14 +359,36 @@ class Scene:
         return []
 
     def update(self, delta_time):
+        &#34;&#34;&#34;Updates all the GameObjects that have an update method.
+        
+        Arguments:
+            delta_time {float} -- Time since the last frame, in seconds.
+        &#34;&#34;&#34;
         for updatable_object in self.update_objects:
             updatable_object.update(delta_time)
 
     def render(self, screen):
+        &#34;&#34;&#34;Renders all the GameObjects that have a render method.
+        
+        Arguments:
+            screen {int} -- Display surface handle
+        &#34;&#34;&#34;
         for renderable_object in self.render_objects:
             renderable_object.render(screen)
 
     def check_collisions_between_tags(self, tags1, tags2):
+        &#34;&#34;&#34;Checks all the collisions between objects that match the given tags.
+
+        All the objects that have any of the tags1 are matched with all the objects that have any of the tags2, and collisions are returned.
+        
+        Arguments:
+            tags1 {string / string[]} -- Tags to check
+
+            tags2 {string / string[]} -- Tags to check
+        
+        Returns:
+            Collision2d[] -- All collisions detected.
+        &#34;&#34;&#34;
         objects1 = self.get_objects_by_tag(tags1)
         objects2 = self.get_objects_by_tag(tags2)
 
@@ -267,6 +402,17 @@ class Scene:
         return collisions
 
     def get_objects_in_collider(self, tag, collider):
+        &#34;&#34;&#34;Returns all the objects that are intersecting the given collider.
+        
+        Arguments:
+            tag {string / string[]} -- Tags to match to the objects
+            
+            collider {Collider2d} -- Collider to check
+        
+        Returns:
+            GameObject[] -- Objects that are intersecting the given collider.
+        &#34;&#34;&#34;
+
         objects = self.get_objects_by_tag(tag)
 
         ret = [] 
@@ -281,7 +427,7 @@ class Scene:
 <dl>
 <dt id="Pysteroids.Engine.Scene.Scene.main"><code class="name">var <span class="ident">main</span></code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Currently active scene. All new objects should be added to this scene.</p></section>
 </dd>
 </dl>
 <h3>Methods</h3>
@@ -290,10 +436,23 @@ class Scene:
 <span>def <span class="ident">add</span></span>(<span>self, game_object)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Adds an object to the scene.</p>
+<p>This function will check the given object has an update and render method, and add the object to the correct lists.</p>
+<p>It also adds the object to the right lists of objects, considering its tags.</p>
+<h2 id="arguments">Arguments</h2>
+<p>game_object {GameObject} &ndash; GameObject to add to scene.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def add(self, game_object):
+    &#34;&#34;&#34;Adds an object to the scene.
+
+    This function will check the given object has an update and render method, and add the object to the correct lists.
+
+    It also adds the object to the right lists of objects, considering its tags.
+    
+    Arguments:
+        game_object {GameObject} -- GameObject to add to scene.
+    &#34;&#34;&#34;
     # Check if object has method Update
     update_method = getattr(game_object, &#34;update&#34;, None)
     if (callable(update_method)):
@@ -319,10 +478,28 @@ class Scene:
 <span>def <span class="ident">check_collisions_between_tags</span></span>(<span>self, tags1, tags2)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Checks all the collisions between objects that match the given tags.</p>
+<p>All the objects that have any of the tags1 are matched with all the objects that have any of the tags2, and collisions are returned.</p>
+<h2 id="arguments">Arguments</h2>
+<p>tags1 {string / string[]} &ndash; Tags to check</p>
+<p>tags2 {string / string[]} &ndash; Tags to check</p>
+<h2 id="returns">Returns</h2>
+<p>Collision2d[] &ndash; All collisions detected.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def check_collisions_between_tags(self, tags1, tags2):
+    &#34;&#34;&#34;Checks all the collisions between objects that match the given tags.
+
+    All the objects that have any of the tags1 are matched with all the objects that have any of the tags2, and collisions are returned.
+    
+    Arguments:
+        tags1 {string / string[]} -- Tags to check
+
+        tags2 {string / string[]} -- Tags to check
+    
+    Returns:
+        Collision2d[] -- All collisions detected.
+    &#34;&#34;&#34;
     objects1 = self.get_objects_by_tag(tags1)
     objects2 = self.get_objects_by_tag(tags2)
 
@@ -340,10 +517,12 @@ class Scene:
 <span>def <span class="ident">clear</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Clears a scene</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def clear(self):
+    &#34;&#34;&#34;Clears a scene
+    &#34;&#34;&#34;
     self.update_objects = []
     self.render_objects = []
     self.objects = []
@@ -354,10 +533,22 @@ class Scene:
 <span>def <span class="ident">get_object_by_tag</span></span>(<span>self, tag)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Returns the first object that matches a certain tag, or None otherwise</p>
+<h2 id="arguments">Arguments</h2>
+<p>tag {string} &ndash; Tag to check</p>
+<h2 id="returns">Returns</h2>
+<p>GameObject &ndash; First object that matches the given tag.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def get_object_by_tag(self, tag):
+    &#34;&#34;&#34;Returns the first object that matches a certain tag, or None otherwise
+    
+    Arguments:
+        tag {string} -- Tag to check
+    
+    Returns:
+        GameObject -- First object that matches the given tag.
+    &#34;&#34;&#34;
     if (tag in self.objects_by_tag):
         elements = self.objects_by_tag[tag]
         if (len(elements) &gt; 0):
@@ -372,10 +563,25 @@ class Scene:
 <span>def <span class="ident">get_objects_by_tag</span></span>(<span>self, tags)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Returns all objects that match the given tags.</p>
+<p>tags can be either a single string, or an array of strings.</p>
+<h2 id="arguments">Arguments</h2>
+<p>tags {string / string[]} &ndash; Tag or tags to match</p>
+<h2 id="returns">Returns</h2>
+<p>GameObject[] &ndash; List of GameObjects that match the given tags.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def get_objects_by_tag(self, tags):
+    &#34;&#34;&#34;Returns all objects that match the given tags.
+
+    tags can be either a single string, or an array of strings.
+    
+    Arguments:
+        tags {string / string[]} -- Tag or tags to match
+    
+    Returns:
+        GameObject[] -- List of GameObjects that match the given tags.
+    &#34;&#34;&#34;
     if (isinstance(tags, list)):
         objects = []
         for tag in tags:
@@ -393,10 +599,26 @@ class Scene:
 <span>def <span class="ident">get_objects_in_collider</span></span>(<span>self, tag, collider)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Returns all the objects that are intersecting the given collider.</p>
+<h2 id="arguments">Arguments</h2>
+<p>tag {string / string[]} &ndash; Tags to match to the objects</p>
+<p>collider {Collider2d} &ndash; Collider to check</p>
+<h2 id="returns">Returns</h2>
+<p>GameObject[] &ndash; Objects that are intersecting the given collider.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def get_objects_in_collider(self, tag, collider):
+    &#34;&#34;&#34;Returns all the objects that are intersecting the given collider.
+    
+    Arguments:
+        tag {string / string[]} -- Tags to match to the objects
+        
+        collider {Collider2d} -- Collider to check
+    
+    Returns:
+        GameObject[] -- Objects that are intersecting the given collider.
+    &#34;&#34;&#34;
+
     objects = self.get_objects_by_tag(tag)
 
     ret = [] 
@@ -412,10 +634,17 @@ class Scene:
 <span>def <span class="ident">remove</span></span>(<span>self, game_object)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Removes a GameObject from this scene"</p>
+<h2 id="arguments">Arguments</h2>
+<p>game_object {GameObject} &ndash; GameObject to remove from the scene</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def remove(self, game_object):
+    &#34;&#34;&#34;Removes a GameObject from this scene&#34;
+    
+    Arguments:
+        game_object {GameObject} -- GameObject to remove from the scene
+    &#34;&#34;&#34;
     try:
         self.update_objects.remove(game_object)
     except ValueError:
@@ -445,10 +674,17 @@ class Scene:
 <span>def <span class="ident">render</span></span>(<span>self, screen)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Renders all the GameObjects that have a render method.</p>
+<h2 id="arguments">Arguments</h2>
+<p>screen {int} &ndash; Display surface handle</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def render(self, screen):
+    &#34;&#34;&#34;Renders all the GameObjects that have a render method.
+    
+    Arguments:
+        screen {int} -- Display surface handle
+    &#34;&#34;&#34;
     for renderable_object in self.render_objects:
         renderable_object.render(screen)</code></pre>
 </details>
@@ -457,10 +693,17 @@ class Scene:
 <span>def <span class="ident">update</span></span>(<span>self, delta_time)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Updates all the GameObjects that have an update method.</p>
+<h2 id="arguments">Arguments</h2>
+<p>delta_time {float} &ndash; Time since the last frame, in seconds.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def update(self, delta_time):
+    &#34;&#34;&#34;Updates all the GameObjects that have an update method.
+    
+    Arguments:
+        delta_time {float} -- Time since the last frame, in seconds.
+    &#34;&#34;&#34;
     for updatable_object in self.update_objects:
         updatable_object.update(delta_time)</code></pre>
 </details>

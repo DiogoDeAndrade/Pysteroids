@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.6.3" />
 <title>Pysteroids.Engine.GameObject API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="GameObject class …" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
@@ -20,9 +20,18 @@
 <h1 class="title">Module <code>Pysteroids.Engine.GameObject</code></h1>
 </header>
 <section id="section-intro">
+<p>GameObject class.</p>
+<p>The GameObject is the base class of all interactive objects in the engine.</p>
+<p>It implements some basic properties, like position, rotation and scale, besides a collider and tags.</p>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">import math
+<pre><code class="python">&#34;&#34;&#34;GameObject class.
+
+The GameObject is the base class of all interactive objects in the engine.
+
+It implements some basic properties, like position, rotation and scale, besides a collider and tags.
+&#34;&#34;&#34;
+import math
 from pygame.math import Vector2
 
 from Engine.Collider2d import *
@@ -30,6 +39,11 @@ from Engine.Scene import *
 
 class GameObject:
     def __init__(self, name):
+        &#34;&#34;&#34;Initializes a GameObject, with a given name.
+        
+        Arguments:
+            name {string} -- Name of the object. It can be duplicated, there&#39;s no validation/enforcing, but it&#39;s usually better to have unique names to quickly identify relevant objects while debugging.
+        &#34;&#34;&#34;
         self.name = name
         self.position = Vector2(640, 360)
         self.rotation = 0
@@ -38,28 +52,67 @@ class GameObject:
         self.collider = Circle2d(Vector2(0,0), 1)
 
     def get_direction_vector(self):
+        &#34;&#34;&#34;Returns the direction vector of the GameObject.
+
+        A rotation of 0 degrees means the object is pointing at (0, -1) (it&#39;s pointing upwards)
+        
+        Returns:
+            Vector2 -- Direction vector of the object
+        &#34;&#34;&#34;
         # Rotation of 0 means pointing up
         angle = math.radians(self.rotation)
         return Vector2(math.sin(angle), -math.cos(angle))
 
     def get_right_vector(self):
+        &#34;&#34;&#34;Returns the right vector of the GameObject.
+
+        A rotation of 0 degrees means the object is pointing at (0, -1) (it&#39;s pointing upwards), so it&#39;s right vector will point to (1, 0)
+        
+        Returns:
+            Vector2 -- Direction vector of the object
+        &#34;&#34;&#34;
         angle = math.radians(self.rotation + 90)
         return Vector2(math.sin(angle), -math.cos(angle))
 
     def get_mountpoint(self, name):
+        &#34;&#34;&#34;Gets the position of the given mountpoint.
+
+        Currently, mountpoints only work if there&#39;s a gfx property on the GameObject that implements a get_mountpointPRS function.
+        
+        Arguments:
+            name {string} -- Name of the mountpoint
+        
+        Returns:
+            Vector2 -- World space position of this mountpoint
+        &#34;&#34;&#34;
         if (self.gfx == None):
             return Vector2(self.position)
 
         return self.gfx.get_mountpointPRS(name, self.position, self.rotation, self.scale)
 
     def destroy(self):
+        &#34;&#34;&#34;Destroys this GameObject, removing it from the main scene, and running the on_destroy callback.
+        &#34;&#34;&#34;
         Scene.main.remove(self)
         self.on_destroy()
 
     def get_tags(self):
+        &#34;&#34;&#34;Returns the tag array of this object.
+        
+        Returns:
+            string[] -- Tag array of this object.
+        &#34;&#34;&#34;
         return self.tags
 
     def intersects(self, other_object):
+        &#34;&#34;&#34;Checks if this object intersects another object.
+        
+        Arguments:
+            other_object {GameObject / Collider2d} -- Other object or collider to check intersection with.
+        
+        Returns:
+            bool -- True if there is an intersection.
+        &#34;&#34;&#34;
         if (self.collider == None):
             return False
 
@@ -82,6 +135,8 @@ class GameObject:
         return False
 
     def on_destroy(self):
+        &#34;&#34;&#34;Callback that gets called when this object is destroyed.
+        &#34;&#34;&#34;
         pass</code></pre>
 </details>
 </section>
@@ -99,11 +154,18 @@ class GameObject:
 <span>(</span><span>name)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Initializes a GameObject, with a given name.</p>
+<h2 id="arguments">Arguments</h2>
+<p>name {string} &ndash; Name of the object. It can be duplicated, there's no validation/enforcing, but it's usually better to have unique names to quickly identify relevant objects while debugging.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">class GameObject:
     def __init__(self, name):
+        &#34;&#34;&#34;Initializes a GameObject, with a given name.
+        
+        Arguments:
+            name {string} -- Name of the object. It can be duplicated, there&#39;s no validation/enforcing, but it&#39;s usually better to have unique names to quickly identify relevant objects while debugging.
+        &#34;&#34;&#34;
         self.name = name
         self.position = Vector2(640, 360)
         self.rotation = 0
@@ -112,28 +174,67 @@ class GameObject:
         self.collider = Circle2d(Vector2(0,0), 1)
 
     def get_direction_vector(self):
+        &#34;&#34;&#34;Returns the direction vector of the GameObject.
+
+        A rotation of 0 degrees means the object is pointing at (0, -1) (it&#39;s pointing upwards)
+        
+        Returns:
+            Vector2 -- Direction vector of the object
+        &#34;&#34;&#34;
         # Rotation of 0 means pointing up
         angle = math.radians(self.rotation)
         return Vector2(math.sin(angle), -math.cos(angle))
 
     def get_right_vector(self):
+        &#34;&#34;&#34;Returns the right vector of the GameObject.
+
+        A rotation of 0 degrees means the object is pointing at (0, -1) (it&#39;s pointing upwards), so it&#39;s right vector will point to (1, 0)
+        
+        Returns:
+            Vector2 -- Direction vector of the object
+        &#34;&#34;&#34;
         angle = math.radians(self.rotation + 90)
         return Vector2(math.sin(angle), -math.cos(angle))
 
     def get_mountpoint(self, name):
+        &#34;&#34;&#34;Gets the position of the given mountpoint.
+
+        Currently, mountpoints only work if there&#39;s a gfx property on the GameObject that implements a get_mountpointPRS function.
+        
+        Arguments:
+            name {string} -- Name of the mountpoint
+        
+        Returns:
+            Vector2 -- World space position of this mountpoint
+        &#34;&#34;&#34;
         if (self.gfx == None):
             return Vector2(self.position)
 
         return self.gfx.get_mountpointPRS(name, self.position, self.rotation, self.scale)
 
     def destroy(self):
+        &#34;&#34;&#34;Destroys this GameObject, removing it from the main scene, and running the on_destroy callback.
+        &#34;&#34;&#34;
         Scene.main.remove(self)
         self.on_destroy()
 
     def get_tags(self):
+        &#34;&#34;&#34;Returns the tag array of this object.
+        
+        Returns:
+            string[] -- Tag array of this object.
+        &#34;&#34;&#34;
         return self.tags
 
     def intersects(self, other_object):
+        &#34;&#34;&#34;Checks if this object intersects another object.
+        
+        Arguments:
+            other_object {GameObject / Collider2d} -- Other object or collider to check intersection with.
+        
+        Returns:
+            bool -- True if there is an intersection.
+        &#34;&#34;&#34;
         if (self.collider == None):
             return False
 
@@ -156,6 +257,8 @@ class GameObject:
         return False
 
     def on_destroy(self):
+        &#34;&#34;&#34;Callback that gets called when this object is destroyed.
+        &#34;&#34;&#34;
         pass</code></pre>
 </details>
 <h3>Methods</h3>
@@ -164,10 +267,12 @@ class GameObject:
 <span>def <span class="ident">destroy</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Destroys this GameObject, removing it from the main scene, and running the on_destroy callback.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def destroy(self):
+    &#34;&#34;&#34;Destroys this GameObject, removing it from the main scene, and running the on_destroy callback.
+    &#34;&#34;&#34;
     Scene.main.remove(self)
     self.on_destroy()</code></pre>
 </details>
@@ -176,10 +281,23 @@ class GameObject:
 <span>def <span class="ident">get_direction_vector</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Returns the direction vector of the GameObject.</p>
+<p>A rotation of 0 degrees means the object is pointing at (0, -1) (it's pointing upwards)</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Vector2</code> &ndash; <code>Direction</code> <code>vector</code> of <code>the</code> <code>object</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def get_direction_vector(self):
+    &#34;&#34;&#34;Returns the direction vector of the GameObject.
+
+    A rotation of 0 degrees means the object is pointing at (0, -1) (it&#39;s pointing upwards)
+    
+    Returns:
+        Vector2 -- Direction vector of the object
+    &#34;&#34;&#34;
     # Rotation of 0 means pointing up
     angle = math.radians(self.rotation)
     return Vector2(math.sin(angle), -math.cos(angle))</code></pre>
@@ -189,10 +307,28 @@ class GameObject:
 <span>def <span class="ident">get_mountpoint</span></span>(<span>self, name)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Gets the position of the given mountpoint.</p>
+<p>Currently, mountpoints only work if there's a gfx property on the GameObject that implements a get_mountpointPRS function.</p>
+<h2 id="arguments">Arguments</h2>
+<p>name {string} &ndash; Name of the mountpoint</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Vector2</code> &ndash; <code>World</code> <code>space</code> <code>position</code> of <code>this</code> <code>mountpoint</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def get_mountpoint(self, name):
+    &#34;&#34;&#34;Gets the position of the given mountpoint.
+
+    Currently, mountpoints only work if there&#39;s a gfx property on the GameObject that implements a get_mountpointPRS function.
+    
+    Arguments:
+        name {string} -- Name of the mountpoint
+    
+    Returns:
+        Vector2 -- World space position of this mountpoint
+    &#34;&#34;&#34;
     if (self.gfx == None):
         return Vector2(self.position)
 
@@ -203,10 +339,23 @@ class GameObject:
 <span>def <span class="ident">get_right_vector</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Returns the right vector of the GameObject.</p>
+<p>A rotation of 0 degrees means the object is pointing at (0, -1) (it's pointing upwards), so it's right vector will point to (1, 0)</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Vector2</code> &ndash; <code>Direction</code> <code>vector</code> of <code>the</code> <code>object</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def get_right_vector(self):
+    &#34;&#34;&#34;Returns the right vector of the GameObject.
+
+    A rotation of 0 degrees means the object is pointing at (0, -1) (it&#39;s pointing upwards), so it&#39;s right vector will point to (1, 0)
+    
+    Returns:
+        Vector2 -- Direction vector of the object
+    &#34;&#34;&#34;
     angle = math.radians(self.rotation + 90)
     return Vector2(math.sin(angle), -math.cos(angle))</code></pre>
 </details>
@@ -215,10 +364,17 @@ class GameObject:
 <span>def <span class="ident">get_tags</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Returns the tag array of this object.</p>
+<h2 id="returns">Returns</h2>
+<p>string[] &ndash; Tag array of this object.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def get_tags(self):
+    &#34;&#34;&#34;Returns the tag array of this object.
+    
+    Returns:
+        string[] -- Tag array of this object.
+    &#34;&#34;&#34;
     return self.tags</code></pre>
 </details>
 </dd>
@@ -226,10 +382,22 @@ class GameObject:
 <span>def <span class="ident">intersects</span></span>(<span>self, other_object)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Checks if this object intersects another object.</p>
+<h2 id="arguments">Arguments</h2>
+<p>other_object {GameObject / Collider2d} &ndash; Other object or collider to check intersection with.</p>
+<h2 id="returns">Returns</h2>
+<p>bool &ndash; True if there is an intersection.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def intersects(self, other_object):
+    &#34;&#34;&#34;Checks if this object intersects another object.
+    
+    Arguments:
+        other_object {GameObject / Collider2d} -- Other object or collider to check intersection with.
+    
+    Returns:
+        bool -- True if there is an intersection.
+    &#34;&#34;&#34;
     if (self.collider == None):
         return False
 
@@ -256,10 +424,12 @@ class GameObject:
 <span>def <span class="ident">on_destroy</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Callback that gets called when this object is destroyed.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def on_destroy(self):
+    &#34;&#34;&#34;Callback that gets called when this object is destroyed.
+    &#34;&#34;&#34;
     pass</code></pre>
 </details>
 </dd>

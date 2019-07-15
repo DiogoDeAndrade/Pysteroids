@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.6.3" />
 <title>Pysteroids.Engine.SoundManager API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="Sound manager. It stores and plays the loaded audio …" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
@@ -20,14 +20,25 @@
 <h1 class="title">Module <code>Pysteroids.Engine.SoundManager</code></h1>
 </header>
 <section id="section-intro">
+<p>Sound manager. It stores and plays the loaded audio.</p>
+<p>Access to the SoundManager should be done through the static functions, although it's of course possible to get a reference to the SoundManager singleton and access it's functions.</p>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">import pygame
+<pre><code class="python">&#34;&#34;&#34;Sound manager. It stores and plays the loaded audio.
+
+Access to the SoundManager should be done through the static functions, although it&#39;s of course possible to get a reference to the SoundManager singleton and access it&#39;s functions.
+&#34;&#34;&#34;
+import pygame
 
 class SoundManager:
+    &#34;&#34;&#34;SoundManager class is a singleton.&#34;&#34;&#34;
     instance = None
+    &#34;&#34;&#34;Singleton that stores the sound manager.&#34;&#34;&#34;
 
     def __init__(self):
+        &#34;&#34;&#34;Initializes the audio system of Pygame. If it fails, the game will keep running, but without audio.
+
+        Currently this fails on the Mac, for unknown reasons.&#34;&#34;&#34;
         if (SoundManager.instance == None):
             SoundManager.instance = self
         else:
@@ -42,6 +53,13 @@ class SoundManager:
         self.global_volume = 1.0
             
     def _load(self, path, name):
+        &#34;&#34;&#34;Loads a sound and gives it a specific internal name.
+        
+        Arguments:
+            path {string} -- Filename of the file. Any Pygame supported file can be used.
+            
+            name {string} -- Internal name for this sound.
+        &#34;&#34;&#34;
         if (pygame.mixer.get_init() == None):
             return
 
@@ -50,6 +68,18 @@ class SoundManager:
             self.sounds[name] = snd            
 
     def _play(self, name, volume, loop):
+        &#34;&#34;&#34;Plays a sound.
+        
+        Arguments:
+            name {string} -- Internal name of the sound
+
+            volume {float} -- Volume to play the sound. This is modulated with the global volume.
+
+            loop {bool} -- Should the sound play in a loop?
+        
+        Returns:
+            int -- Channel number where the sound is playing.
+        &#34;&#34;&#34;
         if (pygame.mixer.get_init() == None):
             return None
 
@@ -65,6 +95,7 @@ class SoundManager:
         return None
 
     def get_channel(self):
+        &#34;&#34;&#34;Fetches a free audio channel. This is used internally by the sound playing functions.&#34;&#34;&#34;
         if (pygame.mixer.get_init() == None):
             return None
 
@@ -76,6 +107,11 @@ class SoundManager:
 
     @staticmethod
     def get_instance():
+        &#34;&#34;&#34;Retrieves the singleton instance of the sound manager, or creates a new one.
+        
+        Returns:
+            SoundManager -- Singleton reference to the SoundManager.
+        &#34;&#34;&#34;
         if (SoundManager.instance == None):
             gSnd = SoundManager()
         
@@ -83,14 +119,38 @@ class SoundManager:
 
     @staticmethod
     def load(path, name):
+        &#34;&#34;&#34;Loads a sound
+        
+        Arguments:
+            path {string} -- Filename to load
+
+            name {string} -- Internal name of this sound
+        &#34;&#34;&#34;
         return SoundManager.get_instance()._load(path, name)
 
     @staticmethod
     def play(name, volume = 1.0, loop = False):
+        &#34;&#34;&#34;Plays a sound
+        
+        Arguments:
+            name {string} -- Sound internal name     
+            
+            volume {float} -- Volume of the sound (default: {1.0})
+
+            loop {bool} -- Should the sound loop at the end? (default: {False})
+        
+        Returns:
+            int -- Channel number where the sound is playing.
+        &#34;&#34;&#34;
         return SoundManager.get_instance()._play(name, volume, loop)
 
     @staticmethod
     def set_global_volume(volume):
+        &#34;&#34;&#34;Sets the global volume of the audio.
+        
+        Arguments:
+            volume {float} -- Volume to set, in the range [0..1]
+        &#34;&#34;&#34;
         SoundManager.get_instance().global_volume = volume</code></pre>
 </details>
 </section>
@@ -107,13 +167,20 @@ class SoundManager:
 <span>class <span class="ident">SoundManager</span></span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>SoundManager class is a singleton.</p>
+<p>Initializes the audio system of Pygame. If it fails, the game will keep running, but without audio.</p>
+<p>Currently this fails on the Mac, for unknown reasons.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">class SoundManager:
+    &#34;&#34;&#34;SoundManager class is a singleton.&#34;&#34;&#34;
     instance = None
+    &#34;&#34;&#34;Singleton that stores the sound manager.&#34;&#34;&#34;
 
     def __init__(self):
+        &#34;&#34;&#34;Initializes the audio system of Pygame. If it fails, the game will keep running, but without audio.
+
+        Currently this fails on the Mac, for unknown reasons.&#34;&#34;&#34;
         if (SoundManager.instance == None):
             SoundManager.instance = self
         else:
@@ -128,6 +195,13 @@ class SoundManager:
         self.global_volume = 1.0
             
     def _load(self, path, name):
+        &#34;&#34;&#34;Loads a sound and gives it a specific internal name.
+        
+        Arguments:
+            path {string} -- Filename of the file. Any Pygame supported file can be used.
+            
+            name {string} -- Internal name for this sound.
+        &#34;&#34;&#34;
         if (pygame.mixer.get_init() == None):
             return
 
@@ -136,6 +210,18 @@ class SoundManager:
             self.sounds[name] = snd            
 
     def _play(self, name, volume, loop):
+        &#34;&#34;&#34;Plays a sound.
+        
+        Arguments:
+            name {string} -- Internal name of the sound
+
+            volume {float} -- Volume to play the sound. This is modulated with the global volume.
+
+            loop {bool} -- Should the sound play in a loop?
+        
+        Returns:
+            int -- Channel number where the sound is playing.
+        &#34;&#34;&#34;
         if (pygame.mixer.get_init() == None):
             return None
 
@@ -151,6 +237,7 @@ class SoundManager:
         return None
 
     def get_channel(self):
+        &#34;&#34;&#34;Fetches a free audio channel. This is used internally by the sound playing functions.&#34;&#34;&#34;
         if (pygame.mixer.get_init() == None):
             return None
 
@@ -162,6 +249,11 @@ class SoundManager:
 
     @staticmethod
     def get_instance():
+        &#34;&#34;&#34;Retrieves the singleton instance of the sound manager, or creates a new one.
+        
+        Returns:
+            SoundManager -- Singleton reference to the SoundManager.
+        &#34;&#34;&#34;
         if (SoundManager.instance == None):
             gSnd = SoundManager()
         
@@ -169,21 +261,45 @@ class SoundManager:
 
     @staticmethod
     def load(path, name):
+        &#34;&#34;&#34;Loads a sound
+        
+        Arguments:
+            path {string} -- Filename to load
+
+            name {string} -- Internal name of this sound
+        &#34;&#34;&#34;
         return SoundManager.get_instance()._load(path, name)
 
     @staticmethod
     def play(name, volume = 1.0, loop = False):
+        &#34;&#34;&#34;Plays a sound
+        
+        Arguments:
+            name {string} -- Sound internal name     
+            
+            volume {float} -- Volume of the sound (default: {1.0})
+
+            loop {bool} -- Should the sound loop at the end? (default: {False})
+        
+        Returns:
+            int -- Channel number where the sound is playing.
+        &#34;&#34;&#34;
         return SoundManager.get_instance()._play(name, volume, loop)
 
     @staticmethod
     def set_global_volume(volume):
+        &#34;&#34;&#34;Sets the global volume of the audio.
+        
+        Arguments:
+            volume {float} -- Volume to set, in the range [0..1]
+        &#34;&#34;&#34;
         SoundManager.get_instance().global_volume = volume</code></pre>
 </details>
 <h3>Class variables</h3>
 <dl>
 <dt id="Pysteroids.Engine.SoundManager.SoundManager.instance"><code class="name">var <span class="ident">instance</span></code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Singleton that stores the sound manager.</p></section>
 </dd>
 </dl>
 <h3>Static methods</h3>
@@ -192,11 +308,18 @@ class SoundManager:
 <span>def <span class="ident">get_instance</span></span>(<span>)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Retrieves the singleton instance of the sound manager, or creates a new one.</p>
+<h2 id="returns">Returns</h2>
+<p>SoundManager &ndash; Singleton reference to the SoundManager.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">@staticmethod
 def get_instance():
+    &#34;&#34;&#34;Retrieves the singleton instance of the sound manager, or creates a new one.
+    
+    Returns:
+        SoundManager -- Singleton reference to the SoundManager.
+    &#34;&#34;&#34;
     if (SoundManager.instance == None):
         gSnd = SoundManager()
     
@@ -207,11 +330,21 @@ def get_instance():
 <span>def <span class="ident">load</span></span>(<span>path, name)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Loads a sound</p>
+<h2 id="arguments">Arguments</h2>
+<p>path {string} &ndash; Filename to load</p>
+<p>name {string} &ndash; Internal name of this sound</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">@staticmethod
 def load(path, name):
+    &#34;&#34;&#34;Loads a sound
+    
+    Arguments:
+        path {string} -- Filename to load
+
+        name {string} -- Internal name of this sound
+    &#34;&#34;&#34;
     return SoundManager.get_instance()._load(path, name)</code></pre>
 </details>
 </dd>
@@ -219,11 +352,30 @@ def load(path, name):
 <span>def <span class="ident">play</span></span>(<span>name, volume=1.0, loop=False)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Plays a sound</p>
+<h2 id="arguments">Arguments</h2>
+<p>name {string} &ndash; Sound internal name
+</p>
+<p>volume {float} &ndash; Volume of the sound (default: {1.0})</p>
+<p>loop {bool} &ndash; Should the sound loop at the end? (default: {False})</p>
+<h2 id="returns">Returns</h2>
+<p>int &ndash; Channel number where the sound is playing.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">@staticmethod
 def play(name, volume = 1.0, loop = False):
+    &#34;&#34;&#34;Plays a sound
+    
+    Arguments:
+        name {string} -- Sound internal name     
+        
+        volume {float} -- Volume of the sound (default: {1.0})
+
+        loop {bool} -- Should the sound loop at the end? (default: {False})
+    
+    Returns:
+        int -- Channel number where the sound is playing.
+    &#34;&#34;&#34;
     return SoundManager.get_instance()._play(name, volume, loop)</code></pre>
 </details>
 </dd>
@@ -231,11 +383,18 @@ def play(name, volume = 1.0, loop = False):
 <span>def <span class="ident">set_global_volume</span></span>(<span>volume)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Sets the global volume of the audio.</p>
+<h2 id="arguments">Arguments</h2>
+<p>volume {float} &ndash; Volume to set, in the range [0..1]</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">@staticmethod
 def set_global_volume(volume):
+    &#34;&#34;&#34;Sets the global volume of the audio.
+    
+    Arguments:
+        volume {float} -- Volume to set, in the range [0..1]
+    &#34;&#34;&#34;
     SoundManager.get_instance().global_volume = volume</code></pre>
 </details>
 </dd>
@@ -246,10 +405,11 @@ def set_global_volume(volume):
 <span>def <span class="ident">get_channel</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Fetches a free audio channel. This is used internally by the sound playing functions.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def get_channel(self):
+    &#34;&#34;&#34;Fetches a free audio channel. This is used internally by the sound playing functions.&#34;&#34;&#34;
     if (pygame.mixer.get_init() == None):
         return None
 

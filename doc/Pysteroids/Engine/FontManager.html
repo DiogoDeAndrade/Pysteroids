@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.6.3" />
 <title>Pysteroids.Engine.FontManager API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="Font manager. It stores and uses the loaded fonts …" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
@@ -20,9 +20,15 @@
 <h1 class="title">Module <code>Pysteroids.Engine.FontManager</code></h1>
 </header>
 <section id="section-intro">
+<p>Font manager. It stores and uses the loaded fonts.</p>
+<p>Access to the FontManager should be done through the static functions, although it's of course possible to get a reference to the FontManager singleton and access it's functions.</p>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">import pygame
+<pre><code class="python">&#34;&#34;&#34;Font manager. It stores and uses the loaded fonts.
+
+Access to the FontManager should be done through the static functions, although it&#39;s of course possible to get a reference to the FontManager singleton and access it&#39;s functions.
+&#34;&#34;&#34;
+import pygame
 import os
 import json
 import pygame.freetype
@@ -30,14 +36,40 @@ import pygame.freetype
 from Engine.WireMesh import *
 
 class TTFont:
+    &#34;&#34;&#34;True type font, supported by Pygame&#34;&#34;&#34;
     def __init__(self, path, size):
+        &#34;&#34;&#34;        
+        Arguments:
+            path {string} -- Path to the true type font to load
+
+            size {float} -- Size of the font to load.
+        &#34;&#34;&#34;
         self.fnt = pygame.freetype.Font(path, size)
 
     def render_to(self, screen, position, str, color, scale, width_scale, spacing_scale):
+        &#34;&#34;&#34;Renders the given text on the screen.
+        
+        Arguments:
+            screen {int} -- Display surface handle
+
+            position {tuple(x,y)} -- Position to render text, in pixel coordinates
+
+            str {string} -- Text to display
+
+            color {tuple(R,G,B,A)} -- Color of the text
+
+            scale {float} -- Scale of the text to display. Ignored in true type fonts
+
+            width_scale {float} -- Width scale of the text to display. Ignored in true type fonts
+
+            spacing_scale {float} -- Spacing scale of the text to display. Ignored in true type fonts
+        &#34;&#34;&#34;
         self.fnt.render_to(screen, position, str, color)
 
 class VectorFont:
+    &#34;&#34;&#34;Vector type font&#34;&#34;&#34;
     def __init__(self):
+        &#34;&#34;&#34;Initializes an empty vector font&#34;&#34;&#34;
         self.characters = dict()
         self.size_x = self.size_y = 0
         self.spacing_x = self.spacing_y = 0
@@ -45,6 +77,23 @@ class VectorFont:
         self.lineWidth = 1
 
     def render_at(self, screen, position, str, color, scale, width_scale, spacing_scale):
+        &#34;&#34;&#34;Internal function, renders the given text on the screen.
+        
+        Arguments:
+            screen {int} -- Display surface handle
+
+            position {tuple(x,y)} -- Position to render text, in pixel coordinates
+
+            str {string} -- Text to display
+
+            color {tuple(R,G,B,A)} -- Color of the text
+
+            scale {float} -- Scale of the text to display. 
+
+            width_scale {float} -- Width scale of the text to display. 
+
+            spacing_scale {float} -- Spacing scale of the text to display. 
+        &#34;&#34;&#34;
         currentPos = position
 
         for c in str:
@@ -55,11 +104,45 @@ class VectorFont:
             currentPos.x = currentPos.x + (self.size_x + self.spacing_x * spacing_scale) * self.scale * scale
 
     def render_to(self, screen, position, str, color, scale, width_scale, spacing_scale):
+        &#34;&#34;&#34;Renders the given text on the screen. This is the function that should be used to actually display text. 
+        
+        Arguments:
+            screen {int} -- Display surface handle
+
+            position {tuple(x,y)} -- Position to render text, in pixel coordinates
+
+            str {string} -- Text to display
+
+            color {tuple(R,G,B,A)} -- Color of the text
+
+            scale {float} -- Scale of the text to display. 
+
+            width_scale {float} -- Width scale of the text to display. 
+
+            spacing_scale {float} -- Spacing scale of the text to display. 
+        &#34;&#34;&#34;
         currentPos = Vector2(position[0] + self.size_x * 0.5 * self.scale * scale * width_scale, position[1] + self.size_y * 0.5 * self.scale * scale)
 
         self.render_at(screen, currentPos, str, color, scale, width_scale, spacing_scale)
 
     def render_to_centered(self, screen, position, str, color, scale, width_scale, spacing_scale):
+        &#34;&#34;&#34;Renders the given text on the screen, centered.
+        
+        Arguments:
+            screen {int} -- Display surface handle
+
+            position {tuple(x,y)} -- Position to render text, in pixel coordinates
+
+            str {string} -- Text to display
+
+            color {tuple(R,G,B,A)} -- Color of the text
+
+            scale {float} -- Scale of the text to display. 
+
+            width_scale {float} -- Width scale of the text to display. 
+
+            spacing_scale {float} -- Spacing scale of the text to display. 
+        &#34;&#34;&#34;
         size = len(str) * self.size_x + (len(str) - 1) * self.spacing_x * spacing_scale
 
         currentPos = Vector2(position[0] - (size ) * 0.5 * self.scale * scale, position[1] + self.size_y * 0.5 * self.scale * scale)
@@ -68,6 +151,30 @@ class VectorFont:
 
     @staticmethod
     def load(filename, size):
+        &#34;&#34;&#34;Loads a vector font from a JSON file.
+        
+        File is standard JSON with the following structure:
+        ```
+        {
+            Size: Tuple with the size of the font
+            Spacing: Tuple with the spacing between lines (vector fonts are monospaced)
+            Characters.....
+        }
+        ```
+
+        Characters are defined as follows:
+        ```
+        &#34;&lt;character&gt;: { * Definition as in a normal WireMesh (check WireMesh documentation for format) * }
+        ```
+        
+        Arguments:
+            filename {string} -- Filename of file that contains the vector font.
+
+            size {float} -- Scale of the font loaded (can be overwriten in individual calls)
+        
+        Returns:
+            VectorFont -- Loaded font
+        &#34;&#34;&#34;
         fnt = VectorFont()
         fnt.scale = size
         fnt.lineWidth = size
@@ -96,9 +203,13 @@ class VectorFont:
         return fnt
 
 class FontManager:
+    &#34;&#34;&#34;Font Manager singleton object.
+    &#34;&#34;&#34;
     instance = None
+    &#34;&#34;&#34;Singleton object&#34;&#34;&#34;
 
     def __init__(self):
+        &#34;&#34;&#34;Initializes the singleton&#34;&#34;&#34;
         if (FontManager.instance == None):
             FontManager.instance = self
         else:
@@ -107,6 +218,18 @@ class FontManager:
         self.fonts = dict()
             
     def _load(self, path, size, name):
+        &#34;&#34;&#34;Loads a font from the hard drive.
+        
+        Arguments:
+            path {string} -- Filename of the font file. Format of font is defined by the file extension (.json for VectorFonts, everything else for any font supported by Pygame)
+
+            size {float} -- Size or scale of the font to load
+
+            name {string} -- Internal name of the font, so you can use it on the static draw text calls.
+        
+        Returns:
+            [TTFont / VectorFont] -- Loaded font
+        &#34;&#34;&#34;
         just_filename, file_extension = os.path.splitext(path)
 
         fnt = None
@@ -121,15 +244,58 @@ class FontManager:
         return fnt
 
     def _write(self, screen, name, str, position, color, scale = 1, width_scale = 1, spacing_scale = 1):
+        &#34;&#34;&#34;Writes the given text on the screen.
+        
+        Arguments:
+            screen {int} -- Display surface handler
+
+            name {string} -- Name of the font to use to draw
+
+            str {string} -- String to display
+
+            position {tuple(x,y)} -- Position of the text in screen coordinates
+
+            color {tuple(R,G,B,A)} -- Color of the text
+            
+            scale {float} -- Scale of the text (only applicable on VectorFonts) (default: {1})
+
+            width_scale {float} -- Width scale of the text (only applicable on VectorFonts) (default: {1})
+
+            spacing_scale {float} -- Spacing scale of the text (only applicable on VectorFonts) (default: {1})
+        &#34;&#34;&#34;
         if (name in self.fonts):
             self.fonts[name].render_to(screen, position, str, color, scale, width_scale, spacing_scale)
 
     def _write_center(self, screen, name, str, position, color, scale = 1, width_scale = 1, spacing_scale = 1):
+        &#34;&#34;&#34;Writes the given text on the screen, centered on the given position.
+        
+        Arguments:
+            screen {int} -- Display surface handler
+
+            name {string} -- Name of the font to use to draw
+
+            str {string} -- String to display
+
+            position {tuple(x,y)} -- Position of the text in screen coordinates
+
+            color {tuple(R,G,B,A)} -- Color of the text
+        
+            scale {float} -- Scale of the text (only applicable on VectorFonts) (default: {1})
+
+            width_scale {float} -- Width scale of the text (only applicable on VectorFonts) (default: {1})
+            
+            spacing_scale {float} -- Spacing scale of the text (only applicable on VectorFonts) (default: {1})
+        &#34;&#34;&#34;
         if (name in self.fonts):
             self.fonts[name].render_to_centered(screen, position, str, color, scale, width_scale, spacing_scale)
 
     @staticmethod
     def get_instance():
+        &#34;&#34;&#34;Retrieves the singleton instance of the FontManager, or initializes one if there isn&#39;t one.
+        
+        Returns:
+            FontManager -- Singleton of FontManager
+        &#34;&#34;&#34;
         if (FontManager.instance == None):
             gFnt = FontManager()
         
@@ -137,14 +303,64 @@ class FontManager:
 
     @staticmethod
     def load(path, size, name):
+        &#34;&#34;&#34;Loads a font from the hard drive.
+        
+        Arguments:
+            path {string} -- Filename of the font file. Format of font is defined by the file extension (.json for VectorFonts, everything else for any font supported by Pygame)
+
+            size {float} -- Size or scale of the font to load
+
+            name {string} -- Internal name of the font, so you can use it on the static draw text calls.
+        
+        Returns:
+            [TTFont / VectorFont] -- Loaded font
+        &#34;&#34;&#34;
         return FontManager.get_instance()._load(path, size, name)
 
     @staticmethod
     def write(screen, name, str, position, color, scale = 1, width_scale = 1, spacing_scale = 1):
+        &#34;&#34;&#34;Writes the given text on the screen.
+        
+        Arguments:
+            screen {int} -- Display surface handler
+
+            name {string} -- Name of the font to use to draw
+
+            str {string} -- String to display
+
+            position {tuple(x,y)} -- Position of the text in screen coordinates
+
+            color {tuple(R,G,B,A)} -- Color of the text
+     
+            scale {float} -- Scale of the text (only applicable on VectorFonts) (default: {1})
+            
+            width_scale {float} -- Width scale of the text (only applicable on VectorFonts) (default: {1})
+            
+            spacing_scale {float} -- Spacing scale of the text (only applicable on VectorFonts) (default: {1})
+        &#34;&#34;&#34;
         return FontManager.get_instance()._write(screen, name, str, position, color, scale, width_scale, spacing_scale)
 
     @staticmethod
     def write_center(screen, name, str, position, color, scale = 1, width_scale = 1, spacing_scale = 1):
+        &#34;&#34;&#34;Writes the given text on the screen, centered on the given position.
+        
+        Arguments:
+            screen {int} -- Display surface handler
+
+            name {string} -- Name of the font to use to draw
+
+            str {string} -- String to display
+
+            position {tuple(x,y)} -- Position of the text in screen coordinates
+
+            color {tuple(R,G,B,A)} -- Color of the text
+        
+            scale {float} -- Scale of the text (only applicable on VectorFonts) (default: {1})
+
+            width_scale {float} -- Width scale of the text (only applicable on VectorFonts) (default: {1})
+            
+            spacing_scale {float} -- Spacing scale of the text (only applicable on VectorFonts) (default: {1})
+        &#34;&#34;&#34;
         return FontManager.get_instance()._write_center(screen, name, str, position, color, scale, width_scale, spacing_scale)</code></pre>
 </details>
 </section>
@@ -161,13 +377,18 @@ class FontManager:
 <span>class <span class="ident">FontManager</span></span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Font Manager singleton object.</p>
+<p>Initializes the singleton</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">class FontManager:
+    &#34;&#34;&#34;Font Manager singleton object.
+    &#34;&#34;&#34;
     instance = None
+    &#34;&#34;&#34;Singleton object&#34;&#34;&#34;
 
     def __init__(self):
+        &#34;&#34;&#34;Initializes the singleton&#34;&#34;&#34;
         if (FontManager.instance == None):
             FontManager.instance = self
         else:
@@ -176,6 +397,18 @@ class FontManager:
         self.fonts = dict()
             
     def _load(self, path, size, name):
+        &#34;&#34;&#34;Loads a font from the hard drive.
+        
+        Arguments:
+            path {string} -- Filename of the font file. Format of font is defined by the file extension (.json for VectorFonts, everything else for any font supported by Pygame)
+
+            size {float} -- Size or scale of the font to load
+
+            name {string} -- Internal name of the font, so you can use it on the static draw text calls.
+        
+        Returns:
+            [TTFont / VectorFont] -- Loaded font
+        &#34;&#34;&#34;
         just_filename, file_extension = os.path.splitext(path)
 
         fnt = None
@@ -190,15 +423,58 @@ class FontManager:
         return fnt
 
     def _write(self, screen, name, str, position, color, scale = 1, width_scale = 1, spacing_scale = 1):
+        &#34;&#34;&#34;Writes the given text on the screen.
+        
+        Arguments:
+            screen {int} -- Display surface handler
+
+            name {string} -- Name of the font to use to draw
+
+            str {string} -- String to display
+
+            position {tuple(x,y)} -- Position of the text in screen coordinates
+
+            color {tuple(R,G,B,A)} -- Color of the text
+            
+            scale {float} -- Scale of the text (only applicable on VectorFonts) (default: {1})
+
+            width_scale {float} -- Width scale of the text (only applicable on VectorFonts) (default: {1})
+
+            spacing_scale {float} -- Spacing scale of the text (only applicable on VectorFonts) (default: {1})
+        &#34;&#34;&#34;
         if (name in self.fonts):
             self.fonts[name].render_to(screen, position, str, color, scale, width_scale, spacing_scale)
 
     def _write_center(self, screen, name, str, position, color, scale = 1, width_scale = 1, spacing_scale = 1):
+        &#34;&#34;&#34;Writes the given text on the screen, centered on the given position.
+        
+        Arguments:
+            screen {int} -- Display surface handler
+
+            name {string} -- Name of the font to use to draw
+
+            str {string} -- String to display
+
+            position {tuple(x,y)} -- Position of the text in screen coordinates
+
+            color {tuple(R,G,B,A)} -- Color of the text
+        
+            scale {float} -- Scale of the text (only applicable on VectorFonts) (default: {1})
+
+            width_scale {float} -- Width scale of the text (only applicable on VectorFonts) (default: {1})
+            
+            spacing_scale {float} -- Spacing scale of the text (only applicable on VectorFonts) (default: {1})
+        &#34;&#34;&#34;
         if (name in self.fonts):
             self.fonts[name].render_to_centered(screen, position, str, color, scale, width_scale, spacing_scale)
 
     @staticmethod
     def get_instance():
+        &#34;&#34;&#34;Retrieves the singleton instance of the FontManager, or initializes one if there isn&#39;t one.
+        
+        Returns:
+            FontManager -- Singleton of FontManager
+        &#34;&#34;&#34;
         if (FontManager.instance == None):
             gFnt = FontManager()
         
@@ -206,21 +482,71 @@ class FontManager:
 
     @staticmethod
     def load(path, size, name):
+        &#34;&#34;&#34;Loads a font from the hard drive.
+        
+        Arguments:
+            path {string} -- Filename of the font file. Format of font is defined by the file extension (.json for VectorFonts, everything else for any font supported by Pygame)
+
+            size {float} -- Size or scale of the font to load
+
+            name {string} -- Internal name of the font, so you can use it on the static draw text calls.
+        
+        Returns:
+            [TTFont / VectorFont] -- Loaded font
+        &#34;&#34;&#34;
         return FontManager.get_instance()._load(path, size, name)
 
     @staticmethod
     def write(screen, name, str, position, color, scale = 1, width_scale = 1, spacing_scale = 1):
+        &#34;&#34;&#34;Writes the given text on the screen.
+        
+        Arguments:
+            screen {int} -- Display surface handler
+
+            name {string} -- Name of the font to use to draw
+
+            str {string} -- String to display
+
+            position {tuple(x,y)} -- Position of the text in screen coordinates
+
+            color {tuple(R,G,B,A)} -- Color of the text
+     
+            scale {float} -- Scale of the text (only applicable on VectorFonts) (default: {1})
+            
+            width_scale {float} -- Width scale of the text (only applicable on VectorFonts) (default: {1})
+            
+            spacing_scale {float} -- Spacing scale of the text (only applicable on VectorFonts) (default: {1})
+        &#34;&#34;&#34;
         return FontManager.get_instance()._write(screen, name, str, position, color, scale, width_scale, spacing_scale)
 
     @staticmethod
     def write_center(screen, name, str, position, color, scale = 1, width_scale = 1, spacing_scale = 1):
+        &#34;&#34;&#34;Writes the given text on the screen, centered on the given position.
+        
+        Arguments:
+            screen {int} -- Display surface handler
+
+            name {string} -- Name of the font to use to draw
+
+            str {string} -- String to display
+
+            position {tuple(x,y)} -- Position of the text in screen coordinates
+
+            color {tuple(R,G,B,A)} -- Color of the text
+        
+            scale {float} -- Scale of the text (only applicable on VectorFonts) (default: {1})
+
+            width_scale {float} -- Width scale of the text (only applicable on VectorFonts) (default: {1})
+            
+            spacing_scale {float} -- Spacing scale of the text (only applicable on VectorFonts) (default: {1})
+        &#34;&#34;&#34;
         return FontManager.get_instance()._write_center(screen, name, str, position, color, scale, width_scale, spacing_scale)</code></pre>
 </details>
 <h3>Class variables</h3>
 <dl>
 <dt id="Pysteroids.Engine.FontManager.FontManager.instance"><code class="name">var <span class="ident">instance</span></code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Singleton object</p></section>
 </dd>
 </dl>
 <h3>Static methods</h3>
@@ -229,11 +555,21 @@ class FontManager:
 <span>def <span class="ident">get_instance</span></span>(<span>)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Retrieves the singleton instance of the FontManager, or initializes one if there isn't one.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><a title="Pysteroids.Engine.FontManager.FontManager" href="#Pysteroids.Engine.FontManager.FontManager"><code>FontManager</code></a> &ndash; <code>Singleton</code> of <a title="Pysteroids.Engine.FontManager.FontManager" href="#Pysteroids.Engine.FontManager.FontManager"><code>FontManager</code></a></dt>
+<dd>&nbsp;</dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">@staticmethod
 def get_instance():
+    &#34;&#34;&#34;Retrieves the singleton instance of the FontManager, or initializes one if there isn&#39;t one.
+    
+    Returns:
+        FontManager -- Singleton of FontManager
+    &#34;&#34;&#34;
     if (FontManager.instance == None):
         gFnt = FontManager()
     
@@ -244,11 +580,29 @@ def get_instance():
 <span>def <span class="ident">load</span></span>(<span>path, size, name)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Loads a font from the hard drive.</p>
+<h2 id="arguments">Arguments</h2>
+<p>path {string} &ndash; Filename of the font file. Format of font is defined by the file extension (.json for VectorFonts, everything else for any font supported by Pygame)</p>
+<p>size {float} &ndash; Size or scale of the font to load</p>
+<p>name {string} &ndash; Internal name of the font, so you can use it on the static draw text calls.</p>
+<h2 id="returns">Returns</h2>
+<p>[TTFont / VectorFont] &ndash; Loaded font</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">@staticmethod
 def load(path, size, name):
+    &#34;&#34;&#34;Loads a font from the hard drive.
+    
+    Arguments:
+        path {string} -- Filename of the font file. Format of font is defined by the file extension (.json for VectorFonts, everything else for any font supported by Pygame)
+
+        size {float} -- Size or scale of the font to load
+
+        name {string} -- Internal name of the font, so you can use it on the static draw text calls.
+    
+    Returns:
+        [TTFont / VectorFont] -- Loaded font
+    &#34;&#34;&#34;
     return FontManager.get_instance()._load(path, size, name)</code></pre>
 </details>
 </dd>
@@ -256,11 +610,39 @@ def load(path, size, name):
 <span>def <span class="ident">write</span></span>(<span>screen, name, str, position, color, scale=1, width_scale=1, spacing_scale=1)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Writes the given text on the screen.</p>
+<h2 id="arguments">Arguments</h2>
+<p>screen {int} &ndash; Display surface handler</p>
+<p>name {string} &ndash; Name of the font to use to draw</p>
+<p>str {string} &ndash; String to display</p>
+<p>position {tuple(x,y)} &ndash; Position of the text in screen coordinates</p>
+<p>color {tuple(R,G,B,A)} &ndash; Color of the text</p>
+<p>scale {float} &ndash; Scale of the text (only applicable on VectorFonts) (default: {1})</p>
+<p>width_scale {float} &ndash; Width scale of the text (only applicable on VectorFonts) (default: {1})</p>
+<p>spacing_scale {float} &ndash; Spacing scale of the text (only applicable on VectorFonts) (default: {1})</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">@staticmethod
 def write(screen, name, str, position, color, scale = 1, width_scale = 1, spacing_scale = 1):
+    &#34;&#34;&#34;Writes the given text on the screen.
+    
+    Arguments:
+        screen {int} -- Display surface handler
+
+        name {string} -- Name of the font to use to draw
+
+        str {string} -- String to display
+
+        position {tuple(x,y)} -- Position of the text in screen coordinates
+
+        color {tuple(R,G,B,A)} -- Color of the text
+ 
+        scale {float} -- Scale of the text (only applicable on VectorFonts) (default: {1})
+        
+        width_scale {float} -- Width scale of the text (only applicable on VectorFonts) (default: {1})
+        
+        spacing_scale {float} -- Spacing scale of the text (only applicable on VectorFonts) (default: {1})
+    &#34;&#34;&#34;
     return FontManager.get_instance()._write(screen, name, str, position, color, scale, width_scale, spacing_scale)</code></pre>
 </details>
 </dd>
@@ -268,11 +650,39 @@ def write(screen, name, str, position, color, scale = 1, width_scale = 1, spacin
 <span>def <span class="ident">write_center</span></span>(<span>screen, name, str, position, color, scale=1, width_scale=1, spacing_scale=1)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Writes the given text on the screen, centered on the given position.</p>
+<h2 id="arguments">Arguments</h2>
+<p>screen {int} &ndash; Display surface handler</p>
+<p>name {string} &ndash; Name of the font to use to draw</p>
+<p>str {string} &ndash; String to display</p>
+<p>position {tuple(x,y)} &ndash; Position of the text in screen coordinates</p>
+<p>color {tuple(R,G,B,A)} &ndash; Color of the text</p>
+<p>scale {float} &ndash; Scale of the text (only applicable on VectorFonts) (default: {1})</p>
+<p>width_scale {float} &ndash; Width scale of the text (only applicable on VectorFonts) (default: {1})</p>
+<p>spacing_scale {float} &ndash; Spacing scale of the text (only applicable on VectorFonts) (default: {1})</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">@staticmethod
 def write_center(screen, name, str, position, color, scale = 1, width_scale = 1, spacing_scale = 1):
+    &#34;&#34;&#34;Writes the given text on the screen, centered on the given position.
+    
+    Arguments:
+        screen {int} -- Display surface handler
+
+        name {string} -- Name of the font to use to draw
+
+        str {string} -- String to display
+
+        position {tuple(x,y)} -- Position of the text in screen coordinates
+
+        color {tuple(R,G,B,A)} -- Color of the text
+    
+        scale {float} -- Scale of the text (only applicable on VectorFonts) (default: {1})
+
+        width_scale {float} -- Width scale of the text (only applicable on VectorFonts) (default: {1})
+        
+        spacing_scale {float} -- Spacing scale of the text (only applicable on VectorFonts) (default: {1})
+    &#34;&#34;&#34;
     return FontManager.get_instance()._write_center(screen, name, str, position, color, scale, width_scale, spacing_scale)</code></pre>
 </details>
 </dd>
@@ -283,14 +693,41 @@ def write_center(screen, name, str, position, color, scale = 1, width_scale = 1,
 <span>(</span><span>path, size)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>True type font, supported by Pygame</p>
+<h2 id="arguments">Arguments</h2>
+<p>path {string} &ndash; Path to the true type font to load</p>
+<p>size {float} &ndash; Size of the font to load.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">class TTFont:
+    &#34;&#34;&#34;True type font, supported by Pygame&#34;&#34;&#34;
     def __init__(self, path, size):
+        &#34;&#34;&#34;        
+        Arguments:
+            path {string} -- Path to the true type font to load
+
+            size {float} -- Size of the font to load.
+        &#34;&#34;&#34;
         self.fnt = pygame.freetype.Font(path, size)
 
     def render_to(self, screen, position, str, color, scale, width_scale, spacing_scale):
+        &#34;&#34;&#34;Renders the given text on the screen.
+        
+        Arguments:
+            screen {int} -- Display surface handle
+
+            position {tuple(x,y)} -- Position to render text, in pixel coordinates
+
+            str {string} -- Text to display
+
+            color {tuple(R,G,B,A)} -- Color of the text
+
+            scale {float} -- Scale of the text to display. Ignored in true type fonts
+
+            width_scale {float} -- Width scale of the text to display. Ignored in true type fonts
+
+            spacing_scale {float} -- Spacing scale of the text to display. Ignored in true type fonts
+        &#34;&#34;&#34;
         self.fnt.render_to(screen, position, str, color)</code></pre>
 </details>
 <h3>Methods</h3>
@@ -299,10 +736,35 @@ def write_center(screen, name, str, position, color, scale = 1, width_scale = 1,
 <span>def <span class="ident">render_to</span></span>(<span>self, screen, position, str, color, scale, width_scale, spacing_scale)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Renders the given text on the screen.</p>
+<h2 id="arguments">Arguments</h2>
+<p>screen {int} &ndash; Display surface handle</p>
+<p>position {tuple(x,y)} &ndash; Position to render text, in pixel coordinates</p>
+<p>str {string} &ndash; Text to display</p>
+<p>color {tuple(R,G,B,A)} &ndash; Color of the text</p>
+<p>scale {float} &ndash; Scale of the text to display. Ignored in true type fonts</p>
+<p>width_scale {float} &ndash; Width scale of the text to display. Ignored in true type fonts</p>
+<p>spacing_scale {float} &ndash; Spacing scale of the text to display. Ignored in true type fonts</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def render_to(self, screen, position, str, color, scale, width_scale, spacing_scale):
+    &#34;&#34;&#34;Renders the given text on the screen.
+    
+    Arguments:
+        screen {int} -- Display surface handle
+
+        position {tuple(x,y)} -- Position to render text, in pixel coordinates
+
+        str {string} -- Text to display
+
+        color {tuple(R,G,B,A)} -- Color of the text
+
+        scale {float} -- Scale of the text to display. Ignored in true type fonts
+
+        width_scale {float} -- Width scale of the text to display. Ignored in true type fonts
+
+        spacing_scale {float} -- Spacing scale of the text to display. Ignored in true type fonts
+    &#34;&#34;&#34;
     self.fnt.render_to(screen, position, str, color)</code></pre>
 </details>
 </dd>
@@ -312,11 +774,14 @@ def write_center(screen, name, str, position, color, scale = 1, width_scale = 1,
 <span>class <span class="ident">VectorFont</span></span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Vector type font</p>
+<p>Initializes an empty vector font</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">class VectorFont:
+    &#34;&#34;&#34;Vector type font&#34;&#34;&#34;
     def __init__(self):
+        &#34;&#34;&#34;Initializes an empty vector font&#34;&#34;&#34;
         self.characters = dict()
         self.size_x = self.size_y = 0
         self.spacing_x = self.spacing_y = 0
@@ -324,6 +789,23 @@ def write_center(screen, name, str, position, color, scale = 1, width_scale = 1,
         self.lineWidth = 1
 
     def render_at(self, screen, position, str, color, scale, width_scale, spacing_scale):
+        &#34;&#34;&#34;Internal function, renders the given text on the screen.
+        
+        Arguments:
+            screen {int} -- Display surface handle
+
+            position {tuple(x,y)} -- Position to render text, in pixel coordinates
+
+            str {string} -- Text to display
+
+            color {tuple(R,G,B,A)} -- Color of the text
+
+            scale {float} -- Scale of the text to display. 
+
+            width_scale {float} -- Width scale of the text to display. 
+
+            spacing_scale {float} -- Spacing scale of the text to display. 
+        &#34;&#34;&#34;
         currentPos = position
 
         for c in str:
@@ -334,11 +816,45 @@ def write_center(screen, name, str, position, color, scale = 1, width_scale = 1,
             currentPos.x = currentPos.x + (self.size_x + self.spacing_x * spacing_scale) * self.scale * scale
 
     def render_to(self, screen, position, str, color, scale, width_scale, spacing_scale):
+        &#34;&#34;&#34;Renders the given text on the screen. This is the function that should be used to actually display text. 
+        
+        Arguments:
+            screen {int} -- Display surface handle
+
+            position {tuple(x,y)} -- Position to render text, in pixel coordinates
+
+            str {string} -- Text to display
+
+            color {tuple(R,G,B,A)} -- Color of the text
+
+            scale {float} -- Scale of the text to display. 
+
+            width_scale {float} -- Width scale of the text to display. 
+
+            spacing_scale {float} -- Spacing scale of the text to display. 
+        &#34;&#34;&#34;
         currentPos = Vector2(position[0] + self.size_x * 0.5 * self.scale * scale * width_scale, position[1] + self.size_y * 0.5 * self.scale * scale)
 
         self.render_at(screen, currentPos, str, color, scale, width_scale, spacing_scale)
 
     def render_to_centered(self, screen, position, str, color, scale, width_scale, spacing_scale):
+        &#34;&#34;&#34;Renders the given text on the screen, centered.
+        
+        Arguments:
+            screen {int} -- Display surface handle
+
+            position {tuple(x,y)} -- Position to render text, in pixel coordinates
+
+            str {string} -- Text to display
+
+            color {tuple(R,G,B,A)} -- Color of the text
+
+            scale {float} -- Scale of the text to display. 
+
+            width_scale {float} -- Width scale of the text to display. 
+
+            spacing_scale {float} -- Spacing scale of the text to display. 
+        &#34;&#34;&#34;
         size = len(str) * self.size_x + (len(str) - 1) * self.spacing_x * spacing_scale
 
         currentPos = Vector2(position[0] - (size ) * 0.5 * self.scale * scale, position[1] + self.size_y * 0.5 * self.scale * scale)
@@ -347,6 +863,30 @@ def write_center(screen, name, str, position, color, scale = 1, width_scale = 1,
 
     @staticmethod
     def load(filename, size):
+        &#34;&#34;&#34;Loads a vector font from a JSON file.
+        
+        File is standard JSON with the following structure:
+        ```
+        {
+            Size: Tuple with the size of the font
+            Spacing: Tuple with the spacing between lines (vector fonts are monospaced)
+            Characters.....
+        }
+        ```
+
+        Characters are defined as follows:
+        ```
+        &#34;&lt;character&gt;: { * Definition as in a normal WireMesh (check WireMesh documentation for format) * }
+        ```
+        
+        Arguments:
+            filename {string} -- Filename of file that contains the vector font.
+
+            size {float} -- Scale of the font loaded (can be overwriten in individual calls)
+        
+        Returns:
+            VectorFont -- Loaded font
+        &#34;&#34;&#34;
         fnt = VectorFont()
         fnt.scale = size
         fnt.lineWidth = size
@@ -380,11 +920,53 @@ def write_center(screen, name, str, position, color, scale = 1, width_scale = 1,
 <span>def <span class="ident">load</span></span>(<span>filename, size)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Loads a vector font from a JSON file.</p>
+<p>File is standard JSON with the following structure:</p>
+<pre><code>{
+    Size: Tuple with the size of the font
+    Spacing: Tuple with the spacing between lines (vector fonts are monospaced)
+    Characters.....
+}
+</code></pre>
+<p>Characters are defined as follows:</p>
+<pre><code>&quot;&lt;character&gt;: { * Definition as in a normal WireMesh (check WireMesh documentation for format) * }
+</code></pre>
+<h2 id="arguments">Arguments</h2>
+<p>filename {string} &ndash; Filename of file that contains the vector font.</p>
+<p>size {float} &ndash; Scale of the font loaded (can be overwriten in individual calls)</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>VectorFont</code> &ndash; <code>Loaded</code> <code>font</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">@staticmethod
 def load(filename, size):
+    &#34;&#34;&#34;Loads a vector font from a JSON file.
+    
+    File is standard JSON with the following structure:
+    ```
+    {
+        Size: Tuple with the size of the font
+        Spacing: Tuple with the spacing between lines (vector fonts are monospaced)
+        Characters.....
+    }
+    ```
+
+    Characters are defined as follows:
+    ```
+    &#34;&lt;character&gt;: { * Definition as in a normal WireMesh (check WireMesh documentation for format) * }
+    ```
+    
+    Arguments:
+        filename {string} -- Filename of file that contains the vector font.
+
+        size {float} -- Scale of the font loaded (can be overwriten in individual calls)
+    
+    Returns:
+        VectorFont -- Loaded font
+    &#34;&#34;&#34;
     fnt = VectorFont()
     fnt.scale = size
     fnt.lineWidth = size
@@ -420,10 +1002,35 @@ def load(filename, size):
 <span>def <span class="ident">render_at</span></span>(<span>self, screen, position, str, color, scale, width_scale, spacing_scale)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Internal function, renders the given text on the screen.</p>
+<h2 id="arguments">Arguments</h2>
+<p>screen {int} &ndash; Display surface handle</p>
+<p>position {tuple(x,y)} &ndash; Position to render text, in pixel coordinates</p>
+<p>str {string} &ndash; Text to display</p>
+<p>color {tuple(R,G,B,A)} &ndash; Color of the text</p>
+<p>scale {float} &ndash; Scale of the text to display. </p>
+<p>width_scale {float} &ndash; Width scale of the text to display. </p>
+<p>spacing_scale {float} &ndash; Spacing scale of the text to display.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def render_at(self, screen, position, str, color, scale, width_scale, spacing_scale):
+    &#34;&#34;&#34;Internal function, renders the given text on the screen.
+    
+    Arguments:
+        screen {int} -- Display surface handle
+
+        position {tuple(x,y)} -- Position to render text, in pixel coordinates
+
+        str {string} -- Text to display
+
+        color {tuple(R,G,B,A)} -- Color of the text
+
+        scale {float} -- Scale of the text to display. 
+
+        width_scale {float} -- Width scale of the text to display. 
+
+        spacing_scale {float} -- Spacing scale of the text to display. 
+    &#34;&#34;&#34;
     currentPos = position
 
     for c in str:
@@ -438,10 +1045,35 @@ def load(filename, size):
 <span>def <span class="ident">render_to</span></span>(<span>self, screen, position, str, color, scale, width_scale, spacing_scale)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Renders the given text on the screen. This is the function that should be used to actually display text. </p>
+<h2 id="arguments">Arguments</h2>
+<p>screen {int} &ndash; Display surface handle</p>
+<p>position {tuple(x,y)} &ndash; Position to render text, in pixel coordinates</p>
+<p>str {string} &ndash; Text to display</p>
+<p>color {tuple(R,G,B,A)} &ndash; Color of the text</p>
+<p>scale {float} &ndash; Scale of the text to display. </p>
+<p>width_scale {float} &ndash; Width scale of the text to display. </p>
+<p>spacing_scale {float} &ndash; Spacing scale of the text to display.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def render_to(self, screen, position, str, color, scale, width_scale, spacing_scale):
+    &#34;&#34;&#34;Renders the given text on the screen. This is the function that should be used to actually display text. 
+    
+    Arguments:
+        screen {int} -- Display surface handle
+
+        position {tuple(x,y)} -- Position to render text, in pixel coordinates
+
+        str {string} -- Text to display
+
+        color {tuple(R,G,B,A)} -- Color of the text
+
+        scale {float} -- Scale of the text to display. 
+
+        width_scale {float} -- Width scale of the text to display. 
+
+        spacing_scale {float} -- Spacing scale of the text to display. 
+    &#34;&#34;&#34;
     currentPos = Vector2(position[0] + self.size_x * 0.5 * self.scale * scale * width_scale, position[1] + self.size_y * 0.5 * self.scale * scale)
 
     self.render_at(screen, currentPos, str, color, scale, width_scale, spacing_scale)</code></pre>
@@ -451,10 +1083,35 @@ def load(filename, size):
 <span>def <span class="ident">render_to_centered</span></span>(<span>self, screen, position, str, color, scale, width_scale, spacing_scale)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Renders the given text on the screen, centered.</p>
+<h2 id="arguments">Arguments</h2>
+<p>screen {int} &ndash; Display surface handle</p>
+<p>position {tuple(x,y)} &ndash; Position to render text, in pixel coordinates</p>
+<p>str {string} &ndash; Text to display</p>
+<p>color {tuple(R,G,B,A)} &ndash; Color of the text</p>
+<p>scale {float} &ndash; Scale of the text to display. </p>
+<p>width_scale {float} &ndash; Width scale of the text to display. </p>
+<p>spacing_scale {float} &ndash; Spacing scale of the text to display.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def render_to_centered(self, screen, position, str, color, scale, width_scale, spacing_scale):
+    &#34;&#34;&#34;Renders the given text on the screen, centered.
+    
+    Arguments:
+        screen {int} -- Display surface handle
+
+        position {tuple(x,y)} -- Position to render text, in pixel coordinates
+
+        str {string} -- Text to display
+
+        color {tuple(R,G,B,A)} -- Color of the text
+
+        scale {float} -- Scale of the text to display. 
+
+        width_scale {float} -- Width scale of the text to display. 
+
+        spacing_scale {float} -- Spacing scale of the text to display. 
+    &#34;&#34;&#34;
     size = len(str) * self.size_x + (len(str) - 1) * self.spacing_x * spacing_scale
 
     currentPos = Vector2(position[0] - (size ) * 0.5 * self.scale * scale, position[1] + self.size_y * 0.5 * self.scale * scale)

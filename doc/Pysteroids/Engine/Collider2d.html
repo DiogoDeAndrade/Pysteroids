@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.6.3" />
 <title>Pysteroids.Engine.Collider2d API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="Bounding surface classes" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
@@ -20,33 +20,66 @@
 <h1 class="title">Module <code>Pysteroids.Engine.Collider2d</code></h1>
 </header>
 <section id="section-intro">
+<p>Bounding surface classes</p>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">import enum
+<pre><code class="python">&#34;&#34;&#34;Bounding surface classes&#34;&#34;&#34;
+import enum
 from pygame import Vector2
 
 class ColliderType2d(enum.Enum): 
+    &#34;&#34;&#34;Type of collider. Currently only circle is supported.&#34;&#34;&#34;
     circle = 0
+    &#34;&#34;&#34;Collider is a circle&#34;&#34;&#34;
 
 class Collision2d:
+    &#34;&#34;&#34;Structure to hold the result of a collision.
+
+    It stores two objects.&#34;&#34;&#34;
     def __init__(self, obj1, obj2):
         self.obj1 = obj1
         self.obj2 = obj2
 
 class Collider2d:
+    &#34;&#34;&#34;Collider base class.&#34;&#34;&#34;
+
     def intersects(self, other_collider):
+        &#34;&#34;&#34;Checks collision between this collider and another one.
+        
+        Arguments:
+            other_collider {Collider2d} -- The other collider to detect collision with
+        
+        Returns:
+            bool -- True if there is a collision, false otherwise
+        &#34;&#34;&#34;
         if (self.type == ColliderType2d.circle):
             return self.intersects_circle(other_collider)
         
         return False
 
     def intersects_circle(self, other_collider):
+        &#34;&#34;&#34;Checks collision between this circle collider and another one.
+        
+        Arguments:
+            other_collider {Collider2d} -- The other collider to detect collision with
+        
+        Returns:
+            bool -- True if there is a collision, false otherwise
+        &#34;&#34;&#34;
         if (other_collider.type == ColliderType2d.circle):
             return self.intersects_circle_circle(other_collider)
         
         return False
 
     def intersects_circle_circle(self, other_collider):
+        &#34;&#34;&#34;Checks collision between this circle collider and another circle collider.
+        
+        Arguments:
+            other_collider {Circle2d} -- The other circle collider to detect collision with
+        
+        Returns:
+            bool -- True if there is a collision, false otherwise
+        &#34;&#34;&#34;
         vector = (self.position + self.offset) - (other_collider.position + other_collider.offset)
         dist = vector.magnitude()
 
@@ -57,7 +90,14 @@ class Collider2d:
 
 
 class Circle2d(Collider2d):
+    &#34;&#34;&#34;Circle collider class&#34;&#34;&#34;
     def __init__(self, offset, radius):
+        &#34;&#34;&#34;        
+        Arguments:
+            offset {Vector2} -- Center offset relative to the owner&#39;s pivot
+            
+            radius {float} -- Radius of the circle
+        &#34;&#34;&#34;
         self.type = ColliderType2d.circle
         self.radius = radius
         self.offset = offset
@@ -80,11 +120,21 @@ class Circle2d(Collider2d):
 <span>(</span><span>offset, radius)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Circle collider class</p>
+<h2 id="arguments">Arguments</h2>
+<p>offset {Vector2} &ndash; Center offset relative to the owner's pivot</p>
+<p>radius {float} &ndash; Radius of the circle</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">class Circle2d(Collider2d):
+    &#34;&#34;&#34;Circle collider class&#34;&#34;&#34;
     def __init__(self, offset, radius):
+        &#34;&#34;&#34;        
+        Arguments:
+            offset {Vector2} -- Center offset relative to the owner&#39;s pivot
+            
+            radius {float} -- Radius of the circle
+        &#34;&#34;&#34;
         self.type = ColliderType2d.circle
         self.radius = radius
         self.offset = offset
@@ -94,29 +144,65 @@ class Circle2d(Collider2d):
 <ul class="hlist">
 <li><a title="Pysteroids.Engine.Collider2d.Collider2d" href="#Pysteroids.Engine.Collider2d.Collider2d">Collider2d</a></li>
 </ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="Pysteroids.Engine.Collider2d.Collider2d" href="#Pysteroids.Engine.Collider2d.Collider2d">Collider2d</a></b></code>:
+<ul class="hlist">
+<li><code><a title="Pysteroids.Engine.Collider2d.Collider2d.intersects" href="#Pysteroids.Engine.Collider2d.Collider2d.intersects">intersects</a></code></li>
+<li><code><a title="Pysteroids.Engine.Collider2d.Collider2d.intersects_circle" href="#Pysteroids.Engine.Collider2d.Collider2d.intersects_circle">intersects_circle</a></code></li>
+<li><code><a title="Pysteroids.Engine.Collider2d.Collider2d.intersects_circle_circle" href="#Pysteroids.Engine.Collider2d.Collider2d.intersects_circle_circle">intersects_circle_circle</a></code></li>
+</ul>
+</li>
+</ul>
 </dd>
 <dt id="Pysteroids.Engine.Collider2d.Collider2d"><code class="flex name class">
 <span>class <span class="ident">Collider2d</span></span>
 <span>(</span><span>*args, **kwargs)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Collider base class.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">class Collider2d:
+    &#34;&#34;&#34;Collider base class.&#34;&#34;&#34;
+
     def intersects(self, other_collider):
+        &#34;&#34;&#34;Checks collision between this collider and another one.
+        
+        Arguments:
+            other_collider {Collider2d} -- The other collider to detect collision with
+        
+        Returns:
+            bool -- True if there is a collision, false otherwise
+        &#34;&#34;&#34;
         if (self.type == ColliderType2d.circle):
             return self.intersects_circle(other_collider)
         
         return False
 
     def intersects_circle(self, other_collider):
+        &#34;&#34;&#34;Checks collision between this circle collider and another one.
+        
+        Arguments:
+            other_collider {Collider2d} -- The other collider to detect collision with
+        
+        Returns:
+            bool -- True if there is a collision, false otherwise
+        &#34;&#34;&#34;
         if (other_collider.type == ColliderType2d.circle):
             return self.intersects_circle_circle(other_collider)
         
         return False
 
     def intersects_circle_circle(self, other_collider):
+        &#34;&#34;&#34;Checks collision between this circle collider and another circle collider.
+        
+        Arguments:
+            other_collider {Circle2d} -- The other circle collider to detect collision with
+        
+        Returns:
+            bool -- True if there is a collision, false otherwise
+        &#34;&#34;&#34;
         vector = (self.position + self.offset) - (other_collider.position + other_collider.offset)
         dist = vector.magnitude()
 
@@ -135,10 +221,25 @@ class Circle2d(Collider2d):
 <span>def <span class="ident">intersects</span></span>(<span>self, other_collider)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Checks collision between this collider and another one.</p>
+<h2 id="arguments">Arguments</h2>
+<p>other_collider {Collider2d} &ndash; The other collider to detect collision with</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>bool</code> &ndash; <code>True</code> <code>if</code> <code>there</code> <code>is</code> <code>a</code> <code>collision</code>, <code>false</code> <code>otherwise</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def intersects(self, other_collider):
+    &#34;&#34;&#34;Checks collision between this collider and another one.
+    
+    Arguments:
+        other_collider {Collider2d} -- The other collider to detect collision with
+    
+    Returns:
+        bool -- True if there is a collision, false otherwise
+    &#34;&#34;&#34;
     if (self.type == ColliderType2d.circle):
         return self.intersects_circle(other_collider)
     
@@ -149,10 +250,25 @@ class Circle2d(Collider2d):
 <span>def <span class="ident">intersects_circle</span></span>(<span>self, other_collider)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Checks collision between this circle collider and another one.</p>
+<h2 id="arguments">Arguments</h2>
+<p>other_collider {Collider2d} &ndash; The other collider to detect collision with</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>bool</code> &ndash; <code>True</code> <code>if</code> <code>there</code> <code>is</code> <code>a</code> <code>collision</code>, <code>false</code> <code>otherwise</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def intersects_circle(self, other_collider):
+    &#34;&#34;&#34;Checks collision between this circle collider and another one.
+    
+    Arguments:
+        other_collider {Collider2d} -- The other collider to detect collision with
+    
+    Returns:
+        bool -- True if there is a collision, false otherwise
+    &#34;&#34;&#34;
     if (other_collider.type == ColliderType2d.circle):
         return self.intersects_circle_circle(other_collider)
     
@@ -163,10 +279,25 @@ class Circle2d(Collider2d):
 <span>def <span class="ident">intersects_circle_circle</span></span>(<span>self, other_collider)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Checks collision between this circle collider and another circle collider.</p>
+<h2 id="arguments">Arguments</h2>
+<p>other_collider {Circle2d} &ndash; The other circle collider to detect collision with</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>bool</code> &ndash; <code>True</code> <code>if</code> <code>there</code> <code>is</code> <code>a</code> <code>collision</code>, <code>false</code> <code>otherwise</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def intersects_circle_circle(self, other_collider):
+    &#34;&#34;&#34;Checks collision between this circle collider and another circle collider.
+    
+    Arguments:
+        other_collider {Circle2d} -- The other circle collider to detect collision with
+    
+    Returns:
+        bool -- True if there is a collision, false otherwise
+    &#34;&#34;&#34;
     vector = (self.position + self.offset) - (other_collider.position + other_collider.offset)
     dist = vector.magnitude()
 
@@ -183,11 +314,13 @@ class Circle2d(Collider2d):
 <span>(</span><span>*args, **kwargs)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>An enumeration.</p></section>
+<section class="desc"><p>Type of collider. Currently only circle is supported.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">class ColliderType2d(enum.Enum): 
-    circle = 0</code></pre>
+    &#34;&#34;&#34;Type of collider. Currently only circle is supported.&#34;&#34;&#34;
+    circle = 0
+    &#34;&#34;&#34;Collider is a circle&#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -197,7 +330,7 @@ class Circle2d(Collider2d):
 <dl>
 <dt id="Pysteroids.Engine.Collider2d.ColliderType2d.circle"><code class="name">var <span class="ident">circle</span></code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Collider is a circle</p></section>
 </dd>
 </dl>
 </dd>
@@ -206,10 +339,14 @@ class Circle2d(Collider2d):
 <span>(</span><span>obj1, obj2)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Structure to hold the result of a collision.</p>
+<p>It stores two objects.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">class Collision2d:
+    &#34;&#34;&#34;Structure to hold the result of a collision.
+
+    It stores two objects.&#34;&#34;&#34;
     def __init__(self, obj1, obj2):
         self.obj1 = obj1
         self.obj2 = obj2</code></pre>

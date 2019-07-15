@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.6.3" />
 <title>Pysteroids.Engine.Color API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="Color helper class and functions" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
@@ -20,24 +20,59 @@
 <h1 class="title">Module <code>Pysteroids.Engine.Color</code></h1>
 </header>
 <section id="section-intro">
+<p>Color helper class and functions</p>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">class Color:
+<pre><code class="python">&#34;&#34;&#34;Color helper class and functions&#34;&#34;&#34;
+
+class Color:
+    &#34;&#34;&#34;Color class. 
+
+    It stores RGBA values as floats, in a range from 0 to 1.&#34;&#34;&#34;
     def __init__(self, r, g, b, a):
+        &#34;&#34;&#34;Creates a new color
+        
+        Arguments:
+            r {float} -- Red component, [0..1]
+
+            g {float} -- Green component, [0..1]
+
+            b {float} -- Blue component, [0..1]
+
+            a {float} -- Alpha component, [0..1]
+        &#34;&#34;&#34;
         self.r = r
         self.g = g
         self.b = b
         self.a = a
 
     def tuple(self):
+        &#34;&#34;&#34;Returns a tuple version of the color value, for use with Pygame.
+
+        For example, tuple(Color(0, 0.5, 1.0, 1)) = (0, 127, 255, 255)
+        &#34;&#34;&#34;
         return (self.r * 255, self.g * 255, self.b * 255, self.a * 255)
 
     @staticmethod
     def from_tuple(t):
+        &#34;&#34;&#34;Creates a new color from a tuple.
+
+        For example, Color.from_tuple((0, 127, 255, 255) == Color(0, 0.5, 1.0, 1)
+        &#34;&#34;&#34;
         return Color(t[0] / 255.0, t[1] / 255.0, t[2] / 255.0, t[3] / 255.0)
 
     @staticmethod
     def interpolate_with_array(colors, t):
+        &#34;&#34;&#34;Returns a color given an array that stores a gradient, for a specific parametric t.
+        
+        Arguments:
+            colors {Color[]} -- Array that stores the gradient. The array assumes the elements are evenly spaced in parametric space.
+
+            t {float} -- Parametric t that describes how far in the gradient to sample. If t = 0, returns first element of the gradient array, if t = 1, returns the last element of the gradient array. Anything in between gets interpolated.
+        
+        Returns:
+            Color -- Sampled color, interpolated if necessary.
+        &#34;&#34;&#34;
         l = len(colors)
         range = 1.0 / l
         idx1 = (int)(t / range)
@@ -59,6 +94,16 @@
 
     @staticmethod
     def interpolate(c1, c2, t):
+        &#34;&#34;&#34;Interpolates between the given colors.
+        
+        Arguments:
+            c1 {Color} -- Start color
+            c2 {Color} -- End color
+            t {float} -- Parametric t. if t = 0, returns c1, if t = 1, returns c2, anything in between is interpolated.
+        
+        Returns:
+            Color -- Interpolated color.
+        &#34;&#34;&#34;
         return Color((1-t) * c1.r + t * c2.r,
                      (1-t) * c1.g + t * c2.g,
                      (1-t) * c1.b + t * c2.b,
@@ -79,25 +124,64 @@
 <span>(</span><span>r, g, b, a)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Color class. </p>
+<p>It stores RGBA values as floats, in a range from 0 to 1.</p>
+<p>Creates a new color</p>
+<h2 id="arguments">Arguments</h2>
+<p>r {float} &ndash; Red component, [0..1]</p>
+<p>g {float} &ndash; Green component, [0..1]</p>
+<p>b {float} &ndash; Blue component, [0..1]</p>
+<p>a {float} &ndash; Alpha component, [0..1]</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">class Color:
+    &#34;&#34;&#34;Color class. 
+
+    It stores RGBA values as floats, in a range from 0 to 1.&#34;&#34;&#34;
     def __init__(self, r, g, b, a):
+        &#34;&#34;&#34;Creates a new color
+        
+        Arguments:
+            r {float} -- Red component, [0..1]
+
+            g {float} -- Green component, [0..1]
+
+            b {float} -- Blue component, [0..1]
+
+            a {float} -- Alpha component, [0..1]
+        &#34;&#34;&#34;
         self.r = r
         self.g = g
         self.b = b
         self.a = a
 
     def tuple(self):
+        &#34;&#34;&#34;Returns a tuple version of the color value, for use with Pygame.
+
+        For example, tuple(Color(0, 0.5, 1.0, 1)) = (0, 127, 255, 255)
+        &#34;&#34;&#34;
         return (self.r * 255, self.g * 255, self.b * 255, self.a * 255)
 
     @staticmethod
     def from_tuple(t):
+        &#34;&#34;&#34;Creates a new color from a tuple.
+
+        For example, Color.from_tuple((0, 127, 255, 255) == Color(0, 0.5, 1.0, 1)
+        &#34;&#34;&#34;
         return Color(t[0] / 255.0, t[1] / 255.0, t[2] / 255.0, t[3] / 255.0)
 
     @staticmethod
     def interpolate_with_array(colors, t):
+        &#34;&#34;&#34;Returns a color given an array that stores a gradient, for a specific parametric t.
+        
+        Arguments:
+            colors {Color[]} -- Array that stores the gradient. The array assumes the elements are evenly spaced in parametric space.
+
+            t {float} -- Parametric t that describes how far in the gradient to sample. If t = 0, returns first element of the gradient array, if t = 1, returns the last element of the gradient array. Anything in between gets interpolated.
+        
+        Returns:
+            Color -- Sampled color, interpolated if necessary.
+        &#34;&#34;&#34;
         l = len(colors)
         range = 1.0 / l
         idx1 = (int)(t / range)
@@ -119,6 +203,16 @@
 
     @staticmethod
     def interpolate(c1, c2, t):
+        &#34;&#34;&#34;Interpolates between the given colors.
+        
+        Arguments:
+            c1 {Color} -- Start color
+            c2 {Color} -- End color
+            t {float} -- Parametric t. if t = 0, returns c1, if t = 1, returns c2, anything in between is interpolated.
+        
+        Returns:
+            Color -- Interpolated color.
+        &#34;&#34;&#34;
         return Color((1-t) * c1.r + t * c2.r,
                      (1-t) * c1.g + t * c2.g,
                      (1-t) * c1.b + t * c2.b,
@@ -130,11 +224,16 @@
 <span>def <span class="ident">from_tuple</span></span>(<span>t)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Creates a new color from a tuple.</p>
+<p>For example, Color.from_tuple((0, 127, 255, 255) == Color(0, 0.5, 1.0, 1)</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">@staticmethod
 def from_tuple(t):
+    &#34;&#34;&#34;Creates a new color from a tuple.
+
+    For example, Color.from_tuple((0, 127, 255, 255) == Color(0, 0.5, 1.0, 1)
+    &#34;&#34;&#34;
     return Color(t[0] / 255.0, t[1] / 255.0, t[2] / 255.0, t[3] / 255.0)</code></pre>
 </details>
 </dd>
@@ -142,11 +241,27 @@ def from_tuple(t):
 <span>def <span class="ident">interpolate</span></span>(<span>c1, c2, t)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Interpolates between the given colors.</p>
+<h2 id="arguments">Arguments</h2>
+<p>c1 {Color} &ndash; Start color
+c2 {Color} &ndash; End color
+t {float} &ndash; Parametric t. if t = 0, returns c1, if t = 1, returns c2, anything in between is interpolated.</p>
+<h2 id="returns">Returns</h2>
+<p>Color &ndash; Interpolated color.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">@staticmethod
 def interpolate(c1, c2, t):
+    &#34;&#34;&#34;Interpolates between the given colors.
+    
+    Arguments:
+        c1 {Color} -- Start color
+        c2 {Color} -- End color
+        t {float} -- Parametric t. if t = 0, returns c1, if t = 1, returns c2, anything in between is interpolated.
+    
+    Returns:
+        Color -- Interpolated color.
+    &#34;&#34;&#34;
     return Color((1-t) * c1.r + t * c2.r,
                  (1-t) * c1.g + t * c2.g,
                  (1-t) * c1.b + t * c2.b,
@@ -157,11 +272,26 @@ def interpolate(c1, c2, t):
 <span>def <span class="ident">interpolate_with_array</span></span>(<span>colors, t)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Returns a color given an array that stores a gradient, for a specific parametric t.</p>
+<h2 id="arguments">Arguments</h2>
+<p>colors {Color[]} &ndash; Array that stores the gradient. The array assumes the elements are evenly spaced in parametric space.</p>
+<p>t {float} &ndash; Parametric t that describes how far in the gradient to sample. If t = 0, returns first element of the gradient array, if t = 1, returns the last element of the gradient array. Anything in between gets interpolated.</p>
+<h2 id="returns">Returns</h2>
+<p>Color &ndash; Sampled color, interpolated if necessary.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">@staticmethod
 def interpolate_with_array(colors, t):
+    &#34;&#34;&#34;Returns a color given an array that stores a gradient, for a specific parametric t.
+    
+    Arguments:
+        colors {Color[]} -- Array that stores the gradient. The array assumes the elements are evenly spaced in parametric space.
+
+        t {float} -- Parametric t that describes how far in the gradient to sample. If t = 0, returns first element of the gradient array, if t = 1, returns the last element of the gradient array. Anything in between gets interpolated.
+    
+    Returns:
+        Color -- Sampled color, interpolated if necessary.
+    &#34;&#34;&#34;
     l = len(colors)
     range = 1.0 / l
     idx1 = (int)(t / range)
@@ -189,10 +319,15 @@ def interpolate_with_array(colors, t):
 <span>def <span class="ident">tuple</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Returns a tuple version of the color value, for use with Pygame.</p>
+<p>For example, tuple(Color(0, 0.5, 1.0, 1)) = (0, 127, 255, 255)</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def tuple(self):
+    &#34;&#34;&#34;Returns a tuple version of the color value, for use with Pygame.
+
+    For example, tuple(Color(0, 0.5, 1.0, 1)) = (0, 127, 255, 255)
+    &#34;&#34;&#34;
     return (self.r * 255, self.g * 255, self.b * 255, self.a * 255)</code></pre>
 </details>
 </dd>

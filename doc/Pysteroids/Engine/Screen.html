@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.6.3" />
 <title>Pysteroids.Engine.Screen API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="Screens are functionality equivelent to a section of your game …" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
@@ -20,20 +20,45 @@
 <h1 class="title">Module <code>Pysteroids.Engine.Screen</code></h1>
 </header>
 <section id="section-intro">
+<p>Screens are functionality equivelent to a section of your game. </p>
+<p>In a normal game, you could have a TitleScreen, a GameplayScreen, a CreditsScreen, etc.</p>
+<p>Each of them would then be implemented as a separate Screen."</p>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">import time
+<pre><code class="python">&#34;&#34;&#34;Screens are functionality equivelent to a section of your game. 
+
+In a normal game, you could have a TitleScreen, a GameplayScreen, a CreditsScreen, etc.
+
+Each of them would then be implemented as a separate Screen.&#34;
+&#34;&#34;&#34;
+import time
 import pygame
 
 from Engine.SoundManager import *
 
 class Screen:
+    &#34;&#34;&#34;Screen base class&#34;&#34;&#34;
     current = None
+    &#34;&#34;&#34;Currently active screen&#34;&#34;&#34;
     screen = None
+    &#34;&#34;&#34;Current display surface handle&#34;&#34;&#34;
     fullscreen = False
+    &#34;&#34;&#34;Is the game in fullscreen mode?&#34;&#34;&#34;
 
     @staticmethod
     def startup():
+        &#34;&#34;&#34;Initializes the screen system, alongside pygame and other libraries that require initialization.
+
+        By default, the following parameters are used in the inicialization:
+
+        * Audio system uses 16 bit per sample, 2 channels, 44100 Hz, with a 1024 byte buffer (approx. 5 ms delay)
+        
+        * Application icon is fetch from sprites/icon.png
+
+        * Name of the application currently is hardcoded (Pysteroids) - Possible improvement
+
+        * Graphics are double buffered, fullscreen is disabled by default. Resolution is 1280x720.
+        &#34;&#34;&#34;
         pygame.mixer.pre_init(44100, 16, 2, 1024)
         pygame.init()
         logo = pygame.image.load(&#34;sprites/icon.png&#34;)
@@ -49,14 +74,27 @@ class Screen:
         SoundManager.set_global_volume(0.25)
 
     def init(self):
+        &#34;&#34;&#34;Initializes this screen, so it can start running. 
+
+        This is called internally by run() and should not be called explicitely.
+        &#34;&#34;&#34;
         Screen.current = self
         self.running = True
         self.exit_code = 0   
 
     def shutdown(self):
+        &#34;&#34;&#34;Disables this screen.
+
+        This is called internally by run() and should not be called explicitely.
+        &#34;&#34;&#34;
         Screen.current = None
 
     def update(self, delta_time):
+        &#34;&#34;&#34;Updates this screen.
+
+        All screens implement by default LSHIFT+ESCAPE to exit the application, and ALT+RETURN to toggle fullscreen.
+        
+        This is called internally by run() and should not be called explicitely.&#34;&#34;&#34;
         keys = pygame.key.get_pressed()
         if ((keys[pygame.K_ESCAPE]) and (keys[pygame.K_LSHIFT])):
             self.set_exit(-1)
@@ -69,10 +107,25 @@ class Screen:
                 Screen.screen = pygame.display.set_mode((1280, 720), pygame.DOUBLEBUF)
 
     def render(self):
+        &#34;&#34;&#34;Renders this screen.
+        
+        This is called internally by run() and should not be called explicitely.&#34;&#34;&#34;
         pass
 
     def run(self):
-
+        &#34;&#34;&#34;Runs this screen. 
+        
+        This function only returns when Screen.current.set_exit() is called, otherwise it just implements the game loop:
+        ```
+        Process OS events
+        Update screen
+        Render screen
+        Flip backbuffer
+        ```
+        
+        Returns:
+            int -- Value passed to set_exit()
+        &#34;&#34;&#34;
         self.init()
 
         dt = 0
@@ -96,6 +149,11 @@ class Screen:
         return self.exit_code
 
     def set_exit(self, ret):
+        &#34;&#34;&#34;Sets the exit flag of this screen to true, and the exit code to the given value, so break the game loop.
+        
+        Arguments:
+            ret {int} -- Exit code of the screen
+        &#34;&#34;&#34;
         self.exit_code = ret
         self.running = False</code></pre>
 </details>
@@ -114,16 +172,32 @@ class Screen:
 <span>(</span><span>*args, **kwargs)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Screen base class</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">class Screen:
+    &#34;&#34;&#34;Screen base class&#34;&#34;&#34;
     current = None
+    &#34;&#34;&#34;Currently active screen&#34;&#34;&#34;
     screen = None
+    &#34;&#34;&#34;Current display surface handle&#34;&#34;&#34;
     fullscreen = False
+    &#34;&#34;&#34;Is the game in fullscreen mode?&#34;&#34;&#34;
 
     @staticmethod
     def startup():
+        &#34;&#34;&#34;Initializes the screen system, alongside pygame and other libraries that require initialization.
+
+        By default, the following parameters are used in the inicialization:
+
+        * Audio system uses 16 bit per sample, 2 channels, 44100 Hz, with a 1024 byte buffer (approx. 5 ms delay)
+        
+        * Application icon is fetch from sprites/icon.png
+
+        * Name of the application currently is hardcoded (Pysteroids) - Possible improvement
+
+        * Graphics are double buffered, fullscreen is disabled by default. Resolution is 1280x720.
+        &#34;&#34;&#34;
         pygame.mixer.pre_init(44100, 16, 2, 1024)
         pygame.init()
         logo = pygame.image.load(&#34;sprites/icon.png&#34;)
@@ -139,14 +213,27 @@ class Screen:
         SoundManager.set_global_volume(0.25)
 
     def init(self):
+        &#34;&#34;&#34;Initializes this screen, so it can start running. 
+
+        This is called internally by run() and should not be called explicitely.
+        &#34;&#34;&#34;
         Screen.current = self
         self.running = True
         self.exit_code = 0   
 
     def shutdown(self):
+        &#34;&#34;&#34;Disables this screen.
+
+        This is called internally by run() and should not be called explicitely.
+        &#34;&#34;&#34;
         Screen.current = None
 
     def update(self, delta_time):
+        &#34;&#34;&#34;Updates this screen.
+
+        All screens implement by default LSHIFT+ESCAPE to exit the application, and ALT+RETURN to toggle fullscreen.
+        
+        This is called internally by run() and should not be called explicitely.&#34;&#34;&#34;
         keys = pygame.key.get_pressed()
         if ((keys[pygame.K_ESCAPE]) and (keys[pygame.K_LSHIFT])):
             self.set_exit(-1)
@@ -159,10 +246,25 @@ class Screen:
                 Screen.screen = pygame.display.set_mode((1280, 720), pygame.DOUBLEBUF)
 
     def render(self):
+        &#34;&#34;&#34;Renders this screen.
+        
+        This is called internally by run() and should not be called explicitely.&#34;&#34;&#34;
         pass
 
     def run(self):
-
+        &#34;&#34;&#34;Runs this screen. 
+        
+        This function only returns when Screen.current.set_exit() is called, otherwise it just implements the game loop:
+        ```
+        Process OS events
+        Update screen
+        Render screen
+        Flip backbuffer
+        ```
+        
+        Returns:
+            int -- Value passed to set_exit()
+        &#34;&#34;&#34;
         self.init()
 
         dt = 0
@@ -186,6 +288,11 @@ class Screen:
         return self.exit_code
 
     def set_exit(self, ret):
+        &#34;&#34;&#34;Sets the exit flag of this screen to true, and the exit code to the given value, so break the game loop.
+        
+        Arguments:
+            ret {int} -- Exit code of the screen
+        &#34;&#34;&#34;
         self.exit_code = ret
         self.running = False</code></pre>
 </details>
@@ -193,15 +300,15 @@ class Screen:
 <dl>
 <dt id="Pysteroids.Engine.Screen.Screen.current"><code class="name">var <span class="ident">current</span></code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Currently active screen</p></section>
 </dd>
 <dt id="Pysteroids.Engine.Screen.Screen.fullscreen"><code class="name">var <span class="ident">fullscreen</span></code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Is the game in fullscreen mode?</p></section>
 </dd>
 <dt id="Pysteroids.Engine.Screen.Screen.screen"><code class="name">var <span class="ident">screen</span></code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Current display surface handle</p></section>
 </dd>
 </dl>
 <h3>Static methods</h3>
@@ -210,11 +317,38 @@ class Screen:
 <span>def <span class="ident">startup</span></span>(<span>)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Initializes the screen system, alongside pygame and other libraries that require initialization.</p>
+<p>By default, the following parameters are used in the inicialization:</p>
+<ul>
+<li>
+<p>Audio system uses 16 bit per sample, 2 channels, 44100 Hz, with a 1024 byte buffer (approx. 5 ms delay)</p>
+</li>
+<li>
+<p>Application icon is fetch from sprites/icon.png</p>
+</li>
+<li>
+<p>Name of the application currently is hardcoded (Pysteroids) - Possible improvement</p>
+</li>
+<li>
+<p>Graphics are double buffered, fullscreen is disabled by default. Resolution is 1280x720.</p>
+</li>
+</ul></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">@staticmethod
 def startup():
+    &#34;&#34;&#34;Initializes the screen system, alongside pygame and other libraries that require initialization.
+
+    By default, the following parameters are used in the inicialization:
+
+    * Audio system uses 16 bit per sample, 2 channels, 44100 Hz, with a 1024 byte buffer (approx. 5 ms delay)
+    
+    * Application icon is fetch from sprites/icon.png
+
+    * Name of the application currently is hardcoded (Pysteroids) - Possible improvement
+
+    * Graphics are double buffered, fullscreen is disabled by default. Resolution is 1280x720.
+    &#34;&#34;&#34;
     pygame.mixer.pre_init(44100, 16, 2, 1024)
     pygame.init()
     logo = pygame.image.load(&#34;sprites/icon.png&#34;)
@@ -237,10 +371,15 @@ def startup():
 <span>def <span class="ident">init</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Initializes this screen, so it can start running. </p>
+<p>This is called internally by run() and should not be called explicitely.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def init(self):
+    &#34;&#34;&#34;Initializes this screen, so it can start running. 
+
+    This is called internally by run() and should not be called explicitely.
+    &#34;&#34;&#34;
     Screen.current = self
     self.running = True
     self.exit_code = 0   </code></pre>
@@ -250,10 +389,14 @@ def startup():
 <span>def <span class="ident">render</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Renders this screen.</p>
+<p>This is called internally by run() and should not be called explicitely.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def render(self):
+    &#34;&#34;&#34;Renders this screen.
+    
+    This is called internally by run() and should not be called explicitely.&#34;&#34;&#34;
     pass</code></pre>
 </details>
 </dd>
@@ -261,11 +404,34 @@ def startup():
 <span>def <span class="ident">run</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Runs this screen. </p>
+<p>This function only returns when Screen.current.set_exit() is called, otherwise it just implements the game loop:</p>
+<pre><code>Process OS events
+Update screen
+Render screen
+Flip backbuffer
+</code></pre>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>int</code> &ndash; <code>Value</code> <code>passed</code> <code>to</code> <code>set_exit</code>()</dt>
+<dd>&nbsp;</dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def run(self):
-
+    &#34;&#34;&#34;Runs this screen. 
+    
+    This function only returns when Screen.current.set_exit() is called, otherwise it just implements the game loop:
+    ```
+    Process OS events
+    Update screen
+    Render screen
+    Flip backbuffer
+    ```
+    
+    Returns:
+        int -- Value passed to set_exit()
+    &#34;&#34;&#34;
     self.init()
 
     dt = 0
@@ -293,10 +459,17 @@ def startup():
 <span>def <span class="ident">set_exit</span></span>(<span>self, ret)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Sets the exit flag of this screen to true, and the exit code to the given value, so break the game loop.</p>
+<h2 id="arguments">Arguments</h2>
+<p>ret {int} &ndash; Exit code of the screen</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def set_exit(self, ret):
+    &#34;&#34;&#34;Sets the exit flag of this screen to true, and the exit code to the given value, so break the game loop.
+    
+    Arguments:
+        ret {int} -- Exit code of the screen
+    &#34;&#34;&#34;
     self.exit_code = ret
     self.running = False</code></pre>
 </details>
@@ -305,10 +478,15 @@ def startup():
 <span>def <span class="ident">shutdown</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Disables this screen.</p>
+<p>This is called internally by run() and should not be called explicitely.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def shutdown(self):
+    &#34;&#34;&#34;Disables this screen.
+
+    This is called internally by run() and should not be called explicitely.
+    &#34;&#34;&#34;
     Screen.current = None</code></pre>
 </details>
 </dd>
@@ -316,10 +494,17 @@ def startup():
 <span>def <span class="ident">update</span></span>(<span>self, delta_time)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Updates this screen.</p>
+<p>All screens implement by default LSHIFT+ESCAPE to exit the application, and ALT+RETURN to toggle fullscreen.</p>
+<p>This is called internally by run() and should not be called explicitely.</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def update(self, delta_time):
+    &#34;&#34;&#34;Updates this screen.
+
+    All screens implement by default LSHIFT+ESCAPE to exit the application, and ALT+RETURN to toggle fullscreen.
+    
+    This is called internally by run() and should not be called explicitely.&#34;&#34;&#34;
     keys = pygame.key.get_pressed()
     if ((keys[pygame.K_ESCAPE]) and (keys[pygame.K_LSHIFT])):
         self.set_exit(-1)

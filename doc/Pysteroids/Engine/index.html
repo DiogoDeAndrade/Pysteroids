@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.6.3" />
 <title>Pysteroids.Engine API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="Lightweight simple game engine …" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
@@ -20,9 +20,22 @@
 <h1 class="title">Module <code>Pysteroids.Engine</code></h1>
 </header>
 <section id="section-intro">
+<p>Lightweight simple game engine</p>
+<p>This engine takes care of some objects, effects and collision detection.</p>
+<p>The structure is built around the idea of Screens. Screens can have several Scenes, although only one is active.</p>
+<p>Scenes are collection of GameObjects, which in turn implement a update and a render method.</p>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">from Engine.GameObject import *
+<pre><code class="python">&#34;&#34;&#34;Lightweight simple game engine
+
+This engine takes care of some objects, effects and collision detection.
+
+The structure is built around the idea of Screens. Screens can have several Scenes, although only one is active.
+
+Scenes are collection of GameObjects, which in turn implement a update and a render method.
+
+&#34;&#34;&#34;
+from Engine.GameObject import *
 from Engine.Screen import *
 from Engine.Scene import *
 from Engine.WireMesh import *
@@ -36,11 +49,11 @@ from Engine.Collider2d import *</code></pre>
 <dl>
 <dt><code class="name"><a title="Pysteroids.Engine.Collider2d" href="Collider2d.html">Pysteroids.Engine.Collider2d</a></code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Bounding surface classes</p></section>
 </dd>
 <dt><code class="name"><a title="Pysteroids.Engine.Color" href="Color.html">Pysteroids.Engine.Color</a></code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Color helper class and functions</p></section>
 </dd>
 <dt><code class="name"><a title="Pysteroids.Engine.FX" href="FX/index.html">Pysteroids.Engine.FX</a></code></dt>
 <dd>
@@ -48,23 +61,23 @@ from Engine.Collider2d import *</code></pre>
 </dd>
 <dt><code class="name"><a title="Pysteroids.Engine.FontManager" href="FontManager.html">Pysteroids.Engine.FontManager</a></code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Font manager. It stores and uses the loaded fonts …</p></section>
 </dd>
 <dt><code class="name"><a title="Pysteroids.Engine.GameObject" href="GameObject.html">Pysteroids.Engine.GameObject</a></code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>GameObject class …</p></section>
 </dd>
 <dt><code class="name"><a title="Pysteroids.Engine.Scene" href="Scene.html">Pysteroids.Engine.Scene</a></code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Scene class implementation …</p></section>
 </dd>
 <dt><code class="name"><a title="Pysteroids.Engine.Screen" href="Screen.html">Pysteroids.Engine.Screen</a></code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Screens are functionality equivelent to a section of your game …</p></section>
 </dd>
 <dt><code class="name"><a title="Pysteroids.Engine.SoundManager" href="SoundManager.html">Pysteroids.Engine.SoundManager</a></code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Sound manager. It stores and plays the loaded audio …</p></section>
 </dd>
 <dt><code class="name"><a title="Pysteroids.Engine.WireMesh" href="WireMesh.html">Pysteroids.Engine.WireMesh</a></code></dt>
 <dd>
