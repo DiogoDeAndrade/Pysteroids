@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.6.3" />
 <title>Pysteroids.Engine.FX.Shockwave API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="Shockwave effect …" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
@@ -20,15 +20,45 @@
 <h1 class="title">Module <code>Pysteroids.Engine.FX.Shockwave</code></h1>
 </header>
 <section id="section-intro">
+<p>Shockwave effect</p>
+<p>The shockwave effect is just a growing cirlce that changes color.</p>
+<p>Usage example:</p>
+<pre><code>    # Spawn a shockwave at the given position, lasting for 750 ms, and 200 pixels wide.
+    # The color will go from a yellow to a red, then to a black.
+    shockwave = Engine.FX.Shockwave(position, 0.75, 200, [Color(1.0, 1.0, 0.0, 1.0), Color(1.0, 0.0, 0.0, 1.0), Color(0.0, 0.0, 0.0, 1.0), Color(0.0, 0.0, 0.0, 0.0)])
+</code></pre>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">import pygame
+<pre><code class="python">&#34;&#34;&#34;Shockwave effect
+
+The shockwave effect is just a growing cirlce that changes color.
+
+Usage example:
+```
+    # Spawn a shockwave at the given position, lasting for 750 ms, and 200 pixels wide.
+    # The color will go from a yellow to a red, then to a black.
+    shockwave = Engine.FX.Shockwave(position, 0.75, 200, [Color(1.0, 1.0, 0.0, 1.0), Color(1.0, 0.0, 0.0, 1.0), Color(0.0, 0.0, 0.0, 1.0), Color(0.0, 0.0, 0.0, 0.0)])
+```
+&#34;&#34;&#34;
+import pygame
 
 from Engine import *
 from Engine.Color import Color
 
 class Shockwave(GameObject):
+    &#34;&#34;&#34;Shockwave effect class&#34;&#34;&#34;
     def __init__(self, position, duration, radius, colors):
+        &#34;&#34;&#34;
+        
+        Arguments:
+            position {Vector2} -- Position of the shockwave
+
+            duration {float} -- Duration (in seconds)
+
+            radius {float} -- Maximum radius
+
+            colors {Color[]} -- Array of colors for the shockwave
+        &#34;&#34;&#34;
         GameObject.__init__(self, &#34;&#34;)
 
         self.position = position
@@ -37,18 +67,33 @@ class Shockwave(GameObject):
         self.colors = colors
         self.time = 0
         self.width = 1
-        self.tags.append(&#34;Shockwave&#34;);
+        self.tags.append(&#34;Shockwave&#34;)
 
     def is_alive(self):
-        return ((self.duration == 0) or (self.time &lt; self.duration))
+        &#34;&#34;&#34;Check if the shockwave is still alive
+        
+        Returns:
+            bool -- Check if the shockwave is still alive
+        &#34;&#34;&#34;
+        return (self.time &lt; self.duration)
 
     def update(self, delta_time):
+        &#34;&#34;&#34;Updates the shockwave
+        
+        Arguments:
+            delta_time {float} -- Elapsed time from last frame (in seconds)
+        &#34;&#34;&#34;
         self.time = self.time + delta_time
 
         if (not self.is_alive()):
             Scene.main.remove(self)
  
     def render(self, screen):
+        &#34;&#34;&#34;Renders the shockwave
+        
+        Arguments:
+            screen {int} -- Display surface handle
+        &#34;&#34;&#34;
         r = (int)(self.radius)
         t = 0
         if (self.duration &gt; 0):
@@ -77,13 +122,28 @@ class Shockwave(GameObject):
 <span>(</span><span>position, duration, radius, colors)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Initializes a GameObject, with a given name.</p>
+<section class="desc"><p>Shockwave effect class</p>
 <h2 id="arguments">Arguments</h2>
-<p>name {string} &ndash; Name of the object. It can be duplicated, there's no validation/enforcing, but it's usually better to have unique names to quickly identify relevant objects while debugging.</p></section>
+<p>position {Vector2} &ndash; Position of the shockwave</p>
+<p>duration {float} &ndash; Duration (in seconds)</p>
+<p>radius {float} &ndash; Maximum radius</p>
+<p>colors {Color[]} &ndash; Array of colors for the shockwave</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">class Shockwave(GameObject):
+    &#34;&#34;&#34;Shockwave effect class&#34;&#34;&#34;
     def __init__(self, position, duration, radius, colors):
+        &#34;&#34;&#34;
+        
+        Arguments:
+            position {Vector2} -- Position of the shockwave
+
+            duration {float} -- Duration (in seconds)
+
+            radius {float} -- Maximum radius
+
+            colors {Color[]} -- Array of colors for the shockwave
+        &#34;&#34;&#34;
         GameObject.__init__(self, &#34;&#34;)
 
         self.position = position
@@ -92,18 +152,33 @@ class Shockwave(GameObject):
         self.colors = colors
         self.time = 0
         self.width = 1
-        self.tags.append(&#34;Shockwave&#34;);
+        self.tags.append(&#34;Shockwave&#34;)
 
     def is_alive(self):
-        return ((self.duration == 0) or (self.time &lt; self.duration))
+        &#34;&#34;&#34;Check if the shockwave is still alive
+        
+        Returns:
+            bool -- Check if the shockwave is still alive
+        &#34;&#34;&#34;
+        return (self.time &lt; self.duration)
 
     def update(self, delta_time):
+        &#34;&#34;&#34;Updates the shockwave
+        
+        Arguments:
+            delta_time {float} -- Elapsed time from last frame (in seconds)
+        &#34;&#34;&#34;
         self.time = self.time + delta_time
 
         if (not self.is_alive()):
             Scene.main.remove(self)
  
     def render(self, screen):
+        &#34;&#34;&#34;Renders the shockwave
+        
+        Arguments:
+            screen {int} -- Display surface handle
+        &#34;&#34;&#34;
         r = (int)(self.radius)
         t = 0
         if (self.duration &gt; 0):
@@ -127,21 +202,38 @@ class Shockwave(GameObject):
 <span>def <span class="ident">is_alive</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Check if the shockwave is still alive</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>bool</code> &ndash; <code>Check</code> <code>if</code> <code>the</code> <code>shockwave</code> <code>is</code> <code>still</code> <code>alive</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def is_alive(self):
-    return ((self.duration == 0) or (self.time &lt; self.duration))</code></pre>
+    &#34;&#34;&#34;Check if the shockwave is still alive
+    
+    Returns:
+        bool -- Check if the shockwave is still alive
+    &#34;&#34;&#34;
+    return (self.time &lt; self.duration)</code></pre>
 </details>
 </dd>
 <dt id="Pysteroids.Engine.FX.Shockwave.Shockwave.render"><code class="name flex">
 <span>def <span class="ident">render</span></span>(<span>self, screen)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Renders the shockwave</p>
+<h2 id="arguments">Arguments</h2>
+<p>screen {int} &ndash; Display surface handle</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def render(self, screen):
+    &#34;&#34;&#34;Renders the shockwave
+    
+    Arguments:
+        screen {int} -- Display surface handle
+    &#34;&#34;&#34;
     r = (int)(self.radius)
     t = 0
     if (self.duration &gt; 0):
@@ -160,10 +252,17 @@ class Shockwave(GameObject):
 <span>def <span class="ident">update</span></span>(<span>self, delta_time)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Updates the shockwave</p>
+<h2 id="arguments">Arguments</h2>
+<p>delta_time {float} &ndash; Elapsed time from last frame (in seconds)</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def update(self, delta_time):
+    &#34;&#34;&#34;Updates the shockwave
+    
+    Arguments:
+        delta_time {float} -- Elapsed time from last frame (in seconds)
+    &#34;&#34;&#34;
     self.time = self.time + delta_time
 
     if (not self.is_alive()):

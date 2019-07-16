@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.6.3" />
 <title>Pysteroids.Engine.FX.Trail API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="Trail effect …" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
@@ -20,20 +20,67 @@
 <h1 class="title">Module <code>Pysteroids.Engine.FX.Trail</code></h1>
 </header>
 <section id="section-intro">
+<p>Trail effect</p>
+<p>Usage example:</p>
+<pre><code>    # This will spawn a trail that will trail for two seconds, going from cyan to black.
+    # It will be 5 pixels wide, following &lt;target_object&gt;'s on his &quot;TrailAnchor0&quot; mountpoint.
+    # It will spawn a new segment every 100 ms
+    trail = Trail(&quot;MissileTrail&quot;, 2, Color(0, 1, 1, 1), Color(0, 0, 0, 0), 5, target_object, &quot;TrailAnchor0&quot;, 0.1)
+</code></pre>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">import pygame
+<pre><code class="python">&#34;&#34;&#34;Trail effect
+
+Usage example:
+```
+    # This will spawn a trail that will trail for two seconds, going from cyan to black.
+    # It will be 5 pixels wide, following &lt;target_object&gt;&#39;s on his &#34;TrailAnchor0&#34; mountpoint.
+    # It will spawn a new segment every 100 ms
+    trail = Trail(&#34;MissileTrail&#34;, 2, Color(0, 1, 1, 1), Color(0, 0, 0, 0), 5, target_object, &#34;TrailAnchor0&#34;, 0.1)
+```
+&#34;&#34;&#34;
+
+import pygame
 
 from Engine import *
 
 class TrailParticle:
+    &#34;&#34;&#34;Trail particle structure.
+
+    Used internally to keep track on where the trail should be.&#34;&#34;&#34;
     def __init__(self, pos, color):
+        &#34;&#34;&#34;Initializes a trail particle.
+        
+        Arguments:
+            pos {Vector2} -- Position of the trail at this time
+            color {Color} -- Color of the trail
+        &#34;&#34;&#34;
         self.pos = pos
         self.color = color
         self.time = 0
 
 class Trail(GameObject):
+    &#34;&#34;&#34;Trail object&#34;&#34;&#34;
     def __init__(self, name, duration, colorStart, colorEnd, width, target, mountpoint, tick_time):
+        &#34;&#34;&#34;
+        
+        Arguments:
+            name {string} -- Name of the object. It can be duplicated, there&#39;s no validation/enforcing, but it&#39;s usually better to have unique names to quickly identify relevant objects while debugging.
+
+            duration {float} -- Duration of the trail (defines the length of the trail)
+
+            colorStart {Color} -- Start color of the trail
+
+            colorEnd {Color} -- End color of the trail
+
+            width {int} -- Width of the trail
+
+            target {GameObject} -- Object to track
+
+            mountpoint {string} -- Mountpoint in the object to track
+
+            tick_time {float} -- Time between trail segments
+        &#34;&#34;&#34;
         GameObject.__init__(self, name)
 
         self.duration = duration
@@ -47,6 +94,11 @@ class Trail(GameObject):
         self.points = []
 
     def update(self, delta_time):
+        &#34;&#34;&#34;Updates the trail
+        
+        Arguments:
+            delta_time {float} -- Time to elapse in seconds
+        &#34;&#34;&#34;
 
         for pt in self.points:
             pt.time = pt.time + delta_time
@@ -65,6 +117,11 @@ class Trail(GameObject):
 
 
     def render(self, screen):
+        &#34;&#34;&#34;Renders the trail
+        
+        Arguments:
+            screen {int} -- Display surface handle
+        &#34;&#34;&#34;
         for i in range(0, len(self.points) - 1):
             c = self.points[i].color
             p1 = self.points[i].pos
@@ -86,13 +143,40 @@ class Trail(GameObject):
 <span>(</span><span>name, duration, colorStart, colorEnd, width, target, mountpoint, tick_time)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Initializes a GameObject, with a given name.</p>
+<section class="desc"><p>Trail object</p>
 <h2 id="arguments">Arguments</h2>
-<p>name {string} &ndash; Name of the object. It can be duplicated, there's no validation/enforcing, but it's usually better to have unique names to quickly identify relevant objects while debugging.</p></section>
+<p>name {string} &ndash; Name of the object. It can be duplicated, there's no validation/enforcing, but it's usually better to have unique names to quickly identify relevant objects while debugging.</p>
+<p>duration {float} &ndash; Duration of the trail (defines the length of the trail)</p>
+<p>colorStart {Color} &ndash; Start color of the trail</p>
+<p>colorEnd {Color} &ndash; End color of the trail</p>
+<p>width {int} &ndash; Width of the trail</p>
+<p>target {GameObject} &ndash; Object to track</p>
+<p>mountpoint {string} &ndash; Mountpoint in the object to track</p>
+<p>tick_time {float} &ndash; Time between trail segments</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">class Trail(GameObject):
+    &#34;&#34;&#34;Trail object&#34;&#34;&#34;
     def __init__(self, name, duration, colorStart, colorEnd, width, target, mountpoint, tick_time):
+        &#34;&#34;&#34;
+        
+        Arguments:
+            name {string} -- Name of the object. It can be duplicated, there&#39;s no validation/enforcing, but it&#39;s usually better to have unique names to quickly identify relevant objects while debugging.
+
+            duration {float} -- Duration of the trail (defines the length of the trail)
+
+            colorStart {Color} -- Start color of the trail
+
+            colorEnd {Color} -- End color of the trail
+
+            width {int} -- Width of the trail
+
+            target {GameObject} -- Object to track
+
+            mountpoint {string} -- Mountpoint in the object to track
+
+            tick_time {float} -- Time between trail segments
+        &#34;&#34;&#34;
         GameObject.__init__(self, name)
 
         self.duration = duration
@@ -106,6 +190,11 @@ class Trail(GameObject):
         self.points = []
 
     def update(self, delta_time):
+        &#34;&#34;&#34;Updates the trail
+        
+        Arguments:
+            delta_time {float} -- Time to elapse in seconds
+        &#34;&#34;&#34;
 
         for pt in self.points:
             pt.time = pt.time + delta_time
@@ -124,6 +213,11 @@ class Trail(GameObject):
 
 
     def render(self, screen):
+        &#34;&#34;&#34;Renders the trail
+        
+        Arguments:
+            screen {int} -- Display surface handle
+        &#34;&#34;&#34;
         for i in range(0, len(self.points) - 1):
             c = self.points[i].color
             p1 = self.points[i].pos
@@ -140,10 +234,17 @@ class Trail(GameObject):
 <span>def <span class="ident">render</span></span>(<span>self, screen)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Renders the trail</p>
+<h2 id="arguments">Arguments</h2>
+<p>screen {int} &ndash; Display surface handle</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def render(self, screen):
+    &#34;&#34;&#34;Renders the trail
+    
+    Arguments:
+        screen {int} -- Display surface handle
+    &#34;&#34;&#34;
     for i in range(0, len(self.points) - 1):
         c = self.points[i].color
         p1 = self.points[i].pos
@@ -155,10 +256,17 @@ class Trail(GameObject):
 <span>def <span class="ident">update</span></span>(<span>self, delta_time)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Updates the trail</p>
+<h2 id="arguments">Arguments</h2>
+<p>delta_time {float} &ndash; Time to elapse in seconds</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def update(self, delta_time):
+    &#34;&#34;&#34;Updates the trail
+    
+    Arguments:
+        delta_time {float} -- Time to elapse in seconds
+    &#34;&#34;&#34;
 
     for pt in self.points:
         pt.time = pt.time + delta_time
@@ -183,11 +291,25 @@ class Trail(GameObject):
 <span>(</span><span>pos, color)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Trail particle structure.</p>
+<p>Used internally to keep track on where the trail should be.</p>
+<p>Initializes a trail particle.</p>
+<h2 id="arguments">Arguments</h2>
+<p>pos {Vector2} &ndash; Position of the trail at this time
+color {Color} &ndash; Color of the trail</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">class TrailParticle:
+    &#34;&#34;&#34;Trail particle structure.
+
+    Used internally to keep track on where the trail should be.&#34;&#34;&#34;
     def __init__(self, pos, color):
+        &#34;&#34;&#34;Initializes a trail particle.
+        
+        Arguments:
+            pos {Vector2} -- Position of the trail at this time
+            color {Color} -- Color of the trail
+        &#34;&#34;&#34;
         self.pos = pos
         self.color = color
         self.time = 0</code></pre>

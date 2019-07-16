@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.6.3" />
 <title>Pysteroids.Engine.FX.ParticleSystem API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="Simple particle system …" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
@@ -20,9 +20,46 @@
 <h1 class="title">Module <code>Pysteroids.Engine.FX.ParticleSystem</code></h1>
 </header>
 <section id="section-intro">
+<p>Simple particle system</p>
+<p>Usage example:</p>
+<pre><code>    # Spawn a particle system at the given position
+    particle_system = Engine.FX.ParticleSystem(self.position)
+    # Sets the colors of the particles over time from yellow, to red to black
+    particle_system.color_over_time = [Color(1.0, 1.0, 0.0, 1.0), Color(1.0, 0.0, 0.0, 1.0), Color(0.0, 0.0, 0.0, 1.0), Color(0.0, 0.0, 0.0, 0.0)]
+    # Particles have a starting speed in the range of [50,100]
+    particle_system.start_speed = (50, 100)
+    # Particles last from 2 to 4 seconds
+    particle_system.particle_life = (2, 4)
+    # Particles will slow down over time. They slow down 0.5% each frame
+    particle_system.drag = 0.995
+    # Besides the initial burst, there will be no more particles spawned
+    particle_system.rate = 0
+    # Spawn 50 particles immediately
+    particle_system.spawn(50)
+</code></pre>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">import math
+<pre><code class="python">&#34;&#34;&#34;Simple particle system
+
+Usage example:
+```
+    # Spawn a particle system at the given position
+    particle_system = Engine.FX.ParticleSystem(self.position)
+    # Sets the colors of the particles over time from yellow, to red to black
+    particle_system.color_over_time = [Color(1.0, 1.0, 0.0, 1.0), Color(1.0, 0.0, 0.0, 1.0), Color(0.0, 0.0, 0.0, 1.0), Color(0.0, 0.0, 0.0, 0.0)]
+    # Particles have a starting speed in the range of [50,100]
+    particle_system.start_speed = (50, 100)
+    # Particles last from 2 to 4 seconds
+    particle_system.particle_life = (2, 4)
+    # Particles will slow down over time. They slow down 0.5% each frame
+    particle_system.drag = 0.995
+    # Besides the initial burst, there will be no more particles spawned
+    particle_system.rate = 0
+    # Spawn 50 particles immediately
+    particle_system.spawn(50)
+```
+&#34;&#34;&#34;
+import math
 import random
 import pygame
 import enum
@@ -33,10 +70,25 @@ from Engine import *
 from Engine.Color import Color
 
 class Emitter(enum.Enum): 
+    &#34;&#34;&#34;Emitter type&#34;&#34;&#34;
     Point = 0
+    &#34;&#34;&#34;Particles are emitted from a point, initial velocity is set to a random 2d vector&#34;&#34;&#34;
 
 class Particle:
+    &#34;&#34;&#34;Structure for an individual particle&#34;&#34;&#34;
     def __init__(self, position, velocity, life, color):
+        &#34;&#34;&#34;       
+        This is used by the particle system&#39;s emitter, should not be used directly
+
+        Arguments:
+            position {Vector2} -- Position of the particle
+
+            velocity {Vector2} -- Velocity of the particle
+
+            life {float} -- Life of the particle (in seconds)
+
+            color {Color} -- Color of the particle
+        &#34;&#34;&#34;
         self.position = self.old_position = position
         self.direction = velocity.normalize()
         self.speed = velocity.magnitude()
@@ -46,7 +98,12 @@ class Particle:
         self.size = 1
     
 class ParticleSystem(GameObject):
+    &#34;&#34;&#34; Base particle system class&#34;&#34;&#34;
     def __init__(self, position):
+        &#34;&#34;&#34;
+        Arguments:
+            position {Vector2} -- Position of the particle system
+        &#34;&#34;&#34;
         GameObject.__init__(self, &#34;&#34;)
 
         self.position = position
@@ -62,9 +119,14 @@ class ParticleSystem(GameObject):
 
         self.particles = []
 
-        self.tags.append(&#34;ParticleSystem&#34;);
+        self.tags.append(&#34;ParticleSystem&#34;)
 
     def update(self, delta_time):
+        &#34;&#34;&#34;Updates the particle system and its particles
+        
+        Arguments:
+            delta_time {float} -- Time to elapse (in seconds)
+        &#34;&#34;&#34;
         self.accumulated_time = self.accumulated_time + delta_time
 
         particles_to_spawn = (int)(math.floor(self.accumulated_time * self.rate))
@@ -91,10 +153,24 @@ class ParticleSystem(GameObject):
             Scene.main.remove(self)
 
     def render(self, screen):
+        &#34;&#34;&#34;Renders the particle system.
+
+        Currently, it renders each particle as a line from the previous position to the new one, in the particle color, with the width encoded in the particle
+        
+        Arguments:
+            screen {int} -- Display surface handle
+        &#34;&#34;&#34;
         for particle in self.particles:
             pygame.draw.line(screen, particle.color.tuple(), particle.old_position, particle.position, (int)(particle.size))
 
     def spawn(self, particle_to_spawn):
+        &#34;&#34;&#34;Spawns particles.
+
+        This function should be used internally, unless you desire a burst-like effect.
+
+        Arguments:
+            particle_to_spawn {int} -- Number of particles to spawn
+        &#34;&#34;&#34;
         if (self.emitter == Emitter.Point):
             for i in range(0, particle_to_spawn):
                 ang = random.uniform(0, math.pi * 2)
@@ -104,6 +180,11 @@ class ParticleSystem(GameObject):
                 self.particles.append(particle)
 
     def is_alive(self):
+        &#34;&#34;&#34;Checks if the particle system is still alive, i.e. if there are no particles alive and the lifetime for it has run out
+        
+        Returns:
+            bool -- True if the particle system is still alive
+        &#34;&#34;&#34;
         if (self.duration == 0):
             return True
         if (self.time &gt; self.duration):
@@ -127,11 +208,13 @@ class ParticleSystem(GameObject):
 <span>(</span><span>*args, **kwargs)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>An enumeration.</p></section>
+<section class="desc"><p>Emitter type</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">class Emitter(enum.Enum): 
-    Point = 0</code></pre>
+    &#34;&#34;&#34;Emitter type&#34;&#34;&#34;
+    Point = 0
+    &#34;&#34;&#34;Particles are emitted from a point, initial velocity is set to a random 2d vector&#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -141,7 +224,7 @@ class ParticleSystem(GameObject):
 <dl>
 <dt id="Pysteroids.Engine.FX.ParticleSystem.Emitter.Point"><code class="name">var <span class="ident">Point</span></code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Particles are emitted from a point, initial velocity is set to a random 2d vector</p></section>
 </dd>
 </dl>
 </dd>
@@ -150,11 +233,30 @@ class ParticleSystem(GameObject):
 <span>(</span><span>position, velocity, life, color)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Structure for an individual particle</p>
+<p>This is used by the particle system's emitter, should not be used directly</p>
+<h2 id="arguments">Arguments</h2>
+<p>position {Vector2} &ndash; Position of the particle</p>
+<p>velocity {Vector2} &ndash; Velocity of the particle</p>
+<p>life {float} &ndash; Life of the particle (in seconds)</p>
+<p>color {Color} &ndash; Color of the particle</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">class Particle:
+    &#34;&#34;&#34;Structure for an individual particle&#34;&#34;&#34;
     def __init__(self, position, velocity, life, color):
+        &#34;&#34;&#34;       
+        This is used by the particle system&#39;s emitter, should not be used directly
+
+        Arguments:
+            position {Vector2} -- Position of the particle
+
+            velocity {Vector2} -- Velocity of the particle
+
+            life {float} -- Life of the particle (in seconds)
+
+            color {Color} -- Color of the particle
+        &#34;&#34;&#34;
         self.position = self.old_position = position
         self.direction = velocity.normalize()
         self.speed = velocity.magnitude()
@@ -169,13 +271,18 @@ class ParticleSystem(GameObject):
 <span>(</span><span>position)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Initializes a GameObject, with a given name.</p>
+<section class="desc"><p>Base particle system class</p>
 <h2 id="arguments">Arguments</h2>
-<p>name {string} &ndash; Name of the object. It can be duplicated, there's no validation/enforcing, but it's usually better to have unique names to quickly identify relevant objects while debugging.</p></section>
+<p>position {Vector2} &ndash; Position of the particle system</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">class ParticleSystem(GameObject):
+    &#34;&#34;&#34; Base particle system class&#34;&#34;&#34;
     def __init__(self, position):
+        &#34;&#34;&#34;
+        Arguments:
+            position {Vector2} -- Position of the particle system
+        &#34;&#34;&#34;
         GameObject.__init__(self, &#34;&#34;)
 
         self.position = position
@@ -191,9 +298,14 @@ class ParticleSystem(GameObject):
 
         self.particles = []
 
-        self.tags.append(&#34;ParticleSystem&#34;);
+        self.tags.append(&#34;ParticleSystem&#34;)
 
     def update(self, delta_time):
+        &#34;&#34;&#34;Updates the particle system and its particles
+        
+        Arguments:
+            delta_time {float} -- Time to elapse (in seconds)
+        &#34;&#34;&#34;
         self.accumulated_time = self.accumulated_time + delta_time
 
         particles_to_spawn = (int)(math.floor(self.accumulated_time * self.rate))
@@ -220,10 +332,24 @@ class ParticleSystem(GameObject):
             Scene.main.remove(self)
 
     def render(self, screen):
+        &#34;&#34;&#34;Renders the particle system.
+
+        Currently, it renders each particle as a line from the previous position to the new one, in the particle color, with the width encoded in the particle
+        
+        Arguments:
+            screen {int} -- Display surface handle
+        &#34;&#34;&#34;
         for particle in self.particles:
             pygame.draw.line(screen, particle.color.tuple(), particle.old_position, particle.position, (int)(particle.size))
 
     def spawn(self, particle_to_spawn):
+        &#34;&#34;&#34;Spawns particles.
+
+        This function should be used internally, unless you desire a burst-like effect.
+
+        Arguments:
+            particle_to_spawn {int} -- Number of particles to spawn
+        &#34;&#34;&#34;
         if (self.emitter == Emitter.Point):
             for i in range(0, particle_to_spawn):
                 ang = random.uniform(0, math.pi * 2)
@@ -233,6 +359,11 @@ class ParticleSystem(GameObject):
                 self.particles.append(particle)
 
     def is_alive(self):
+        &#34;&#34;&#34;Checks if the particle system is still alive, i.e. if there are no particles alive and the lifetime for it has run out
+        
+        Returns:
+            bool -- True if the particle system is still alive
+        &#34;&#34;&#34;
         if (self.duration == 0):
             return True
         if (self.time &gt; self.duration):
@@ -251,10 +382,20 @@ class ParticleSystem(GameObject):
 <span>def <span class="ident">is_alive</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Checks if the particle system is still alive, i.e. if there are no particles alive and the lifetime for it has run out</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>bool</code> &ndash; <code>True</code> <code>if</code> <code>the</code> <code>particle</code> <code>system</code> <code>is</code> <code>still</code> <code>alive</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def is_alive(self):
+    &#34;&#34;&#34;Checks if the particle system is still alive, i.e. if there are no particles alive and the lifetime for it has run out
+    
+    Returns:
+        bool -- True if the particle system is still alive
+    &#34;&#34;&#34;
     if (self.duration == 0):
         return True
     if (self.time &gt; self.duration):
@@ -268,10 +409,20 @@ class ParticleSystem(GameObject):
 <span>def <span class="ident">render</span></span>(<span>self, screen)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Renders the particle system.</p>
+<p>Currently, it renders each particle as a line from the previous position to the new one, in the particle color, with the width encoded in the particle</p>
+<h2 id="arguments">Arguments</h2>
+<p>screen {int} &ndash; Display surface handle</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def render(self, screen):
+    &#34;&#34;&#34;Renders the particle system.
+
+    Currently, it renders each particle as a line from the previous position to the new one, in the particle color, with the width encoded in the particle
+    
+    Arguments:
+        screen {int} -- Display surface handle
+    &#34;&#34;&#34;
     for particle in self.particles:
         pygame.draw.line(screen, particle.color.tuple(), particle.old_position, particle.position, (int)(particle.size))</code></pre>
 </details>
@@ -280,10 +431,20 @@ class ParticleSystem(GameObject):
 <span>def <span class="ident">spawn</span></span>(<span>self, particle_to_spawn)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Spawns particles.</p>
+<p>This function should be used internally, unless you desire a burst-like effect.</p>
+<h2 id="arguments">Arguments</h2>
+<p>particle_to_spawn {int} &ndash; Number of particles to spawn</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def spawn(self, particle_to_spawn):
+    &#34;&#34;&#34;Spawns particles.
+
+    This function should be used internally, unless you desire a burst-like effect.
+
+    Arguments:
+        particle_to_spawn {int} -- Number of particles to spawn
+    &#34;&#34;&#34;
     if (self.emitter == Emitter.Point):
         for i in range(0, particle_to_spawn):
             ang = random.uniform(0, math.pi * 2)
@@ -297,10 +458,17 @@ class ParticleSystem(GameObject):
 <span>def <span class="ident">update</span></span>(<span>self, delta_time)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Updates the particle system and its particles</p>
+<h2 id="arguments">Arguments</h2>
+<p>delta_time {float} &ndash; Time to elapse (in seconds)</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def update(self, delta_time):
+    &#34;&#34;&#34;Updates the particle system and its particles
+    
+    Arguments:
+        delta_time {float} -- Time to elapse (in seconds)
+    &#34;&#34;&#34;
     self.accumulated_time = self.accumulated_time + delta_time
 
     particles_to_spawn = (int)(math.floor(self.accumulated_time * self.rate))

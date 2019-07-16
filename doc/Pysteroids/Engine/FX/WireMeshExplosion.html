@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.6.3" />
 <title>Pysteroids.Engine.FX.WireMeshExplosion API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="A WireMesh explosion is an effect that takes a WireMesh and decomposes it in different lines that go flying off …" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
@@ -20,19 +20,66 @@
 <h1 class="title">Module <code>Pysteroids.Engine.FX.WireMeshExplosion</code></h1>
 </header>
 <section id="section-intro">
+<p>A WireMesh explosion is an effect that takes a WireMesh and decomposes it in different lines that go flying off.</p>
+<p>Usage example:</p>
+<pre><code>    # Create the object, with the given mesh, position, rotation and scale
+    # This explosion will make the lines shoot outward, at a speed in the range of [150, 300], and rotation [0.5, 3] radius per second
+    explosion = Engine.FX.WireMeshExplosion(mesh, position, rotation, scale, True, 150, 300, 0.5, 3)
+    # Fading will be done by changing the color
+    explosion.fade_method = Engine.FX.FadeMethod.Color
+    # Lines will start yellow, then go redish, then go fully black
+    explosion.colors = [Color(1.0, 1.0, 0.0, 1.0), Color(1.0, 0.0, 0.0, 1.0), Color(0.0, 0.0, 0.0, 1.0), Color(0.0, 0.0, 0.0, 0.0)]
+    # Explosion will last two seconds
+    explosion.duration = 2
+</code></pre>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">import enum
+<pre><code class="python">&#34;&#34;&#34;A WireMesh explosion is an effect that takes a WireMesh and decomposes it in different lines that go flying off.
+
+Usage example:
+```
+    # Create the object, with the given mesh, position, rotation and scale
+    # This explosion will make the lines shoot outward, at a speed in the range of [150, 300], and rotation [0.5, 3] radius per second
+    explosion = Engine.FX.WireMeshExplosion(mesh, position, rotation, scale, True, 150, 300, 0.5, 3)
+    # Fading will be done by changing the color
+    explosion.fade_method = Engine.FX.FadeMethod.Color
+    # Lines will start yellow, then go redish, then go fully black
+    explosion.colors = [Color(1.0, 1.0, 0.0, 1.0), Color(1.0, 0.0, 0.0, 1.0), Color(0.0, 0.0, 0.0, 1.0), Color(0.0, 0.0, 0.0, 0.0)]
+    # Explosion will last two seconds
+    explosion.duration = 2
+```
+
+&#34;&#34;&#34;
+import enum
 
 from Engine import *
 from Engine.Color import Color
 
 class FadeMethod(enum.Enum): 
+    &#34;&#34;&#34;How to fade out each line&#34;&#34;&#34;
     Shrink = 0
+    &#34;&#34;&#34;Each line gets smaller relative to its center&#34;&#34;&#34;
     Color = 1
+    &#34;&#34;&#34;The color will fade out&#34;&#34;&#34;
 
 class ExplosionParticle:
+    &#34;&#34;&#34;Each line segment is a ExplosionParticle.
+
+    This is used internally.&#34;&#34;&#34;
     def __init__(self, p1, p2, from_center, speed, rotation):
+        &#34;&#34;&#34;        
+        
+        Arguments:
+            p1 {Vector2} -- First vertex of the line
+
+            p2 {Vector2} -- Second vertex of the line
+
+            from_center {bool} -- Defines if the velocity vector is relative to the center of the line, or the perpendicular to the line segment
+
+            speed {float} -- Speed of this line segment
+
+            rotation {float} -- Rotation speed of this line segment
+        &#34;&#34;&#34;
         self.center = (p1 + p2) * 0.5
         self.p1 = p1 - self.center
         self.p2 = p2 - self.center
@@ -48,8 +95,28 @@ class ExplosionParticle:
         self.rotation = rotation
 
 class WireMeshExplosion(GameObject):
+    &#34;&#34;&#34;WireMeshExplosion class&#34;&#34;&#34;
     def __init__(self, original_mesh, original_pos, original_rotation, original_scale, from_center, min_speed, max_speed, min_rotation, max_rotation):
+        &#34;&#34;&#34;        
+        Arguments:
+            original_mesh {WireMesh} -- Original WireMesh to create explosion from. At time = 0, this object and the WireMesh will be visually the same.
 
+            original_pos {Vector2} -- Position of the original WireMesh at the moment of the explosion
+
+            original_rotation {float} -- Rotation of the original WireMesh at the moment of the explosion
+
+            original_scale {Vector2} -- Scale of the original WireMesh at the moment of the explosion
+
+            from_center {bool} -- Defines if the velocity vector is relative to the center of the line, or the perpendicular to the line segment
+
+            min_speed {float} -- Minimum speed of each segment
+
+            max_speed {float} -- Maximum speed of each segment
+
+            min_rotation {float} -- Minimum rotation speed of each segment (radians/sec)
+
+            max_rotation {float} -- Maximum rotation speed of each segment (radians/sec)
+        &#34;&#34;&#34;
         GameObject.__init__(self, &#34;&#34;)
 
         # Create a copy of the mesh
@@ -75,6 +142,11 @@ class WireMeshExplosion(GameObject):
         self.drag = 1
 
     def update(self, delta_time):
+        &#34;&#34;&#34;Updates the explosion effect.
+        
+        Arguments:
+            delta_time {float} -- Elapsed time in seconds
+        &#34;&#34;&#34;
         particle_index = 0
         t = self.time / self.duration
         for vertex_index in range(0, len(self.gfx.vertex), 2):
@@ -118,9 +190,19 @@ class WireMeshExplosion(GameObject):
             Scene.main.remove(self)
 
     def is_alive(self):
+        &#34;&#34;&#34;Checks if the explosion is still alive, i.e. any particle is still alive, and if the duration has elapsed
+        
+        Returns:
+            bool -- True if the explosion is alive
+        &#34;&#34;&#34;
         return ((self.duration == 0) or (self.time &lt; self.duration))
 
     def render(self, screen):
+        &#34;&#34;&#34;Renders the explosion
+        
+        Arguments:
+            screen {int} -- Display surface handle
+        &#34;&#34;&#34;
         self.gfx.drawPRS(screen, self.position, self.rotation, self.scale)</code></pre>
 </details>
 </section>
@@ -138,11 +220,34 @@ class WireMeshExplosion(GameObject):
 <span>(</span><span>p1, p2, from_center, speed, rotation)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Each line segment is a ExplosionParticle.</p>
+<p>This is used internally.</p>
+<h2 id="arguments">Arguments</h2>
+<p>p1 {Vector2} &ndash; First vertex of the line</p>
+<p>p2 {Vector2} &ndash; Second vertex of the line</p>
+<p>from_center {bool} &ndash; Defines if the velocity vector is relative to the center of the line, or the perpendicular to the line segment</p>
+<p>speed {float} &ndash; Speed of this line segment</p>
+<p>rotation {float} &ndash; Rotation speed of this line segment</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">class ExplosionParticle:
+    &#34;&#34;&#34;Each line segment is a ExplosionParticle.
+
+    This is used internally.&#34;&#34;&#34;
     def __init__(self, p1, p2, from_center, speed, rotation):
+        &#34;&#34;&#34;        
+        
+        Arguments:
+            p1 {Vector2} -- First vertex of the line
+
+            p2 {Vector2} -- Second vertex of the line
+
+            from_center {bool} -- Defines if the velocity vector is relative to the center of the line, or the perpendicular to the line segment
+
+            speed {float} -- Speed of this line segment
+
+            rotation {float} -- Rotation speed of this line segment
+        &#34;&#34;&#34;
         self.center = (p1 + p2) * 0.5
         self.p1 = p1 - self.center
         self.p2 = p2 - self.center
@@ -163,12 +268,15 @@ class WireMeshExplosion(GameObject):
 <span>(</span><span>*args, **kwargs)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>An enumeration.</p></section>
+<section class="desc"><p>How to fade out each line</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">class FadeMethod(enum.Enum): 
+    &#34;&#34;&#34;How to fade out each line&#34;&#34;&#34;
     Shrink = 0
-    Color = 1</code></pre>
+    &#34;&#34;&#34;Each line gets smaller relative to its center&#34;&#34;&#34;
+    Color = 1
+    &#34;&#34;&#34;The color will fade out&#34;&#34;&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -178,11 +286,11 @@ class WireMeshExplosion(GameObject):
 <dl>
 <dt id="Pysteroids.Engine.FX.WireMeshExplosion.FadeMethod.Color"><code class="name">var <span class="ident">Color</span></code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>The color will fade out</p></section>
 </dd>
 <dt id="Pysteroids.Engine.FX.WireMeshExplosion.FadeMethod.Shrink"><code class="name">var <span class="ident">Shrink</span></code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Each line gets smaller relative to its center</p></section>
 </dd>
 </dl>
 </dd>
@@ -191,14 +299,42 @@ class WireMeshExplosion(GameObject):
 <span>(</span><span>original_mesh, original_pos, original_rotation, original_scale, from_center, min_speed, max_speed, min_rotation, max_rotation)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Initializes a GameObject, with a given name.</p>
+<section class="desc"><p>WireMeshExplosion class</p>
 <h2 id="arguments">Arguments</h2>
-<p>name {string} &ndash; Name of the object. It can be duplicated, there's no validation/enforcing, but it's usually better to have unique names to quickly identify relevant objects while debugging.</p></section>
+<p>original_mesh {WireMesh} &ndash; Original WireMesh to create explosion from. At time = 0, this object and the WireMesh will be visually the same.</p>
+<p>original_pos {Vector2} &ndash; Position of the original WireMesh at the moment of the explosion</p>
+<p>original_rotation {float} &ndash; Rotation of the original WireMesh at the moment of the explosion</p>
+<p>original_scale {Vector2} &ndash; Scale of the original WireMesh at the moment of the explosion</p>
+<p>from_center {bool} &ndash; Defines if the velocity vector is relative to the center of the line, or the perpendicular to the line segment</p>
+<p>min_speed {float} &ndash; Minimum speed of each segment</p>
+<p>max_speed {float} &ndash; Maximum speed of each segment</p>
+<p>min_rotation {float} &ndash; Minimum rotation speed of each segment (radians/sec)</p>
+<p>max_rotation {float} &ndash; Maximum rotation speed of each segment (radians/sec)</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">class WireMeshExplosion(GameObject):
+    &#34;&#34;&#34;WireMeshExplosion class&#34;&#34;&#34;
     def __init__(self, original_mesh, original_pos, original_rotation, original_scale, from_center, min_speed, max_speed, min_rotation, max_rotation):
+        &#34;&#34;&#34;        
+        Arguments:
+            original_mesh {WireMesh} -- Original WireMesh to create explosion from. At time = 0, this object and the WireMesh will be visually the same.
 
+            original_pos {Vector2} -- Position of the original WireMesh at the moment of the explosion
+
+            original_rotation {float} -- Rotation of the original WireMesh at the moment of the explosion
+
+            original_scale {Vector2} -- Scale of the original WireMesh at the moment of the explosion
+
+            from_center {bool} -- Defines if the velocity vector is relative to the center of the line, or the perpendicular to the line segment
+
+            min_speed {float} -- Minimum speed of each segment
+
+            max_speed {float} -- Maximum speed of each segment
+
+            min_rotation {float} -- Minimum rotation speed of each segment (radians/sec)
+
+            max_rotation {float} -- Maximum rotation speed of each segment (radians/sec)
+        &#34;&#34;&#34;
         GameObject.__init__(self, &#34;&#34;)
 
         # Create a copy of the mesh
@@ -224,6 +360,11 @@ class WireMeshExplosion(GameObject):
         self.drag = 1
 
     def update(self, delta_time):
+        &#34;&#34;&#34;Updates the explosion effect.
+        
+        Arguments:
+            delta_time {float} -- Elapsed time in seconds
+        &#34;&#34;&#34;
         particle_index = 0
         t = self.time / self.duration
         for vertex_index in range(0, len(self.gfx.vertex), 2):
@@ -267,9 +408,19 @@ class WireMeshExplosion(GameObject):
             Scene.main.remove(self)
 
     def is_alive(self):
+        &#34;&#34;&#34;Checks if the explosion is still alive, i.e. any particle is still alive, and if the duration has elapsed
+        
+        Returns:
+            bool -- True if the explosion is alive
+        &#34;&#34;&#34;
         return ((self.duration == 0) or (self.time &lt; self.duration))
 
     def render(self, screen):
+        &#34;&#34;&#34;Renders the explosion
+        
+        Arguments:
+            screen {int} -- Display surface handle
+        &#34;&#34;&#34;
         self.gfx.drawPRS(screen, self.position, self.rotation, self.scale)</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -282,10 +433,20 @@ class WireMeshExplosion(GameObject):
 <span>def <span class="ident">is_alive</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Checks if the explosion is still alive, i.e. any particle is still alive, and if the duration has elapsed</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>bool</code> &ndash; <code>True</code> <code>if</code> <code>the</code> <code>explosion</code> <code>is</code> <code>alive</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def is_alive(self):
+    &#34;&#34;&#34;Checks if the explosion is still alive, i.e. any particle is still alive, and if the duration has elapsed
+    
+    Returns:
+        bool -- True if the explosion is alive
+    &#34;&#34;&#34;
     return ((self.duration == 0) or (self.time &lt; self.duration))</code></pre>
 </details>
 </dd>
@@ -293,10 +454,17 @@ class WireMeshExplosion(GameObject):
 <span>def <span class="ident">render</span></span>(<span>self, screen)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Renders the explosion</p>
+<h2 id="arguments">Arguments</h2>
+<p>screen {int} &ndash; Display surface handle</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def render(self, screen):
+    &#34;&#34;&#34;Renders the explosion
+    
+    Arguments:
+        screen {int} -- Display surface handle
+    &#34;&#34;&#34;
     self.gfx.drawPRS(screen, self.position, self.rotation, self.scale)</code></pre>
 </details>
 </dd>
@@ -304,10 +472,17 @@ class WireMeshExplosion(GameObject):
 <span>def <span class="ident">update</span></span>(<span>self, delta_time)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Updates the explosion effect.</p>
+<h2 id="arguments">Arguments</h2>
+<p>delta_time {float} &ndash; Elapsed time in seconds</p></section>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def update(self, delta_time):
+    &#34;&#34;&#34;Updates the explosion effect.
+    
+    Arguments:
+        delta_time {float} -- Elapsed time in seconds
+    &#34;&#34;&#34;
     particle_index = 0
     t = self.time / self.duration
     for vertex_index in range(0, len(self.gfx.vertex), 2):
