@@ -12,7 +12,7 @@ The game evolved during development in terms of architecture, as I learned more 
 
 There'a an engine component (under the Engine folder), which takes care of the game loop, screen handling (there's two - title screen and game screen), mesh drawing and loading (using JSON for the file format), particle system, trail effect, font handling (both through Pygame and a custom system that uses lines).
 
-Full documentation will be added in the near future for Doxygen (so I also get used to that in this type of learning projects).
+Full documentation will be added in the near future as docstrings (so I also get used to that in this type of learning projects).
 
 ## Art
 
